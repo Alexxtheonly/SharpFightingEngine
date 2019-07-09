@@ -25,9 +25,17 @@
     <Authors>Alexander Herold</Authors>
     <Copyright>Alexander Herold</Copyright>
     <Version>0.1.0</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="./../stylecop/stylecop.json"></AdditionalFiles>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
