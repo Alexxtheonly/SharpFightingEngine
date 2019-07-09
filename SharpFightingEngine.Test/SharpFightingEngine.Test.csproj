@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SharpFightingEngine.Battlefield\SharpFightingEngine.Battlefields.csproj" />
     <ProjectReference Include="..\SharpFightingEngine.Fighters\SharpFightingEngine.Fighters.csproj" />
-    <ProjectReference Include="..\SharpFightingEnginge\SharpFightingEngine.csproj" />
+    <ProjectReference Include="..\SharpFightingEngine\SharpFightingEngine.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
