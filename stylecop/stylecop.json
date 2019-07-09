@@ -1,0 +1,31 @@
+{
+    "settings": {
+        "indentation": {
+            "indentationSize": 2,
+            "tabSize": 2,
+            "useTabs": false
+        },
+        "spacingRules": {
+        },
+        "orderingRules": {
+            "systemUsingDirectivesFirst": true,
+            "usingDirectivesPlacement": "outsideNamespace",
+            "blankLinesBetweenUsingGroups": "omit"
+        },
+        "namingRules": {
+            "allowCommonHungarianPrefixes": true
+        },
+        "maintainabilityRules": {
+            "topLevelTypes": [ "class", "delegate", "enum", "interface", "struct" ]
+        },
+        "layoutRules": {
+            "newlineAtEndOfFile": "require",
+            "allowConsecutiveUsings": true
+        },
+        "documentationRules": {
+            "xmlHeader": false
+        },
+        "readabilityRules": {
+        }
+    }
+}
