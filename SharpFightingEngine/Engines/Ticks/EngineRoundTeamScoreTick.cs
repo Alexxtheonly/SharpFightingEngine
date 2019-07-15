@@ -55,12 +55,11 @@ namespace SharpFightingEngine.Engines.Ticks
     public int Health { get; private set; }
 
     public int Kills => roundTick.Ticks
-      .OfType<FighterAttackTick>()
-      .Where(o => o.Hit)
-      .GroupBy(o => o.Target)
-      .Select(o => o.OrderByDescending(u => u.DateTime).First())
+      .OfType<EngineFighterDiedTick>()
+      .SelectMany(o => roundTick.Ticks.OfType<FighterAttackTick>().Where(u => u.Target.Id == o.Fighter.Id))
       .Where(o => o.Fighter.Team == TeamId)
-      .Where(o => o.Target.Health <= 0)
+      .Select(o => o.Fighter.Team)
+      .Distinct()
       .Count();
 
     public int RestoredEnergy => roundTick.Ticks
