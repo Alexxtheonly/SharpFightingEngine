@@ -54,12 +54,14 @@ namespace SharpFightingEngine.Engines
       // if any fighter has a team we consider it team mode
       TeamMode = Fighters.Values.Any(o => o.Team != null);
 
+      ProcessNewRound();
+
       PrepareFighters();
+
+      SpawnFighters();
 
       while (!configuration.WinCondition.HasWinner(Fighters.Values) && !configuration.WinCondition.IsDraw(Fighters.Values, Round))
       {
-        ProcessNewRound();
-
         ProcessRoundActions();
 
         CalculateFighterStats();
@@ -71,12 +73,25 @@ namespace SharpFightingEngine.Engines
         ProcessFeatures();
 
         Round++;
+
+        ProcessNewRound();
       }
 
       return new MatchResult()
       {
         Ticks = EngineRoundTicks,
       };
+    }
+
+    private void SpawnFighters()
+    {
+      foreach (var fighter in Fighters.Values)
+      {
+        CurrentRoundTick.Ticks.Add(new FighterSpawnTick()
+        {
+          Fighter = fighter.AsStruct(),
+        });
+      }
     }
 
     private void CalculateFighterStats()
