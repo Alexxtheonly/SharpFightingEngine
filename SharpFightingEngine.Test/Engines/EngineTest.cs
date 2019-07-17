@@ -84,14 +84,6 @@ namespace SharpFightingEngine.Test.Engines
       Assert.Equal(allFighterTicks.OfType<FighterAttackTick>().Where(targetQuery).Where(o => o.Hit).Sum(o => o.Damage), score.TotalDamageTaken);
       Assert.Equal(fighterTicks.OfType<EngineFighterDiedTick>().Count(), score.TotalDeaths);
       Assert.Equal(fighterTicks.OfType<FighterAttackTick>().Sum(o => o.Skill.Energy), score.TotalEnergyUsed);
-
-      var kills = fighterTicks
-        .OfType<FighterAttackTick>()
-        .GroupBy(o => o.Target)
-        .Select(o => o.OrderByDescending(u => u.DateTime).First())
-        .Where(o => o.Target.Health <= 0)
-        .Count();
-      Assert.Equal(kills, score.TotalKills);
     }
   }
 }

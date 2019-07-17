@@ -1,0 +1,28 @@
+stages:
+  - Test
+  - Publish
+
+Test:
+ stage: Test
+ image: mcr.microsoft.com/dotnet/core/sdk:2.2.300-alpine3.9
+ script: 
+   - dotnet restore
+   - dotnet test
+
+Publish:
+ stage: Publish
+ image: mcr.microsoft.com/dotnet/core/sdk:2.2.300-alpine3.9
+ script:
+  - dotnet restore
+  - dotnet build -c Release
+  - dotnet pack -c Release -o ./../nugetPacks
+  - cd ./nugetPacks
+# Workaround for
+# https://github.com/NuGet/Home/issues/8148
+  - dotnet nuget push SharpFightingEngine.*.nupkg -k $nugetToken -s https://api.nuget.org/v3/index.json
+  - dotnet nuget push SharpFightingEngine.Battlefields.*.nupkg -k $nugetToken -s https://api.nuget.org/v3/index.json
+  - dotnet nuget push SharpFightingEngine.Fighters.*.nupkg -k $nugetToken -s https://api.nuget.org/v3/index.json
+  - dotnet nuget push SharpFightingEngine.Items.*.nupkg -k $nugetToken -s https://api.nuget.org/v3/index.json
+  - dotnet nuget push SharpFightingEngine.Skills.*.nupkg -k $nugetToken -s https://api.nuget.org/v3/index.json
+ only:
+  - tags
