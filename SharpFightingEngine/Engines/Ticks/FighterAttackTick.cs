@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SharpFightingEngine.Combat;
+﻿using SharpFightingEngine.Combat;
 using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Skills;
 
@@ -9,7 +8,6 @@ namespace SharpFightingEngine.Engines.Ticks
   {
     public IFighter Target { get; set; }
 
-    [JsonIgnore]
     public IAttack Attack { get; set; }
 
     public ISkill Skill => Attack.Skill;
