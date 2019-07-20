@@ -8,6 +8,7 @@ using SharpFightingEngine.Engines.FighterPositionGenerators;
 using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Features;
 using SharpFightingEngine.Fighters;
+using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.WinConditions;
 
 namespace SharpFightingEngine.Test.Utilities
@@ -39,8 +40,9 @@ namespace SharpFightingEngine.Test.Utilities
       var moveOrder = new AllRandomMoveOrder();
       var positionGenerator = new AllRandomPositionGenerator();
       var winCondition = new LastManStandingWinCondition();
+      var staleCondition = new NoWinnerCanBeDeterminedStaleCondition();
 
-      return GetEngine(fighters, battlefield, features, moveOrder, positionGenerator, winCondition, 2);
+      return GetEngine(fighters, battlefield, features, moveOrder, positionGenerator, winCondition, staleCondition, 2);
     }
 
     public static Engine GetDefaultTeamEngine(int teamSize, int teamCount, int minPowerlevel, int maxPowerlevel)
@@ -55,6 +57,7 @@ namespace SharpFightingEngine.Test.Utilities
       IMoveOrder moveOrder,
       IFighterPositionGenerator positionGenerator,
       IWinCondition winCondition,
+      IStaleCondition staleCondition,
       int actionsPerRound)
     {
       return new Engine(
@@ -66,6 +69,7 @@ namespace SharpFightingEngine.Test.Utilities
           cfg.MoveOrder = moveOrder;
           cfg.PositionGenerator = positionGenerator;
           cfg.WinCondition = winCondition;
+          cfg.StaleCondition = staleCondition;
 
           return cfg;
         }, fighters);

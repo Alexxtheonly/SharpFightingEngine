@@ -4,6 +4,7 @@ using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines.FighterPositionGenerators;
 using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Features;
+using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.WinConditions;
 
 namespace SharpFightingEngine.Engines
@@ -19,6 +20,8 @@ namespace SharpFightingEngine.Engines
     public ICollection<IEngineFeature> Features { get; set; } = new List<IEngineFeature>();
 
     public IWinCondition WinCondition { get; set; }
+
+    public IStaleCondition StaleCondition { get; set; }
 
     public IFighterPositionGenerator PositionGenerator { get; set; }
 
@@ -44,6 +47,11 @@ namespace SharpFightingEngine.Engines
       if (WinCondition == null)
       {
         throw new ArgumentNullException(nameof(WinCondition));
+      }
+
+      if (StaleCondition == null)
+      {
+        throw new ArgumentNullException(nameof(StaleCondition));
       }
 
       if (PositionGenerator == null)
