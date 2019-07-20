@@ -60,7 +60,7 @@ namespace SharpFightingEngine.Engines
 
       SpawnFighters();
 
-      while (!configuration.WinCondition.HasWinner(Fighters.Values) && !configuration.WinCondition.IsDraw(Fighters.Values, Round))
+      while (!configuration.WinCondition.HasWinner(Fighters.Values) && !configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks))
       {
         ProcessRoundActions();
 
