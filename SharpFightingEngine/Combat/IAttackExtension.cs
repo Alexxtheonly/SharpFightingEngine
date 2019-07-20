@@ -27,7 +27,7 @@ namespace SharpFightingEngine.Combat
         return attackTick;
       }
 
-      if ((attack.MissChance(calculationValues) - attack.DodgeChance(calculationValues)).Chance())
+      if ((attack.DodgeChance(calculationValues) - attack.MissChance(calculationValues)).Chance())
       {
         attackTick.Dodged = true;
         return attackTick;
