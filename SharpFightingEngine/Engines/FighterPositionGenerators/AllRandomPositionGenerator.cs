@@ -10,6 +10,8 @@ namespace SharpFightingEngine.Engines.FighterPositionGenerators
   {
     private readonly Random random = new Random();
 
+    public Guid Id => new Guid("F88BE549-9BE0-4DD2-AABC-5AF599DCC140");
+
     public void SetFighterPositions(Dictionary<Guid, IFighterStats> fighters, IBattlefield battlefield)
     {
       foreach (var fighter in fighters.Values)
