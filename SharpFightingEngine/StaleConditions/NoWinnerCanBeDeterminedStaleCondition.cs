@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
@@ -10,6 +11,8 @@ namespace SharpFightingEngine.StaleConditions
     private const int MaxStaleRounds = 10;
 
     private int staleCounter = 0;
+
+    public Guid Id => new Guid("04616688-2CD1-4341-B757-AFDAE8AF4035");
 
     public bool IsStale(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> roundTicks)
     {

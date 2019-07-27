@@ -7,6 +7,8 @@ namespace SharpFightingEngine.Engines.FighterPositionGenerators
 {
   public interface IFighterPositionGenerator
   {
+    Guid Id { get; }
+
     void SetFighterPositions(Dictionary<Guid, IFighterStats> fighters, IBattlefield battlefield);
   }
 }

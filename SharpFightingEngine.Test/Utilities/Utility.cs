@@ -8,6 +8,7 @@ using SharpFightingEngine.Engines.FighterPositionGenerators;
 using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Features;
 using SharpFightingEngine.Fighters;
+using SharpFightingEngine.Fighters.Factories;
 using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.WinConditions;
 
@@ -19,12 +20,12 @@ namespace SharpFightingEngine.Test.Utilities
 
     public static Engine GetDefaultEngine(int fighterCount)
     {
-      return GetDefaultEngine(fighterCount, 5, 25);
+      return GetDefaultEngine(fighterCount, 300);
     }
 
-    public static Engine GetDefaultEngine(int fighterCount, int minPowerlevel, int maxPowerlevel)
+    public static Engine GetDefaultEngine(int fighterCount, int powerlevel)
     {
-      return GetDefaultEngine(GetFighters(fighterCount, minPowerlevel, maxPowerlevel));
+      return GetDefaultEngine(FighterFactory.GetFighters(fighterCount, powerlevel));
     }
 
     public static Engine GetDefaultEngine(IEnumerable<IFighterStats> fighters)

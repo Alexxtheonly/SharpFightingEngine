@@ -6,7 +6,7 @@ namespace SharpFightingEngine.Test.Data.Engines
   {
     public AllRandomGenericFighterTheoryData()
     {
-      AddRow(Utility.GetDefaultEngine(20, 1, 150));
+      AddRow(Utility.GetDefaultEngine(20, 300));
     }
   }
 }
