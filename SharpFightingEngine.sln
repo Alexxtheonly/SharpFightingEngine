@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpFightingEngine.Skills"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpFightingEngine.Test.Genetic", "SharpFightingEngine.Test.Genetic\SharpFightingEngine.Test.Genetic.csproj", "{A8A181A2-AB9C-4E09-A11B-8AD8BC58138D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpFightingEngine.Skills.Test", "SharpFightingEngine.Skills.Test\SharpFightingEngine.Skills.Test.csproj", "{23E36C8D-01B0-4F18-A9B4-1B3F0FB4152E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpFightingEngine.Skills.Test", "SharpFightingEngine.Skills.Test\SharpFightingEngine.Skills.Test.csproj", "{23E36C8D-01B0-4F18-A9B4-1B3F0FB4152E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpFightingEngine.Fighters.Test", "SharpFightingEngine.Fighters.Test\SharpFightingEngine.Fighters.Test.csproj", "{4375FFE1-8F58-4B58-8687-D97F12B8134E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{23E36C8D-01B0-4F18-A9B4-1B3F0FB4152E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23E36C8D-01B0-4F18-A9B4-1B3F0FB4152E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23E36C8D-01B0-4F18-A9B4-1B3F0FB4152E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4375FFE1-8F58-4B58-8687-D97F12B8134E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4375FFE1-8F58-4B58-8687-D97F12B8134E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4375FFE1-8F58-4B58-8687-D97F12B8134E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4375FFE1-8F58-4B58-8687-D97F12B8134E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

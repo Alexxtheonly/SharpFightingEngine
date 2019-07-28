@@ -68,7 +68,9 @@ namespace SharpFightingEngine.Fighters.Factories
             break;
           }
 
-          property.SetValue(fighter, value);
+          var current = (float)property.GetValue(fighter);
+
+          property.SetValue(fighter, current + value);
         }
       }
     }
