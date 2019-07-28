@@ -131,27 +131,27 @@ namespace SharpFightingEngine.Fighters
       };
     }
 
-    public static float OffensivePowerLevel(this IFighterStats fighter)
+    public static float OffensivePowerLevel(this IStats fighter)
     {
       return CalculatePowerLevel(fighter, typeof(IOffensiveStats).GetProperties());
     }
 
-    public static float DefensivePowerLevel(this IFighterStats fighter)
+    public static float DefensivePowerLevel(this IStats fighter)
     {
       return CalculatePowerLevel(fighter, typeof(IDefensiveStats).GetProperties());
     }
 
-    public static float UtilityPowerLevel(this IFighterStats fighter)
+    public static float UtilityPowerLevel(this IStats fighter)
     {
       return CalculatePowerLevel(fighter, typeof(IUtilityStats).GetProperties());
     }
 
-    public static float PowerLevel(this IFighterStats fighter)
+    public static float PowerLevel(this IStats fighter)
     {
       return fighter.OffensivePowerLevel() + fighter.DefensivePowerLevel() + fighter.UtilityPowerLevel();
     }
 
-    private static float CalculatePowerLevel(IFighterStats fighter, IEnumerable<PropertyInfo> properties)
+    private static float CalculatePowerLevel(IStats fighter, IEnumerable<PropertyInfo> properties)
     {
       float powerLevel = 0;
 
