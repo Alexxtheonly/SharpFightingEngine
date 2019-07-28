@@ -34,7 +34,7 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
         return 0;
       }
 
-      var battlefield = new PlainBattlefield(new Small());
+      var battlefield = new PlainBattlefield();
 
       var features = new List<IEngineFeature>()
       {
@@ -50,6 +50,7 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
         {
           cfg.ActionsPerRound = 1;
           cfg.Battlefield = battlefield;
+          cfg.Bounds = new Small();
           cfg.Features = features;
           cfg.MoveOrder = new AllRandomMoveOrder();
           cfg.PositionGenerator = new AllRandomPositionGenerator();
