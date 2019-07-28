@@ -13,6 +13,8 @@ namespace SharpFightingEngine.Engines
   {
     public IBattlefield Battlefield { get; set; }
 
+    public IBounds Bounds { get; set; }
+
     public int ActionsPerRound { get; set; }
 
     public IMoveOrder MoveOrder { get; set; }
@@ -57,6 +59,11 @@ namespace SharpFightingEngine.Engines
       if (PositionGenerator == null)
       {
         throw new ArgumentNullException(nameof(PositionGenerator));
+      }
+
+      if (Bounds == null)
+      {
+        throw new ArgumentNullException(nameof(Bounds));
       }
     }
   }

@@ -24,6 +24,8 @@ namespace SharpFightingEngine.Engines
       }
 
       configuration.Validate();
+      configuration.Battlefield.CurrentBounds = configuration.Bounds;
+      configuration.Battlefield.NextBounds = configuration.Bounds;
 
       Fighters = GetDictionary(fighters);
       this.configuration = configuration;

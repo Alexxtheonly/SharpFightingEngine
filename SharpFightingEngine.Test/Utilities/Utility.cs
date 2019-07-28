@@ -30,7 +30,8 @@ namespace SharpFightingEngine.Test.Utilities
 
     public static Engine GetDefaultEngine(IEnumerable<IFighterStats> fighters)
     {
-      var battlefield = new PlainBattlefield(new Small());
+      var battlefield = new PlainBattlefield();
+      var bounds = new Small();
 
       var features = new List<IEngineFeature>()
       {
@@ -43,7 +44,7 @@ namespace SharpFightingEngine.Test.Utilities
       var winCondition = new LastManStandingWinCondition();
       var staleCondition = new NoWinnerCanBeDeterminedStaleCondition();
 
-      return GetEngine(fighters, battlefield, features, moveOrder, positionGenerator, winCondition, staleCondition, 2);
+      return GetEngine(fighters, battlefield, bounds, features, moveOrder, positionGenerator, winCondition, staleCondition, 2);
     }
 
     public static Engine GetDefaultTeamEngine(int teamSize, int teamCount, int minPowerlevel, int maxPowerlevel)
@@ -54,6 +55,7 @@ namespace SharpFightingEngine.Test.Utilities
     public static Engine GetEngine(
       IEnumerable<IFighterStats> fighters,
       IBattlefield battlefield,
+      IBounds bounds,
       ICollection<IEngineFeature> features,
       IMoveOrder moveOrder,
       IFighterPositionGenerator positionGenerator,
@@ -66,6 +68,7 @@ namespace SharpFightingEngine.Test.Utilities
         {
           cfg.ActionsPerRound = actionsPerRound;
           cfg.Battlefield = battlefield;
+          cfg.Bounds = bounds;
           cfg.Features = features;
           cfg.MoveOrder = moveOrder;
           cfg.PositionGenerator = positionGenerator;

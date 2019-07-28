@@ -10,6 +10,7 @@ using SharpFightingEngine.Engines.FighterPositionGenerators;
 using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Features;
 using SharpFightingEngine.Fighters;
+using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.WinConditions;
 
 namespace SharpFightingEngine.Test.Genetic
@@ -44,7 +45,7 @@ namespace SharpFightingEngine.Test.Genetic
         .Select(o => new { Fighter = o.Id, PowerLevel = o.PowerLevel() })
         .OrderByDescending(o => o.PowerLevel);
 
-      var battlefield = new PlainBattlefield(new Small());
+      var battlefield = new PlainBattlefield();
 
       var features = new List<IEngineFeature>()
       {
@@ -57,10 +58,12 @@ namespace SharpFightingEngine.Test.Genetic
       {
         cfg.ActionsPerRound = 1;
         cfg.Battlefield = battlefield;
+        cfg.Bounds = new Small();
         cfg.Features = features;
         cfg.MoveOrder = new AllRandomMoveOrder();
         cfg.PositionGenerator = new AllRandomPositionGenerator();
         cfg.WinCondition = new LastManStandingWinCondition();
+        cfg.StaleCondition = new NoWinnerCanBeDeterminedStaleCondition();
 
         return cfg;
       }, fighters);

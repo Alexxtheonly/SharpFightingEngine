@@ -6,10 +6,8 @@ namespace SharpFightingEngine.Battlefields
   {
     Guid Id { get; }
 
-    IBounds CurrentBounds { get; }
+    IBounds CurrentBounds { get; set; }
 
-    IBounds NextBounds { get; }
-
-    void NextRound(int round);
+    IBounds NextBounds { get; set; }
   }
 }
