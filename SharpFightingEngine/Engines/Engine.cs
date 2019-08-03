@@ -51,6 +51,33 @@ namespace SharpFightingEngine.Engines
 
     public IMatchResult StartMatch()
     {
+      PrepareMatch();
+
+      while (!configuration.WinCondition.HasWinner(Fighters.Values) && !configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks))
+      {
+        Round++;
+
+        ProcessNewRound();
+
+        ProcessRoundActions();
+
+        CalculateFighterStats();
+
+        CalculateRoundScore();
+
+        CollectDeadBodies();
+
+        ProcessFeatures();
+      }
+
+      return new MatchResult()
+      {
+        Ticks = EngineRoundTicks,
+      };
+    }
+
+    private void PrepareMatch()
+    {
       Round = 0;
 
       // if any fighter has a team we consider it team mode
@@ -62,27 +89,9 @@ namespace SharpFightingEngine.Engines
 
       SpawnFighters();
 
-      while (!configuration.WinCondition.HasWinner(Fighters.Values) && !configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks))
-      {
-        ProcessRoundActions();
+      CalculateFighterStats();
 
-        CalculateFighterStats();
-
-        CalculateRoundScore();
-
-        CollectDeadBodies();
-
-        ProcessFeatures();
-
-        Round++;
-
-        ProcessNewRound();
-      }
-
-      return new MatchResult()
-      {
-        Ticks = EngineRoundTicks,
-      };
+      CalculateRoundScore();
     }
 
     private void SpawnFighters()
