@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace SharpFightingEngine.Fighters.Factories
@@ -57,11 +58,19 @@ namespace SharpFightingEngine.Fighters.Factories
 
     private static void SetValues(ref GenericFighter fighter, IEnumerable<PropertyInfo> properties, int powerlevel)
     {
+      var propertiesCount = properties.Count();
+
       while (powerlevel > 0)
       {
         foreach (var property in properties)
         {
-          int value = Random.Next(1, powerlevel + 1);
+          int max = (powerlevel + 1) / propertiesCount;
+          if (max == 0)
+          {
+            max = 1;
+          }
+
+          int value = Random.Next(1, max);
           powerlevel -= value;
           if (powerlevel < 0)
           {

@@ -26,6 +26,8 @@ namespace SharpFightingEngine.Engines
 
     public int TotalRegeneratedEnergy { get; set; }
 
+    public int RoundsAlive { get; set; }
+
     public override string ToString()
     {
       return $"\t{Id}\t{TotalKills}\t{TotalDamageDone}\t{TotalDamageTaken}\t{TotalEnergyUsed}";

@@ -24,6 +24,7 @@ namespace SharpFightingEngine.Engines
           TotalDistanceTraveled = o.Sum(u => u.DistanceTraveled),
           TotalRegeneratedHealth = o.Sum(u => u.RestoredHealth),
           TotalRegeneratedEnergy = o.Sum(u => u.RestoredEnergy),
+          RoundsAlive = o.Max(u => u.Round),
         });
     }
 
@@ -32,6 +33,7 @@ namespace SharpFightingEngine.Engines
       return scores
         .OrderBy(o => o.TotalDeaths)
         .ThenByDescending(o => o.TotalKills)
+        .ThenByDescending(o => o.RoundsAlive)
         .ThenByDescending(o => o.TotalDamageDone);
     }
   }
