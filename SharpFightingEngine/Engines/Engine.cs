@@ -157,6 +157,12 @@ namespace SharpFightingEngine.Engines
 
         foreach (IFighterAction action in actions)
         {
+          if (action.Actor.Health(configuration.CalculationValues) <= 0)
+          {
+            // only process actions of alive fighters
+            continue;
+          }
+
           CurrentRoundTick.Ticks.Add(HandleFighterAction(action));
         }
       }
