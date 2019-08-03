@@ -15,7 +15,9 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     public static IEnumerable<IFighterStats> GetVisibleFightersFor(this IEnumerable<IFighterStats> fighters, IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighters.Where(o => o.Id != fighter.Id && o.GetDistance(fighter) <= fighter.VisualRange(calculationValues));
+      return fighters
+        .Where(o => o.Health(calculationValues) > 0)
+        .Where(o => o.Id != fighter.Id && o.GetDistance(fighter) <= fighter.VisualRange(calculationValues));
     }
 
     /// <summary>
