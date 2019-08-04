@@ -9,17 +9,20 @@ namespace SharpFightingEngine.Engines.Ticks
   {
     private readonly EngineRoundTick roundTick;
 
-    public EngineRoundScoreTick(EngineRoundTick roundTick, IFighter fighter)
+    public EngineRoundScoreTick(EngineRoundTick roundTick, IFighterStats fighter)
     {
       this.roundTick = roundTick;
 
       FighterId = fighter.Id;
+      Powerlevel = (int)fighter.PowerLevel();
       Round = roundTick.Round;
       Health = fighter.Health;
       Energy = fighter.Energy;
     }
 
     public Guid FighterId { get; private set; }
+
+    public int Powerlevel { get; private set; }
 
     public int Round { get; private set; }
 

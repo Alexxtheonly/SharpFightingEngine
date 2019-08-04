@@ -2,6 +2,8 @@
 {
   public interface IEngineRoundScoreTick
   {
+    int Powerlevel { get; }
+
     int DamageDone { get; }
 
     int DamageTaken { get; }

@@ -14,6 +14,7 @@ namespace SharpFightingEngine.Engines
         .Select(o => new MatchScore()
         {
           Id = o.Key,
+          Powerlevel = o.Max(u => u.Powerlevel),
           MaxHealth = o.Max(u => u.Health),
           MaxEnergy = o.Max(u => u.Energy),
           TotalDamageDone = o.Sum(u => u.DamageDone),
