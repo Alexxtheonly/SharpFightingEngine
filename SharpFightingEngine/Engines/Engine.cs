@@ -125,14 +125,13 @@ namespace SharpFightingEngine.Engines
     {
       foreach (var fighter in Fighters.Values)
       {
-        CurrentRoundTick.ScoreTick.Add(new EngineRoundScoreTick(CurrentRoundTick, fighter.AsStruct()));
+        CurrentRoundTick.ScoreTick.Add(new EngineRoundScoreTick(CurrentRoundTick, fighter));
       }
 
       if (TeamMode)
       {
         foreach (var team in Fighters.Values
           .Where(o => o.Team != null)
-          .Select(o => o.AsStruct())
           .GroupBy(o => o.Team))
         {
           CurrentRoundTick.ScoreTick.Add(new EngineRoundTeamScoreTick(CurrentRoundTick, team));

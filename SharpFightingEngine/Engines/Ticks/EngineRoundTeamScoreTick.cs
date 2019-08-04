@@ -11,20 +11,25 @@ namespace SharpFightingEngine.Engines.Ticks
     private readonly EngineRoundTick roundTick;
     private readonly IEnumerable<IFighter> teamFighters;
 
-    public EngineRoundTeamScoreTick(EngineRoundTick roundTick, IEnumerable<IFighter> teamFighters)
+    public EngineRoundTeamScoreTick(EngineRoundTick roundTick, IEnumerable<IFighterStats> teamFighters)
     {
       this.roundTick = roundTick;
-      this.teamFighters = teamFighters;
+      this.teamFighters = teamFighters
+        .Select(o => o.AsStruct())
+        .ToList();
 
-      // it's the engines job to ensure that wrong teamFighters come in here.
+      // The engine ensures that only fighters of the same team are passed to this class.
       TeamId = teamFighters.First().Team.Value;
 
+      Powerlevel = (int)teamFighters.Sum(o => o.PowerLevel());
       Round = roundTick.Round;
       Health = teamFighters.Sum(o => Math.Max(0, o.Health));
       Energy = teamFighters.Sum(o => o.Energy);
     }
 
     public Guid TeamId { get; private set; }
+
+    public int Powerlevel { get; private set; }
 
     public int DamageDone => roundTick.Ticks
       .OfType<FighterAttackTick>()

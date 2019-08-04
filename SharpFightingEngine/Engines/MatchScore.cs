@@ -6,6 +6,8 @@ namespace SharpFightingEngine.Engines
   {
     public Guid Id { get; set; }
 
+    public int Powerlevel { get; set; }
+
     public int MaxHealth { get; set; }
 
     public int MaxEnergy { get; set; }
