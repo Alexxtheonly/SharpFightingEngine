@@ -6,6 +6,7 @@ using GeneticSharp.Domain.Populations;
 using GeneticSharp.Domain.Selections;
 using GeneticSharp.Domain.Terminations;
 using SharpFightingEngine.Engines;
+using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Test.Genetic.EngineCalculation;
 using Xunit;
 
@@ -16,10 +17,12 @@ namespace SharpFightingEngine.Test.Genetic
     [Fact(Skip = "manual test only")]
     public void ShouldTestGeneticAlgorithm()
     {
-      var population = new Population(50, 100, new FighterChromosome());
+      var population = new Population(1000, 10000, new FighterChromosome());
       var fitness = new FighterFitness();
 
-      RunGeneticAlgorithm(population, fitness, 50);
+      var ga = RunGeneticAlgorithm(population, fitness, 1000);
+      var fighter = new GenericFighter();
+      (ga.BestChromosome as FighterChromosome).ApplyTo(fighter);
     }
 
     [Fact(Skip = "manual test only")]

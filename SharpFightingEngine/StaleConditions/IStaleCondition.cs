@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.StaleConditions
 {
-  public interface IStaleCondition
+  public interface IStaleCondition : IEndCondition
   {
     Guid Id { get; }
 

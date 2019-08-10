@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.WinConditions
 {
-  public interface IWinCondition
+  public interface IWinCondition : IEndCondition
   {
     Guid Id { get; }
 

@@ -16,8 +16,6 @@ namespace SharpFightingEngine.Test.Utilities
 {
   public static class Utility
   {
-    private static readonly Random Random = new Random();
-
     public static Engine GetDefaultEngine(int fighterCount)
     {
       return GetDefaultEngine(fighterCount, 300);
@@ -31,7 +29,7 @@ namespace SharpFightingEngine.Test.Utilities
     public static Engine GetDefaultEngine(IEnumerable<IFighterStats> fighters)
     {
       var battlefield = new PlainBattlefield();
-      var bounds = new Small();
+      var bounds = new Tiny();
 
       var features = new List<IEngineFeature>()
       {
@@ -47,9 +45,9 @@ namespace SharpFightingEngine.Test.Utilities
       return GetEngine(fighters, battlefield, bounds, features, moveOrder, positionGenerator, winCondition, staleCondition, 2);
     }
 
-    public static Engine GetDefaultTeamEngine(int teamSize, int teamCount, int minPowerlevel, int maxPowerlevel)
+    public static Engine GetDefaultTeamEngine(int teamSize, int teamCount, int powerlevel)
     {
-      return GetDefaultEngine(GetTeamFighters(teamSize, teamCount, minPowerlevel, maxPowerlevel));
+      return GetDefaultEngine(GetTeamFighters(teamSize, teamCount, powerlevel));
     }
 
     public static Engine GetEngine(
@@ -79,15 +77,7 @@ namespace SharpFightingEngine.Test.Utilities
         }, fighters);
     }
 
-    private static IEnumerable<IFighterStats> GetFighters(int count, int minPowerlevel, int maxPowerlevel)
-    {
-      for (int i = 0; i < count; i++)
-      {
-        yield return GetFighter(null, minPowerlevel, maxPowerlevel);
-      }
-    }
-
-    private static IEnumerable<IFighterStats> GetTeamFighters(int teamSize, int teamCount, int minPowerlevel, int maxPowerlevel)
+    private static IEnumerable<IFighterStats> GetTeamFighters(int teamSize, int teamCount, int powerlevel)
     {
       Guid team = Guid.Empty;
       for (int i = 0; i < teamSize * teamCount; i++)
@@ -97,32 +87,8 @@ namespace SharpFightingEngine.Test.Utilities
           team = Guid.NewGuid();
         }
 
-        yield return GetFighter(team, minPowerlevel, maxPowerlevel);
+        yield return FighterFactory.GetFighter(powerlevel, team);
       }
-    }
-
-    private static IFighterStats GetFighter(Guid? team, int minPowerlevel, int maxPowerlevel)
-    {
-      return new GenericFighter()
-      {
-        Id = Guid.NewGuid(),
-        Team = team,
-        Accuracy = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Agility = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Toughness = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Power = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Regeneration = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Speed = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Stamina = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Vision = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Vitality = GetRandomValue(minPowerlevel, maxPowerlevel),
-        Expertise = GetRandomValue(minPowerlevel, maxPowerlevel),
-      };
-    }
-
-    private static int GetRandomValue(int min, int max)
-    {
-      return Random.Next(min, max);
     }
   }
 }

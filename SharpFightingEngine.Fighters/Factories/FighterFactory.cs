@@ -17,13 +17,23 @@ namespace SharpFightingEngine.Fighters.Factories
 
     public static IEnumerable<IFighterStats> GetFighters(int count, int powerlevel)
     {
+      return GetFighters(count, powerlevel, null);
+    }
+
+    public static IEnumerable<IFighterStats> GetFighters(int count, int powerlevel, Guid? team)
+    {
       for (int i = 0; i < count; i++)
       {
-        yield return GetFighter(powerlevel);
+        yield return GetFighter(powerlevel, team);
       }
     }
 
     public static IFighterStats GetFighter(int powerlevel)
+    {
+      return GetFighter(powerlevel, null);
+    }
+
+    public static IFighterStats GetFighter(int powerlevel, Guid? team)
     {
       int offensive = (int)(powerlevel * 0.4);
       int defensive = (int)(powerlevel * 0.4);
@@ -31,22 +41,33 @@ namespace SharpFightingEngine.Fighters.Factories
 
       offensive += powerlevel - (offensive + defensive + utility);
 
-      return GetFighter(offensive, defensive, utility);
+      return GetFighter(offensive, defensive, utility, team);
     }
 
     public static IEnumerable<IFighterStats> GetFighters(int count, int offensivePowerlevel, int defensivePowerlevel, int utilityPowerlevel)
     {
+      return GetFighters(count, offensivePowerlevel, defensivePowerlevel, utilityPowerlevel, null);
+    }
+
+    public static IEnumerable<IFighterStats> GetFighters(int count, int offensivePowerlevel, int defensivePowerlevel, int utilityPowerlevel, Guid? team)
+    {
       for (int i = 0; i < count; i++)
       {
-        yield return GetFighter(offensivePowerlevel, defensivePowerlevel, utilityPowerlevel);
+        yield return GetFighter(offensivePowerlevel, defensivePowerlevel, utilityPowerlevel, team);
       }
     }
 
     public static IFighterStats GetFighter(int offensivePowerlevel, int defensivePowerlevel, int utilityPowerlevel)
     {
+      return GetFighter(offensivePowerlevel, defensivePowerlevel, utilityPowerlevel, null);
+    }
+
+    public static IFighterStats GetFighter(int offensivePowerlevel, int defensivePowerlevel, int utilityPowerlevel, Guid? team)
+    {
       var fighter = new GenericFighter()
       {
         Id = Guid.NewGuid(),
+        Team = team,
       };
 
       SetValues(ref fighter, OffensiveProperties, offensivePowerlevel);
