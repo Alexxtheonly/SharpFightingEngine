@@ -30,7 +30,7 @@ namespace SharpFightingEngine.Test.Engines
     [Fact]
     public void TeamMatchShouldReturnMatchResult()
     {
-      var engine = Utility.GetDefaultTeamEngine(4, 5, 5, 25);
+      var engine = Utility.GetDefaultTeamEngine(4, 5, 300);
       var result = engine.StartMatch();
 
       VerifyMatchResult(result);

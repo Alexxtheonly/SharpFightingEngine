@@ -27,7 +27,7 @@ namespace SharpFightingEngine.Test.Genetic
 
     public override Gene GenerateGene(int geneIndex)
     {
-      return new Gene(RandomizationProvider.Current.GetInt(1, 25));
+      return new Gene(RandomizationProvider.Current.GetInt(1, 300));
     }
 
     public override IChromosome Clone()

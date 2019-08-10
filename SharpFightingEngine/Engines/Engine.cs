@@ -53,8 +53,14 @@ namespace SharpFightingEngine.Engines
     {
       PrepareMatch();
 
-      while (!configuration.WinCondition.HasWinner(Fighters.Values) && !configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks))
+      bool hasWinner = false;
+      bool isStale = false;
+
+      while (!hasWinner && !isStale)
       {
+        hasWinner = configuration.WinCondition.HasWinner(Fighters.Values);
+        isStale = configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks);
+
         Round++;
 
         ProcessNewRound();
@@ -70,10 +76,9 @@ namespace SharpFightingEngine.Engines
         ProcessFeatures();
       }
 
-      return new MatchResult()
-      {
-        Ticks = EngineRoundTicks,
-      };
+      var endCondition = hasWinner ? configuration.WinCondition as IEndCondition : configuration.StaleCondition as IEndCondition;
+
+      return endCondition.GetMatchResult(Fighters.Values.Union(DeadFighters.Values).Select(o => o.AsStruct()), EngineRoundTicks);
     }
 
     private void PrepareMatch()
