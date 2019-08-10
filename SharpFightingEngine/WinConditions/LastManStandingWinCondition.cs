@@ -23,9 +23,16 @@ namespace SharpFightingEngine.WinConditions
 
     public bool HasWinner(IEnumerable<IFighterStats> fighters)
     {
+      fighters = fighters.Where(o => o.IsAlive());
+
+      if (fighters.Any(o => o.Team != null))
+      {
+        return fighters
+          .GroupBy(o => o.Team)
+          .Count() <= 1;
+      }
+
       return fighters
-        .Where(o => o.IsAlive())
-        .GroupBy(o => o.Team)
         .Count() <= 1;
     }
   }

@@ -77,6 +77,18 @@ namespace SharpFightingEngine.Fighters.Factories
       return fighter;
     }
 
+    public static IEnumerable<IFighterStats> GetFighterTeams(int teamCount, int teamSize, int powerlevel)
+    {
+      for (int teamNumber = 0; teamNumber < teamCount; teamNumber++)
+      {
+        Guid team = Guid.NewGuid();
+        for (int fighterNumber = 0; fighterNumber < teamSize; fighterNumber++)
+        {
+          yield return GetFighter(powerlevel, team);
+        }
+      }
+    }
+
     private static void SetValues(ref GenericFighter fighter, IEnumerable<PropertyInfo> properties, int powerlevel)
     {
       var propertiesCount = properties.Count();
