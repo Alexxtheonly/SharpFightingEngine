@@ -127,13 +127,13 @@ namespace SharpFightingEngine.Fighters
       var visibleEnemies = visibleFighters
         .Where(o => o.Team == null || o.Team != Team);
 
-      if (!visibleFighters.Any())
+      if (!visibleEnemies.Any())
       {
         // if this fighter can't see any enemy he roams
         return roam;
       }
 
-      var target = TargetFinder.GetTarget(visibleFighters, this);
+      var target = TargetFinder.GetTarget(visibleEnemies, this);
       var skill = SkillFinder.GetSkill(this, target, Skills);
       if (skill == null)
       {

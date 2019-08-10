@@ -25,6 +25,7 @@ namespace SharpFightingEngine.WinConditions
     {
       return fighters
         .Where(o => o.IsAlive())
+        .GroupBy(o => o.Team)
         .Count() <= 1;
     }
   }
