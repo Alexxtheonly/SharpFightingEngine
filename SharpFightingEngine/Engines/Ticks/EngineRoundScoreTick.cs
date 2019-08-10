@@ -14,6 +14,7 @@ namespace SharpFightingEngine.Engines.Ticks
       this.roundTick = roundTick;
 
       FighterId = fighter.Id;
+      TeamId = fighter.Team;
       Powerlevel = (int)fighter.PowerLevel();
       Round = roundTick.Round;
       Health = fighter.Health;
@@ -21,6 +22,8 @@ namespace SharpFightingEngine.Engines.Ticks
     }
 
     public Guid FighterId { get; private set; }
+
+    public Guid? TeamId { get; private set; }
 
     public int Powerlevel { get; private set; }
 

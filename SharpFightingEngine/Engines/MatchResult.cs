@@ -8,20 +8,20 @@ namespace SharpFightingEngine.Engines
   {
     public IEnumerable<EngineRoundTick> Ticks { get; set; }
 
-    public IEnumerable<MatchScore> Scores => Ticks
+    public IEnumerable<FighterMatchScore> Scores => Ticks
       .SelectMany(o => o.ScoreTick)
       .OrderByDescending(o => o.Round)
       .OfType<EngineRoundScoreTick>()
       .GroupBy(o => o.FighterId)
-      .CreateMatchScores()
+      .CreateFighterMatchScores()
       .OrderScores();
 
-    public IEnumerable<MatchScore> TeamScores => Ticks
+    public IEnumerable<TeamMatchScore> TeamScores => Ticks
       .SelectMany(o => o.ScoreTick)
       .OrderByDescending(o => o.Round)
       .OfType<EngineRoundTeamScoreTick>()
       .GroupBy(o => o.TeamId)
-      .CreateMatchScores()
+      .CreateTeamMatchScores()
       .OrderScores();
   }
 }
