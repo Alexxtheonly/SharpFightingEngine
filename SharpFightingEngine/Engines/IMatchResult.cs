@@ -7,8 +7,8 @@ namespace SharpFightingEngine.Engines
   {
     IEnumerable<EngineRoundTick> Ticks { get; }
 
-    IEnumerable<MatchScore> Scores { get; }
+    IEnumerable<FighterMatchScore> Scores { get; }
 
-    IEnumerable<MatchScore> TeamScores { get; }
+    IEnumerable<TeamMatchScore> TeamScores { get; }
   }
 }

@@ -73,7 +73,7 @@ namespace SharpFightingEngine.Test.Engines
       }
     }
 
-    private void VerifyMatchScore(IEnumerable<FighterTick> allFighterTicks, MatchScore score, Func<FighterTick, bool> actorQuery, Func<FighterAttackTick, bool> targetQuery)
+    private void VerifyMatchScore(IEnumerable<FighterTick> allFighterTicks, IMatchScore score, Func<FighterTick, bool> actorQuery, Func<FighterAttackTick, bool> targetQuery)
     {
       var fighterTicks = allFighterTicks
         .Where(actorQuery)
