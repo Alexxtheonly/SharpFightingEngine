@@ -14,6 +14,8 @@ namespace SharpFightingEngine.Engines.Ticks
 
     public int Damage { get; set; }
 
+    public int Energy => Skill.Energy;
+
     public float Distance => Attack.GetDistance();
 
     public bool Critical { get; set; }

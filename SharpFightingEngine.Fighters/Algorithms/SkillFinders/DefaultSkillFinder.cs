@@ -15,5 +15,21 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
+
+    public ISkill GetMaxDamageSkill(IFighterStats actor, IEnumerable<ISkill> skills)
+    {
+      return skills
+        .Where(o => o.Energy <= actor.Energy)
+        .OrderByDescending(o => o.Damage)
+        .FirstOrDefault();
+    }
+
+    public ISkill GetMaxRangeSkill(IFighterStats actor, IEnumerable<ISkill> skills)
+    {
+      return skills
+        .Where(o => o.Energy <= actor.Energy)
+        .OrderByDescending(o => o.Range)
+        .FirstOrDefault();
+    }
   }
 }

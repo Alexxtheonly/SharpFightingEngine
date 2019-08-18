@@ -14,6 +14,19 @@ namespace SharpFightingEngine.Battlefields
       return Vector3.Distance(position.GetVector3(), other.GetVector3());
     }
 
+    public static Position GetDirection(this IPosition position, IPosition desiredPosition, float distance)
+    {
+      var startPosition = position.GetVector3();
+      var endPosition = desiredPosition.GetVector3();
+
+      var calculated = startPosition + (Vector3.Normalize(endPosition - startPosition) * distance);
+
+      var newposition = default(Position);
+      newposition.Set(calculated);
+
+      return newposition;
+    }
+
     public static bool IsInsideBounds(this IPosition position, IBounds bounds)
     {
       var positionVector = position.GetVector3();

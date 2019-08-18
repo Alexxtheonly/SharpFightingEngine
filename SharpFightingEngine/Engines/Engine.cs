@@ -58,9 +58,6 @@ namespace SharpFightingEngine.Engines
 
       while (!hasWinner && !isStale)
       {
-        hasWinner = configuration.WinCondition.HasWinner(Fighters.Values);
-        isStale = configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks);
-
         Round++;
 
         ProcessNewRound();
@@ -74,6 +71,9 @@ namespace SharpFightingEngine.Engines
         CollectDeadBodies();
 
         ProcessFeatures();
+
+        hasWinner = configuration.WinCondition.HasWinner(Fighters.Values);
+        isStale = configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks);
       }
 
       var endCondition = hasWinner ? configuration.WinCondition as IEndCondition : configuration.StaleCondition as IEndCondition;
