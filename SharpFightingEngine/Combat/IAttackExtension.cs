@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpFightingEngine.Battlefields;
-using SharpFightingEngine.Combat;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
@@ -48,12 +47,12 @@ namespace SharpFightingEngine.Combat
 
     public static bool IsInRange(this IAttack attack)
     {
-      return Math.Abs(attack.GetDistance()) <= attack.Skill.Range;
+      return attack.GetDistance() <= attack.Skill.Range;
     }
 
     public static float GetDistance(this IAttack attack)
     {
-      return attack.Actor.GetDistance(attack.Target);
+      return attack.Actor.GetDistanceAbs(attack.Target);
     }
 
     public static int GetDamage(this IAttack attack, EngineCalculationValues calculationValues)

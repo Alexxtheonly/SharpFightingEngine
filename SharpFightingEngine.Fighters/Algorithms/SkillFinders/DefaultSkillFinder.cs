@@ -11,7 +11,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
     {
       return skills
         .Where(o => o.Energy <= actor.EnergyRemaining())
-        .Where(o => o.Range >= actor.GetDistance(target))
+        .Where(o => o.Range >= actor.GetDistanceAbs(target))
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
