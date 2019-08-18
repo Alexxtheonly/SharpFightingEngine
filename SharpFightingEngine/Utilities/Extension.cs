@@ -8,7 +8,7 @@ namespace SharpFightingEngine.Utilities
 
     public static bool Chance(this float chance)
     {
-      return chance.Chance(0, 100);
+      return chance.Chance(1, 101);
     }
 
     public static bool Chance(this float chance, int min, int max)

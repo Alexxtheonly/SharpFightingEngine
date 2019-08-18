@@ -9,6 +9,7 @@ using SharpFightingEngine.Fighters.Algorithms.TargetFinders;
 using SharpFightingEngine.Skills;
 using SharpFightingEngine.Skills.Melee;
 using SharpFightingEngine.Skills.Range;
+using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Fighters
 {
@@ -137,10 +138,13 @@ namespace SharpFightingEngine.Fighters
       var skill = SkillFinder.GetSkill(this, target, Skills);
       if (skill == null)
       {
+        var desiredSkill = 50F.Chance() ? SkillFinder.GetMaxDamageSkill(this, Skills) : SkillFinder.GetMaxRangeSkill(this, Skills);
+        var distance = desiredSkill?.Range ?? 1;
+
         return new Move()
         {
           Actor = this,
-          NextPosition = PathFinder.GetPathToEnemy(this, target, battlefield),
+          NextPosition = PathFinder.GetPathToEnemy(this, target, distance, battlefield),
         };
       }
 

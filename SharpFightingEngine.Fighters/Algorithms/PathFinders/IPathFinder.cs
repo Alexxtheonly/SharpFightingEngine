@@ -7,7 +7,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
     /// <summary>
     /// Returns the path to the enemy to get into attack range.
     /// </summary>
-    IPosition GetPathToEnemy(IPosition current, IPosition enemy, IBattlefield battlefield);
+    IPosition GetPathToEnemy(IPosition current, IPosition enemy, float keepDistance, IBattlefield battlefield);
 
     /// <summary>
     /// Returns the path when no enemy is in sight.
