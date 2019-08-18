@@ -78,6 +78,11 @@ namespace SharpFightingEngine.Fighters
       return (int)((fighter.Stamina * calculationValues.StaminaFactor) - fighter.EnergyUsed);
     }
 
+    public static int EnergyRemaining(this IFighterStats fighter)
+    {
+      return fighter.Energy - fighter.EnergyUsed;
+    }
+
     /// <summary>
     /// The fighter's range of sight
     /// </summary>
