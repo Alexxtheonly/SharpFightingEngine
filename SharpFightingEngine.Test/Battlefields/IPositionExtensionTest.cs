@@ -45,5 +45,19 @@ namespace SharpFightingEngine.Test.Battlefields
       var actual = position.IsInsideBounds(bounds.Object);
       Assert.Equal(expected, actual);
     }
+
+    [Theory]
+    [ClassData(typeof(DirectionTheoryData))]
+    public void ShouldReturnDirection(Vector3 start, Vector3 end, float distance, Vector3 expected)
+    {
+      var startPos = Mock.Of<IPosition>();
+      startPos.Set(start);
+
+      var endPos = Mock.Of<IPosition>();
+      endPos.Set(end);
+
+      var actual = startPos.GetDirection(endPos, distance);
+      Assert.Equal(expected, actual);
+    }
   }
 }

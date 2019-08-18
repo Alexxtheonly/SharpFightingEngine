@@ -14,7 +14,11 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
 
     public IPosition GetPathToEnemy(IPosition current, IPosition enemy, float keepDistance, IBattlefield battlefield)
     {
-      return GetPath(current, enemy.GetDirection(current, keepDistance), battlefield);
+      var desired = new Position()
+      {
+      }.Set(enemy.GetDirection(current, keepDistance));
+
+      return GetPath(current, desired, battlefield);
     }
 
     public IPosition GetRoamingPath(IPosition current, IBattlefield battlefield)

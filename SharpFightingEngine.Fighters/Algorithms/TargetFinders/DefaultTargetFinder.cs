@@ -9,7 +9,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.TargetFinders
     public IFighterStats GetTarget(IEnumerable<IFighterStats> fighters, IPosition currentPosition)
     {
       return fighters
-        .OrderBy(o => o.GetDistance(currentPosition))
+        .OrderBy(o => o.GetDistanceAbs(currentPosition))
         .FirstOrDefault();
     }
   }

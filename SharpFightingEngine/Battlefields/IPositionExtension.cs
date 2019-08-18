@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace SharpFightingEngine.Battlefields
 {
@@ -14,17 +15,19 @@ namespace SharpFightingEngine.Battlefields
       return Vector3.Distance(position.GetVector3(), other.GetVector3());
     }
 
-    public static Position GetDirection(this IPosition position, IPosition desiredPosition, float distance)
+    public static float GetDistanceAbs(this IPosition position, IPosition other)
+    {
+      return Math.Abs(position.GetDistance(other));
+    }
+
+    public static Vector3 GetDirection(this IPosition position, IPosition desiredPosition, float distance)
     {
       var startPosition = position.GetVector3();
       var endPosition = desiredPosition.GetVector3();
 
       var calculated = startPosition + (Vector3.Normalize(endPosition - startPosition) * distance);
 
-      var newposition = default(Position);
-      newposition.Set(calculated);
-
-      return newposition;
+      return calculated;
     }
 
     public static bool IsInsideBounds(this IPosition position, IBounds bounds)
@@ -34,18 +37,22 @@ namespace SharpFightingEngine.Battlefields
       return Vector3.Clamp(positionVector, bounds.Low, bounds.High) == positionVector;
     }
 
-    public static void Set(this IPosition position, IPosition newposition)
+    public static IPosition Set(this IPosition position, IPosition newposition)
     {
       position.X = newposition.X;
       position.Y = newposition.Y;
       position.Z = newposition.Z;
+
+      return position;
     }
 
-    public static void Set(this IPosition position, Vector3 vector3)
+    public static IPosition Set(this IPosition position, Vector3 vector3)
     {
       position.X = vector3.X;
       position.Y = vector3.Y;
       position.Z = vector3.Z;
+
+      return position;
     }
   }
 }
