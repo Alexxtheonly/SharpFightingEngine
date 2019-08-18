@@ -10,7 +10,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
     public ISkill GetSkill(IFighterStats actor, IFighterStats target, IEnumerable<ISkill> skills)
     {
       return skills
-        .Where(o => o.Energy <= actor.Energy)
+        .Where(o => o.Energy <= actor.EnergyRemaining())
         .Where(o => o.Range >= actor.GetDistance(target))
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
@@ -19,7 +19,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
     public ISkill GetMaxDamageSkill(IFighterStats actor, IEnumerable<ISkill> skills)
     {
       return skills
-        .Where(o => o.Energy <= actor.Energy)
+        .Where(o => o.Energy <= actor.EnergyRemaining())
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
@@ -27,7 +27,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
     public ISkill GetMaxRangeSkill(IFighterStats actor, IEnumerable<ISkill> skills)
     {
       return skills
-        .Where(o => o.Energy <= actor.Energy)
+        .Where(o => o.Energy <= actor.EnergyRemaining())
         .OrderByDescending(o => o.Range)
         .FirstOrDefault();
     }

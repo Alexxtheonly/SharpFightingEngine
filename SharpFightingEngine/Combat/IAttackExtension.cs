@@ -63,7 +63,7 @@ namespace SharpFightingEngine.Combat
 
     public static bool HasEnoughEnergy(this IAttack attack)
     {
-      return attack.Skill.Energy <= attack.Actor.Energy;
+      return attack.Skill.Energy <= attack.Actor.EnergyRemaining();
     }
 
     public static float DodgeChance(this IAttack attack, EngineCalculationValues calculationValues)
