@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Combat;
+using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters.Algorithms.PathFinders;
 using SharpFightingEngine.Fighters.Algorithms.SkillFinders;
 using SharpFightingEngine.Fighters.Algorithms.TargetFinders;
@@ -116,7 +117,7 @@ namespace SharpFightingEngine.Fighters
       new RecklessShotSkill(),
     };
 
-    public IFighterAction GetFighterAction(IEnumerable<IFighterStats> visibleFighters, IBattlefield battlefield)
+    public virtual IFighterAction GetFighterAction(IEnumerable<IFighterStats> visibleFighters, IBattlefield battlefield, IEnumerable<EngineRoundTick> roundTicks)
     {
       var roam = new Move()
       {
