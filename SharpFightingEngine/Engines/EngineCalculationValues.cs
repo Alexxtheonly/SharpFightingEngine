@@ -10,7 +10,7 @@
 
     public float ArmorDefenseFactor { get; set; } = 1.2F;
 
-    public float VisualRangeFactor { get; set; } = 1.6F;
+    public float VisualRangeFactor { get; set; } = 4F;
 
     public float CriticalHitChanceFactor { get; set; } = 0.33F;
 

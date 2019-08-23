@@ -15,6 +15,16 @@ namespace SharpFightingEngine.Battlefields
       return Vector3.Distance(position.GetVector3(), other.GetVector3());
     }
 
+    public static float GetDistance(this IPosition position, Vector3 other)
+    {
+      return Vector3.Distance(position.GetVector3(), other);
+    }
+
+    public static float GetDistanceAbs(this IPosition position, Vector3 other)
+    {
+      return Math.Abs(position.GetDistance(other));
+    }
+
     public static float GetDistanceAbs(this IPosition position, IPosition other)
     {
       return Math.Abs(position.GetDistance(other));

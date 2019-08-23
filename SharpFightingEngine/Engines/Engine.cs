@@ -217,7 +217,7 @@ namespace SharpFightingEngine.Engines
 
       foreach (IFighterStats fighter in fighters)
       {
-        yield return fighter.GetFighterAction(fighters.GetVisibleFightersFor(fighter, configuration.CalculationValues), configuration.Battlefield);
+        yield return fighter.GetFighterAction(fighters.GetVisibleFightersFor(fighter, configuration.CalculationValues), configuration.Battlefield, EngineRoundTicks);
       }
     }
 
