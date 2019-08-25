@@ -64,7 +64,7 @@ namespace SharpFightingEngine.Fighters.Factories
 
     public static IFighterStats GetFighter(int offensivePowerlevel, int defensivePowerlevel, int utilityPowerlevel, Guid? team)
     {
-      var fighter = new SmartFighter()
+      var fighter = new AdvancedFighter()
       {
         Id = Guid.NewGuid(),
         Team = team,
@@ -89,7 +89,7 @@ namespace SharpFightingEngine.Fighters.Factories
       }
     }
 
-    private static void SetValues(ref SmartFighter fighter, IEnumerable<PropertyInfo> properties, int powerlevel)
+    private static void SetValues(ref AdvancedFighter fighter, IEnumerable<PropertyInfo> properties, int powerlevel)
     {
       var propertiesCount = properties.Count();
 

@@ -1,4 +1,5 @@
-﻿using SharpFightingEngine.Battlefields;
+﻿using System.Collections.Generic;
+using SharpFightingEngine.Battlefields;
 
 namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
 {
@@ -18,5 +19,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
     /// Returns the path to a position.
     /// </summary>
     IPosition GetPath(IPosition current, IPosition desired, IBattlefield battlefield);
+
+    IPosition GetEscapePath(IPosition current, IEnumerable<IPosition> escape, IBattlefield battlefield);
   }
 }

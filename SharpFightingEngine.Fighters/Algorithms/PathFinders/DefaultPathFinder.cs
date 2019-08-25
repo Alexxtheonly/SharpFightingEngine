@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using SharpFightingEngine.Battlefields;
 
 namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
@@ -6,6 +9,24 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
   public class DefaultPathFinder : IPathFinder
   {
     private readonly Random random = new Random();
+
+    public IPosition GetEscapePath(IPosition current, IEnumerable<IPosition> escape, IBattlefield battlefield)
+    {
+      var flightPositions = escape.Select(o => current.GetDirection(o, 20));
+      Vector3 sum = Vector3.Zero;
+      foreach (var flightPosition in flightPositions)
+      {
+        sum += flightPosition;
+      }
+
+      Vector3 avg = sum / flightPositions.Count();
+
+      var bestPosition = new Position()
+      {
+      }.Set(avg);
+
+      return bestPosition;
+    }
 
     public IPosition GetPath(IPosition current, IPosition desired, IBattlefield battlefield)
     {
