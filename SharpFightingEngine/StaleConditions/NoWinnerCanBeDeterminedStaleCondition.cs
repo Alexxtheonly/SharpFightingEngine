@@ -48,6 +48,10 @@ namespace SharpFightingEngine.StaleConditions
         {
           staleCounter++;
         }
+        else
+        {
+          staleCounter = 0;
+        }
       }
 
       return staleCounter > MaxStaleRounds;

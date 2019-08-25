@@ -139,14 +139,7 @@ namespace SharpFightingEngine.Fighters
       var skill = SkillFinder.GetSkill(this, target, Skills);
       if (skill == null)
       {
-        var desiredSkill = 50F.Chance() ? SkillFinder.GetMaxDamageSkill(this, Skills) : SkillFinder.GetMaxRangeSkill(this, Skills);
-        var distance = desiredSkill?.Range ?? 1;
-
-        return new Move()
-        {
-          Actor = this,
-          NextPosition = PathFinder.GetPathToEnemy(this, target, distance, battlefield),
-        };
+        return GetSkillMove(battlefield, target);
       }
 
       return new Attack()
@@ -154,6 +147,18 @@ namespace SharpFightingEngine.Fighters
         Actor = this,
         Skill = skill,
         Target = target,
+      };
+    }
+
+    protected IFighterAction GetSkillMove(IBattlefield battlefield, IFighterStats target)
+    {
+      var desiredSkill = 50F.Chance() ? SkillFinder.GetMaxDamageSkill(this, Skills) : SkillFinder.GetMaxRangeSkill(this, Skills);
+      var distance = desiredSkill?.Range ?? 1;
+
+      return new Move()
+      {
+        Actor = this,
+        NextPosition = PathFinder.GetPathToEnemy(this, target, distance, battlefield),
       };
     }
   }
