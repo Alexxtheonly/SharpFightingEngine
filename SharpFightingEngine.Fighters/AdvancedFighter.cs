@@ -29,7 +29,7 @@ namespace SharpFightingEngine.Fighters
 
       SetMaxHealth(roundTicks);
 
-      var currentAttackers = GetCurrentAttackers(roundTicks);
+      var currentAttackers = GetCurrentAttackers(roundTicks, visibleEnemies);
       var attackerCount = currentAttackers.Count();
 
       var lastTargets = GetCurrentTargetChallenges(roundTicks)
@@ -40,7 +40,7 @@ namespace SharpFightingEngine.Fighters
       if (!flight && (healthPercent < 0.33 && attackerCount > 1))
       {
         flight = true;
-        flightPosition = PathFinder.GetEscapePath(this, visibleEnemies.Where(o => currentAttackers.Any(a => a.Id == o.Id)), battlefield);
+        flightPosition = PathFinder.GetEscapePath(this, currentAttackers.Select(o => o.Fighter).ToList(), battlefield);
       }
 
       if (flight && attackerCount > 1 && !this.IsEqualPosition(flightPosition))
@@ -59,7 +59,7 @@ namespace SharpFightingEngine.Fighters
       IFighterStats target = null;
       if (currentAttackers.Any())
       {
-        target = visibleEnemies.FirstOrDefault(o => o.Id == currentAttackers.First().Id);
+        target = currentAttackers.First().Fighter;
       }
       else if (lastTargets.Any())
       {
@@ -109,7 +109,7 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     /// <param name="roundTicks"></param>
     /// <returns></returns>
-    private IEnumerable<AttackerThreat> GetCurrentAttackers(IEnumerable<EngineRoundTick> roundTicks)
+    private IEnumerable<AttackerThreat> GetCurrentAttackers(IEnumerable<EngineRoundTick> roundTicks, IEnumerable<IFighterStats> enemies)
     {
       var currentRound = roundTicks.GetMaxRound();
 
@@ -120,9 +120,10 @@ namespace SharpFightingEngine.Fighters
         .GroupBy(o => o.Fighter.Id)
         .Select(o => new AttackerThreat()
         {
-          Id = o.Key,
+          Fighter = enemies.FirstOrDefault(f => f.Id == o.Key),
           Threat = o.Sum(a => a.Damage),
         })
+        .Where(o => o.Fighter != null)
         .OrderByDescending(o => o.Threat)
         .ToList();
     }
@@ -150,7 +151,7 @@ namespace SharpFightingEngine.Fighters
 
     private class AttackerThreat
     {
-      public Guid Id { get; set; }
+      public IFighterStats Fighter { get; set; }
 
       /// <summary>
       /// The higher the value, the higher the threat posed by this attacker.

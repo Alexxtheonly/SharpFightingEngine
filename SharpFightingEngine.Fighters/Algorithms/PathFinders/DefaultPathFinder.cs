@@ -21,6 +21,10 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
       var high = orderedByDistance.Last();
 
       var escapeVector = desiredDistance.GetEscapeVector(low.Position.GetVector3(), high.Position.GetVector3());
+      if (float.IsNaN(escapeVector.X) || float.IsNaN(escapeVector.Y))
+      {
+        throw new Exception("This should not happen");
+      }
 
       var currentVector = current.GetVector3();
 
