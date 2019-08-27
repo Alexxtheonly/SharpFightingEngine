@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using SharpFightingEngine.Battlefields;
 
 namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
@@ -12,20 +11,30 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
 
     public IPosition GetEscapePath(IPosition current, IEnumerable<IPosition> escape, IBattlefield battlefield)
     {
-      var flightPositions = escape.Select(o => current.GetDirection(o, 20));
-      Vector3 sum = Vector3.Zero;
-      foreach (var flightPosition in flightPositions)
+      const float desiredDistance = 20;
+
+      var orderedByDistance = escape
+        .Select(o => new { Position = o, Distance = current.GetDistance(o) })
+        .OrderByDescending(o => o.Distance);
+
+      var low = orderedByDistance.First();
+      var high = orderedByDistance.Last();
+
+      var escapeVector = desiredDistance.GetEscapeVector(low.Position.GetVector3(), high.Position.GetVector3());
+
+      var currentVector = current.GetVector3();
+
+      var added = currentVector + escapeVector;
+      var subtracted = currentVector - escapeVector;
+
+      if (added.IsInsideBounds(battlefield.CurrentBounds))
       {
-        sum += flightPosition;
+        return added.GetPosition();
       }
-
-      Vector3 avg = sum / flightPositions.Count();
-
-      var bestPosition = new Position()
+      else
       {
-      }.Set(avg);
-
-      return bestPosition;
+        return subtracted.GetPosition();
+      }
     }
 
     public IPosition GetPath(IPosition current, IPosition desired, IBattlefield battlefield)

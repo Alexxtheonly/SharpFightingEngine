@@ -42,9 +42,7 @@ namespace SharpFightingEngine.Battlefields
 
     public static bool IsInsideBounds(this IPosition position, IBounds bounds)
     {
-      var positionVector = position.GetVector3();
-
-      return Vector3.Clamp(positionVector, bounds.Low, bounds.High) == positionVector;
+      return position.GetVector3().IsInsideBounds(bounds);
     }
 
     public static IPosition Set(this IPosition position, IPosition newposition)
@@ -63,6 +61,13 @@ namespace SharpFightingEngine.Battlefields
       position.Z = vector3.Z;
 
       return position;
+    }
+
+    public static bool IsEqualPosition(this IPosition position, IPosition other)
+    {
+      return position.X == other.X &&
+        position.Y == other.Y &&
+        position.Z == other.Z;
     }
   }
 }

@@ -10,6 +10,8 @@ namespace SharpFightingEngine.Fighters
   public class AdvancedFighter : FighterBase
   {
     private int? maxHealth;
+    private bool flight;
+    private IPosition flightPosition;
 
     public override IFighterAction GetFighterAction(IEnumerable<IFighterStats> visibleFighters, IBattlefield battlefield, IEnumerable<EngineRoundTick> roundTicks)
     {
@@ -35,13 +37,23 @@ namespace SharpFightingEngine.Fighters
 
       var healthPercent = Health / maxHealth;
 
-      if (healthPercent < 0.33 && attackerCount > 1)
+      if (!flight && (healthPercent < 0.33 && attackerCount > 1))
+      {
+        flight = true;
+        flightPosition = PathFinder.GetEscapePath(this, visibleEnemies.Where(o => currentAttackers.Any(a => a.Id == o.Id)), battlefield);
+      }
+
+      if (flight && attackerCount > 1 && !this.IsEqualPosition(flightPosition))
       {
         return new Move()
         {
           Actor = this,
-          NextPosition = PathFinder.GetEscapePath(this, visibleEnemies, battlefield),
+          NextPosition = flightPosition,
         };
+      }
+      else
+      {
+        flight = false;
       }
 
       IFighterStats target = null;
