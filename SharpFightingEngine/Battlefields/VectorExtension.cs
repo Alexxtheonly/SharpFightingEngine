@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace SharpFightingEngine.Battlefields
 {
-  public static class Vector3Extension
+  public static class VectorExtension
   {
     public static bool IsInsideBounds(this Vector3 position, IBounds bounds)
     {
       return Vector3.Clamp(position, bounds.Low, bounds.High) == position;
     }
 
-    public static Vector3 GetEscapeVector(this float distance, Vector3 one, Vector3 two)
+    public static Vector2 GetEscapeVector(this float distance, Vector2 one, Vector2 two)
     {
       var center = (one + two) / 2;
 
-      var a = Vector3.DistanceSquared(one, center);
-      var c = Math.Pow(distance, 2);
+      // rotate by 90° which equals to 1.5708F radians
+      var rotated = Vector2.Transform(center, Matrix3x2.CreateRotation(1.5708F));
 
-      var b = Math.Sqrt(a + c);
+      var escapeVector = Vector2.Normalize(rotated) * distance;
 
-      return Vector3.Normalize(Vector3.Max(one, two) - Vector3.Min(one, two)) * (float)b;
+      return escapeVector;
     }
 
     public static IPosition GetPosition(this Vector3 vector3)

@@ -5,6 +5,11 @@ namespace SharpFightingEngine.Battlefields
 {
   public static class IPositionExtension
   {
+    public static Vector2 GetVector2(this IPosition position)
+    {
+      return new Vector2(position.X, position.Y);
+    }
+
     public static Vector3 GetVector3(this IPosition position)
     {
       return new Vector3(position.X, position.Y, position.Z);
