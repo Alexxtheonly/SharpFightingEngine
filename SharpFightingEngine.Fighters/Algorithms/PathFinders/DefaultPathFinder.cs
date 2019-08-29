@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using SharpFightingEngine.Battlefields;
 
 namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
@@ -20,7 +21,7 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
       var low = orderedByDistance.First();
       var high = orderedByDistance.Last();
 
-      var escapeVector = desiredDistance.GetEscapeVector(low.Position.GetVector3(), high.Position.GetVector3());
+      var escapeVector = new Vector3(desiredDistance.GetEscapeVector(low.Position.GetVector2(), high.Position.GetVector2()), 0);
       if (float.IsNaN(escapeVector.X) || float.IsNaN(escapeVector.Y))
       {
         throw new Exception("This should not happen");

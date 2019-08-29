@@ -26,20 +26,20 @@ namespace SharpFightingEngine.Fighters.Test.Algorithms.Pathfinders
       {
         new Position()
         {
-          X = 5,
-          Y = 3,
+          X = 11,
+          Y = 11,
         },
         new Position()
         {
-          X = 5,
-          Y = 4,
+          X = 19,
+          Y = 18,
         },
       }.Cast<IPosition>();
 
       var own = new Position()
       {
-        X = 4,
-        Y = 4,
+        X = 15,
+        Y = 16,
       };
 
       var escapePosition = defaultPathFinder.GetEscapePath(own, enemies, battlefield.Object);
@@ -47,7 +47,7 @@ namespace SharpFightingEngine.Fighters.Test.Algorithms.Pathfinders
       foreach (var enemy in enemies)
       {
         var distance = escapePosition.GetDistanceAbs(enemy);
-        Assert.True(distance >= 20);
+        Assert.InRange(distance, 18, 22);
       }
     }
 
@@ -79,7 +79,7 @@ namespace SharpFightingEngine.Fighters.Test.Algorithms.Pathfinders
       foreach (var enemy in enemies)
       {
         var distance = escapePosition.GetDistanceAbs(enemy);
-        Assert.True(distance >= 20);
+        Assert.InRange(distance, 18, 22);
       }
     }
   }
