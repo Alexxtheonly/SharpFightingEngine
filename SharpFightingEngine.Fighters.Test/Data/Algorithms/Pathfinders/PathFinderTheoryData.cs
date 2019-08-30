@@ -7,7 +7,6 @@ namespace SharpFightingEngine.Fighters.Test.Data.Algorithms.Pathfinders
   {
     public PathFinderTheoryData()
     {
-      AddRow(new Position(11, 11), new Position(19, 18), new Position(15, 16));
       AddRow(new Position(57.9350471F, 56.9235649F), new Position(50.3793526F, 55.40332F), new Position(57.3367462F, 58.3573265F));
       AddRow(new Position(44, 44), new Position(42, 44), new Position(46, 46));
     }

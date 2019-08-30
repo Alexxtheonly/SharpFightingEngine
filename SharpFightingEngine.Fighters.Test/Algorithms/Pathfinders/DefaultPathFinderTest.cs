@@ -29,7 +29,7 @@ namespace SharpFightingEngine.Fighters.Test.Algorithms.Pathfinders
       foreach (var enemy in enemies)
       {
         var distance = escapePosition.GetDistanceAbs(enemy);
-        Assert.InRange(distance, 18, 22);
+        Assert.True(distance >= 18);
       }
     }
   }
