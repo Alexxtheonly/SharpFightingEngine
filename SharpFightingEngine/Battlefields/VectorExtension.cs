@@ -13,13 +13,15 @@ namespace SharpFightingEngine.Battlefields
 
     public static IEnumerable<Tuple<Vector2, float, float>> GetDistancesTo(this Vector2 position, Vector2 one, Vector2 two, float distance)
     {
-      for (double i = 0; i < Math.PI * 2; i += Math.PI / 6)
+      var normalized = Vector2.Normalize(position);
+
+      for (double i = 0; i < Math.PI * 2; i += Math.PI / 12)
       {
         for (int u = 1; u < 5; u++)
         {
-          var rotated = Vector2.Transform(position, Matrix3x2.CreateRotation((float)i));
+          var rotated = Vector2.Transform(normalized, Matrix4x4.CreateRotationY((float)i));
           var adjustedDistance = distance / u;
-          var escape = position.GetDirection(rotated, adjustedDistance);
+          var escape = position + (rotated * adjustedDistance);
 
           yield return Tuple.Create(escape, adjustedDistance, escape.GetDistanceAbs(one) + escape.GetDistanceAbs(two));
         }
@@ -53,6 +55,11 @@ namespace SharpFightingEngine.Battlefields
     public static Vector3 AsVector3(this Vector2 vector)
     {
       return new Vector3(vector, 0);
+    }
+
+    public static Vector3 Clamp(this Vector3 vector, Vector3 min, Vector3 max)
+    {
+      return Vector3.Clamp(vector, min, max);
     }
   }
 }

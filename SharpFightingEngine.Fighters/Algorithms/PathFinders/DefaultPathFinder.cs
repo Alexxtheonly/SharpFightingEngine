@@ -20,16 +20,26 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
       var low = orderedByDistance.First();
       var high = orderedByDistance.Last();
 
-      var escapeVectors = current
+      var tuples = current
         .GetVector2()
         .GetDistancesTo(low.Position.GetVector2(), high.Position.GetVector2(), desiredDistance)
-        .Where(o => o.Item1.AsVector3().IsInsideBounds(battlefield.CurrentBounds))
         .OrderByDescending(o => o.Item3);
 
-      return escapeVectors
-        .First()
+      var escapeVectors = tuples
+        .Where(o => o.Item1.AsVector3().IsInsideBounds(battlefield.CurrentBounds));
+
+      var best = escapeVectors
+        .FirstOrDefault();
+
+      if (best == null)
+      {
+        best = tuples.First();
+      }
+
+      return best
         .Item1
         .AsVector3()
+        .Clamp(battlefield.CurrentBounds.Low, battlefield.CurrentBounds.High)
         .GetPosition();
     }
 
