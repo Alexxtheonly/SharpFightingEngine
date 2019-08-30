@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 namespace SharpFightingEngine.Battlefields
 {
@@ -9,16 +11,34 @@ namespace SharpFightingEngine.Battlefields
       return Vector3.Clamp(position, bounds.Low, bounds.High) == position;
     }
 
-    public static Vector2 GetEscapeVector(this float distance, Vector2 one, Vector2 two)
+    public static IEnumerable<Tuple<Vector2, float, float>> GetDistancesTo(this Vector2 position, Vector2 one, Vector2 two, float distance)
     {
-      var center = (one + two) / 2;
+      for (double i = 0; i < Math.PI * 2; i += Math.PI / 6)
+      {
+        for (int u = 1; u < 5; u++)
+        {
+          var rotated = Vector2.Transform(position, Matrix3x2.CreateRotation((float)i));
+          var adjustedDistance = distance / u;
+          var escape = position.GetDirection(rotated, adjustedDistance);
 
-      // rotate by 90° which equals to 1.5708F radians
-      var rotated = Vector2.Transform(center, Matrix3x2.CreateRotation(1.5708F));
+          yield return Tuple.Create(escape, adjustedDistance, escape.GetDistanceAbs(one) + escape.GetDistanceAbs(two));
+        }
+      }
+    }
 
-      var escapeVector = Vector2.Normalize(rotated) * distance;
+    public static Vector2 GetDirection(this Vector2 start, Vector2 end, float distance)
+    {
+      return start + (Vector2.Normalize(end - start) * distance);
+    }
 
-      return escapeVector;
+    public static float GetDistance(this Vector2 position, Vector2 other)
+    {
+      return Vector2.Distance(position, other);
+    }
+
+    public static float GetDistanceAbs(this Vector2 position, Vector2 other)
+    {
+      return Math.Abs(position.GetDistance(other));
     }
 
     public static IPosition GetPosition(this Vector3 vector3)
@@ -28,6 +48,11 @@ namespace SharpFightingEngine.Battlefields
       }.Set(vector3);
 
       return pos;
+    }
+
+    public static Vector3 AsVector3(this Vector2 vector)
+    {
+      return new Vector3(vector, 0);
     }
   }
 }

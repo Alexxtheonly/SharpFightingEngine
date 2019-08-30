@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using SharpFightingEngine.Battlefields;
 
 namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
@@ -21,25 +20,17 @@ namespace SharpFightingEngine.Fighters.Algorithms.PathFinders
       var low = orderedByDistance.First();
       var high = orderedByDistance.Last();
 
-      var escapeVector = new Vector3(desiredDistance.GetEscapeVector(low.Position.GetVector2(), high.Position.GetVector2()), 0);
-      if (float.IsNaN(escapeVector.X) || float.IsNaN(escapeVector.Y))
-      {
-        throw new Exception("This should not happen");
-      }
+      var escapeVectors = current
+        .GetVector2()
+        .GetDistancesTo(low.Position.GetVector2(), high.Position.GetVector2(), desiredDistance)
+        .Where(o => o.Item1.AsVector3().IsInsideBounds(battlefield.CurrentBounds))
+        .OrderByDescending(o => o.Item3);
 
-      var currentVector = current.GetVector3();
-
-      var added = currentVector + escapeVector;
-      var subtracted = currentVector - escapeVector;
-
-      if (added.IsInsideBounds(battlefield.CurrentBounds))
-      {
-        return added.GetPosition();
-      }
-      else
-      {
-        return subtracted.GetPosition();
-      }
+      return escapeVectors
+        .First()
+        .Item1
+        .AsVector3()
+        .GetPosition();
     }
 
     public IPosition GetPath(IPosition current, IPosition desired, IBattlefield battlefield)
