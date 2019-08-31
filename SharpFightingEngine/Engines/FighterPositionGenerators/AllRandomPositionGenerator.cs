@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using SharpFightingEngine.Battlefields;
+using SharpFightingEngine.Constants;
 using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.Engines.FighterPositionGenerators
@@ -10,7 +11,7 @@ namespace SharpFightingEngine.Engines.FighterPositionGenerators
   {
     private readonly Random random = new Random();
 
-    public Guid Id => new Guid("F88BE549-9BE0-4DD2-AABC-5AF599DCC140");
+    public Guid Id => FighterPositionGeneratorConstants.AllRandom;
 
     public void SetFighterPositions(Dictionary<Guid, IFighterStats> fighters, IBattlefield battlefield)
     {

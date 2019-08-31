@@ -9,19 +9,27 @@ using SharpFightingEngine.Engines;
 using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Test.Genetic.EngineCalculation;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SharpFightingEngine.Test.Genetic
 {
   public class GeneticAlgorithmTest
   {
+    private readonly ITestOutputHelper testOutputHelper;
+
+    public GeneticAlgorithmTest(ITestOutputHelper testOutputHelper)
+    {
+      this.testOutputHelper = testOutputHelper;
+    }
+
     [Fact(Skip = "manual test only")]
     public void ShouldTestGeneticAlgorithm()
     {
       var population = new Population(1000, 10000, new FighterChromosome());
       var fitness = new FighterFitness();
 
-      var ga = RunGeneticAlgorithm(population, fitness, 1000);
-      var fighter = new GenericFighter();
+      var ga = RunGeneticAlgorithm(population, fitness, 150);
+      var fighter = new AdvancedFighter();
       (ga.BestChromosome as FighterChromosome).ApplyTo(fighter);
     }
 
@@ -43,7 +51,7 @@ namespace SharpFightingEngine.Test.Genetic
       fitness.Evaluate(ga.BestChromosome);
     }
 
-    private static GeneticAlgorithm RunGeneticAlgorithm(Population population, IFitness fitness, int generations)
+    private GeneticAlgorithm RunGeneticAlgorithm(Population population, IFitness fitness, int generations)
     {
       var selection = new EliteSelection();
       var crossover = new TwoPointCrossover();
@@ -52,6 +60,19 @@ namespace SharpFightingEngine.Test.Genetic
       var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation)
       {
         Termination = new GenerationNumberTermination(generations),
+      };
+
+      var latestFitness = 0.0;
+
+      ga.GenerationRan += (sender, e) =>
+      {
+        var bestfitness = ga.BestChromosome.Fitness ?? 0;
+        if (bestfitness != latestFitness)
+        {
+          latestFitness = bestfitness;
+
+          testOutputHelper.WriteLine($"Current best fitness: {bestfitness}");
+        }
       };
 
       ga.Start();

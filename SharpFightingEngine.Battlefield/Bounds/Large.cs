@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Numerics;
+using SharpFightingEngine.Battlefields.Constants;
 
 namespace SharpFightingEngine.Battlefields.Bounds
 {
   public class Large : IBounds
   {
-    public Guid Id => new Guid("03FDDA5B-A644-4B9D-B257-A02E4D763556");
+    public Guid Id => BoundsConstants.Large;
 
     public Vector3 Low => new Vector3(0, 0, 0);
 
