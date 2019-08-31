@@ -158,7 +158,7 @@ namespace SharpFightingEngine.Engines
     {
       foreach (var feature in configuration.Features)
       {
-        CurrentRoundTick.Ticks.AddRange(feature.Apply(Fighters.Values, configuration.CalculationValues));
+        CurrentRoundTick.Ticks.AddRange(feature.Apply(Fighters.Values, EngineRoundTicks, configuration.CalculationValues));
       }
     }
 
@@ -215,7 +215,7 @@ namespace SharpFightingEngine.Engines
     {
       var fighters = Fighters.Values.Where(o => o.IsAlive());
 
-      foreach (IFighterStats fighter in fighters)
+      foreach (IFighterStats fighter in configuration.MoveOrder.Next(fighters))
       {
         yield return fighter.GetFighterAction(fighters.GetVisibleFightersFor(fighter, configuration.CalculationValues), configuration.Battlefield, EngineRoundTicks);
       }

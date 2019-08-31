@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Battlefields;
+using SharpFightingEngine.Battlefields.Bounds;
+using SharpFightingEngine.Battlefields.Plain;
 using SharpFightingEngine.Engines;
+using SharpFightingEngine.Engines.FighterPositionGenerators;
+using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Engines.Ticks;
+using SharpFightingEngine.Features;
+using SharpFightingEngine.Fighters;
+using SharpFightingEngine.Fighters.Factories;
+using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.Test.Data.Engines;
 using SharpFightingEngine.Test.Utilities;
+using SharpFightingEngine.WinConditions;
 using Xunit;
 
 namespace SharpFightingEngine.Test.Engines
@@ -52,6 +61,57 @@ namespace SharpFightingEngine.Test.Engines
       var result = engine.StartMatch();
 
       Assert.NotEmpty(result.Ticks.SelectMany(o => o.Ticks).OfType<FighterRegenerateEnergyTick>());
+    }
+
+    [Fact]
+    public void ShouldHaveFighterSacrificedTick()
+    {
+      var sacrificeFighter = new AdvancedFighter()
+      {
+        Id = Guid.NewGuid(),
+        Accuracy = 1,
+        Agility = 291,
+        Expertise = 1,
+        Power = 1,
+        Regeneration = 1,
+        Speed = 1,
+        Stamina = 1,
+        Toughness = 1,
+        Vision = 1,
+        Vitality = 1,
+      };
+
+      var fighters = FighterFactory.GetFighters(19, 300)
+        .Union(new AdvancedFighter[]
+        {
+          sacrificeFighter,
+        });
+      var battlefield = new PlainBattlefield();
+      var features = new List<IEngineFeature>()
+      {
+        new FeatureRegenerateEnergy(),
+        new FeatureRegenerateHealth(),
+        new FeatureSacrificeToEntity(),
+      };
+
+      var engine = Utility.GetEngine(
+        fighters,
+        battlefield,
+        new Small(),
+        features,
+        new AllRandomMoveOrder(),
+        new AllRandomPositionGenerator(),
+        new LastManStandingWinCondition(),
+        new NoWinnerCanBeDeterminedStaleCondition(),
+        2);
+
+      var result = engine.StartMatch();
+      var ticks = result.Ticks
+        .SelectMany(o => o.Ticks)
+        .OfType<FighterSacrificedTick>()
+        .ToList();
+
+      Assert.Contains(ticks, o => o.Fighter.Id == sacrificeFighter.Id);
     }
 
     private void VerifyMatchResult(IMatchResult result)

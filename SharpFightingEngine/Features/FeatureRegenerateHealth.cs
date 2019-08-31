@@ -10,7 +10,7 @@ namespace SharpFightingEngine.Features
   {
     public Guid Id => new Guid("E800723C-6324-47AB-9593-1952346AD772");
 
-    public IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, EngineCalculationValues calculationValues)
+    public IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues)
     {
       foreach (var fighter in fighters)
       {

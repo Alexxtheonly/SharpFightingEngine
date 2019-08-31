@@ -10,6 +10,6 @@ namespace SharpFightingEngine.Features
   {
     Guid Id { get; }
 
-    IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, EngineCalculationValues calculationValues);
+    IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues);
   }
 }
