@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpFightingEngine.Constants;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
@@ -14,7 +15,7 @@ namespace SharpFightingEngine.StaleConditions
 
     private int staleCounter = 0;
 
-    public Guid Id => new Guid("04616688-2CD1-4341-B757-AFDAE8AF4035");
+    public Guid Id => StaleConditionConstants.NoWinnerCanBeDetermined;
 
     public IMatchResult GetMatchResult(IEnumerable<IFighter> fighters, ICollection<EngineRoundTick> engineRoundTicks)
     {

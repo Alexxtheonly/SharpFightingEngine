@@ -1,14 +1,11 @@
 ﻿using System;
+using SharpFightingEngine.Battlefields.Constants;
 
 namespace SharpFightingEngine.Battlefields.Plain
 {
   public class PlainBattlefield : IBattlefield
   {
-    public PlainBattlefield()
-    {
-    }
-
-    public Guid Id => new Guid("DC937E88-F307-4CF0-AEF5-B468D27AED4B");
+    public Guid Id => BattlefieldConstants.Plain;
 
     public IBounds CurrentBounds { get; set; }
 

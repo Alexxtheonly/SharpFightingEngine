@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using GeneticSharp.Domain.Chromosomes;
 using GeneticSharp.Domain.Fitnesses;
+using Newtonsoft.Json;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Test.Utilities;
@@ -11,7 +13,7 @@ namespace SharpFightingEngine.Test.Genetic
 {
   public class FighterFitness : IFitness
   {
-    private const int DesiredPowerlevel = 300;
+    private const int DesiredPowerlevel = 500;
     private const int OpponentPowerlevel = 400;
 
     public double Evaluate(IChromosome chromosome)
@@ -22,7 +24,7 @@ namespace SharpFightingEngine.Test.Genetic
         return 0;
       }
 
-      var geneticFighter = new GenericFighter()
+      var geneticFighter = new AdvancedFighter()
       {
         Id = Guid.NewGuid()
       };
@@ -33,52 +35,50 @@ namespace SharpFightingEngine.Test.Genetic
         return (Math.Min(DesiredPowerlevel, geneticFighter.PowerLevel()) - Math.Max(DesiredPowerlevel, geneticFighter.PowerLevel())) * 1000;
       }
 
-      // FighterFactory.GetFighters(9, OpponentPowerlevel)
+      var json = File.ReadAllText("../../../Data/Json/strongFighters.json");
+      var strongFighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
+
       var fighters = new List<IFighterStats>()
       {
         geneticFighter,
-        new GenericFighter()
-        {
-          Id = Guid.NewGuid(),
-          Power = 142,
-          Accuracy = 3,
-          Expertise = 3,
-          Agility = 2,
-          Toughness = 61,
-          Vitality = 51,
-          Speed = 2,
-          Stamina = 20,
-          Regeneration = 3,
-          Vision = 13,
-        }
-      };
+      }.Union(strongFighters);
 
       Engine engine = Utility.GetDefaultEngine(fighters);
 
       double score = 0;
+
       for (int i = 0; i < 5; i++)
       {
-        score += GetFitness(geneticFighter, engine.StartMatch());
+        var current = GetFitness(geneticFighter, engine.StartMatch());
+        score += current;
       }
 
       return score;
     }
 
-    private static double GetFitness(GenericFighter geneticFighter, IMatchResult result)
+    private static double GetFitness(IFighterStats geneticFighter, IMatchResult result)
     {
+      var fitness = 0D;
+      var score = result.Scores.FirstOrDefault(o => o.Id == geneticFighter.Id);
+
+      fitness += score.TotalKills * 25;
+      fitness += score.TotalDamageDone * 0.2;
+
       if (result.Loses.Any(o => o.Id == geneticFighter.Id))
       {
-        return -(result.Loses.TakeWhile(o => o.Id != geneticFighter.Id).Count() + 1) * 5;
+        fitness -= (result.Loses.TakeWhile(o => o.Id != geneticFighter.Id).Count() + 1) * 5;
+
+        return fitness;
       }
 
       if (result.Draws.Any(o => o.Id == geneticFighter.Id))
       {
-        return result.Loses.TakeWhile(o => o.Id != geneticFighter.Id).Count() + 1;
+        fitness += result.Loses.TakeWhile(o => o.Id != geneticFighter.Id).Count() + 1;
+
+        return fitness;
       }
 
-      var score = result.Scores.FirstOrDefault(o => o.Id == geneticFighter.Id);
-
-      return 2500 + ((score.TotalDamageDone - score.TotalDamageTaken) * 5);
+      return fitness + 2500;
     }
   }
 }

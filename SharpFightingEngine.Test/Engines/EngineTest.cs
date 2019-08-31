@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Battlefields.Bounds;
 using SharpFightingEngine.Battlefields.Plain;
@@ -10,7 +12,6 @@ using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Features;
 using SharpFightingEngine.Fighters;
-using SharpFightingEngine.Fighters.Factories;
 using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.Test.Data.Engines;
 using SharpFightingEngine.Test.Utilities;
@@ -66,26 +67,10 @@ namespace SharpFightingEngine.Test.Engines
     [Fact]
     public void ShouldHaveFighterSacrificedTick()
     {
-      var sacrificeFighter = new AdvancedFighter()
-      {
-        Id = Guid.NewGuid(),
-        Accuracy = 1,
-        Agility = 291,
-        Expertise = 1,
-        Power = 1,
-        Regeneration = 1,
-        Speed = 1,
-        Stamina = 1,
-        Toughness = 1,
-        Vision = 1,
-        Vitality = 1,
-      };
+      var json = File.ReadAllText(@"../../../Data/Json/fightersWithTroll.json");
 
-      var fighters = FighterFactory.GetFighters(19, 300)
-        .Union(new AdvancedFighter[]
-        {
-          sacrificeFighter,
-        });
+      var fighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
+
       var battlefield = new PlainBattlefield();
       var features = new List<IEngineFeature>()
       {
@@ -108,10 +93,12 @@ namespace SharpFightingEngine.Test.Engines
       var result = engine.StartMatch();
       var ticks = result.Ticks
         .SelectMany(o => o.Ticks)
-        .OfType<FighterSacrificedTick>()
-        .ToList();
+        .OfType<FighterSacrificedTick>();
 
-      Assert.Contains(ticks, o => o.Fighter.Id == sacrificeFighter.Id);
+      Assert.NotEmpty(ticks);
+      var score = result.Scores.FirstOrDefault(o => o.Id == ticks.First().Fighter.Id);
+      Assert.True(score.RoundsAlive == 2);
+      Assert.True(score.TotalDeaths == 1);
     }
 
     private void VerifyMatchResult(IMatchResult result)

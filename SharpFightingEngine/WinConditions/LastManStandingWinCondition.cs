@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpFightingEngine.Constants;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
@@ -9,7 +10,7 @@ namespace SharpFightingEngine.WinConditions
 {
   public class LastManStandingWinCondition : IWinCondition
   {
-    public Guid Id => new Guid("F5F16639-7796-40EE-B15B-F16EB6E946C4");
+    public Guid Id => WinConditionConstants.LastManStanding;
 
     public IMatchResult GetMatchResult(IEnumerable<IFighter> fighters, ICollection<EngineRoundTick> engineRoundTicks)
     {
