@@ -35,6 +35,7 @@ namespace SharpFightingEngine.Test.Utilities
       {
         new FeatureRegenerateEnergy(),
         new FeatureRegenerateHealth(),
+        new FeatureSacrificeToEntity(),
       };
 
       var moveOrder = new AllRandomMoveOrder();

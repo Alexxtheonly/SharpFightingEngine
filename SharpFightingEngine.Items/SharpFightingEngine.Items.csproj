@@ -9,7 +9,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Alexander Herold</Authors>
     <Copyright>Alexander Herold</Copyright>
-    <Version>0.9.0</Version>
+    <Version>0.9.1</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
