@@ -49,7 +49,7 @@ namespace SharpFightingEngine.Test.Engines
     [Fact]
     public void ShouldHaveRegenerateHealthTicks()
     {
-      var engine = Utility.GetDefaultEngine(20);
+      var engine = Utility.GetDefaultEngine(20, 500);
       var result = engine.StartMatch();
 
       Assert.NotEmpty(result.Ticks.SelectMany(o => o.Ticks).OfType<FighterRegenerateHealthTick>());
@@ -62,6 +62,17 @@ namespace SharpFightingEngine.Test.Engines
       var result = engine.StartMatch();
 
       Assert.NotEmpty(result.Ticks.SelectMany(o => o.Ticks).OfType<FighterRegenerateEnergyTick>());
+    }
+
+    [Fact]
+    public void ShouldRegenerateCorrectEnergy()
+    {
+      var json = File.ReadAllText(@"../../../Data/Json/league300-20190906.json");
+
+      var fighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
+
+      var engine = Utility.GetDefaultEngine(fighters);
+      var result = engine.StartMatch();
     }
 
     [Fact]

@@ -5,6 +5,7 @@ using GeneticSharp.Domain.Mutations;
 using GeneticSharp.Domain.Populations;
 using GeneticSharp.Domain.Selections;
 using GeneticSharp.Domain.Terminations;
+using GeneticSharp.Infrastructure.Framework.Threading;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Test.Genetic.EngineCalculation;
@@ -25,10 +26,10 @@ namespace SharpFightingEngine.Test.Genetic
     [Fact(Skip = "manual test only")]
     public void ShouldTestGeneticAlgorithm()
     {
-      var population = new Population(1000, 10000, new FighterChromosome());
+      var population = new Population(5000, 10000, new FighterChromosome());
       var fitness = new FighterFitness();
 
-      var ga = RunGeneticAlgorithm(population, fitness, 150);
+      var ga = RunGeneticAlgorithm(population, fitness, 50);
       var fighter = new AdvancedFighter();
       (ga.BestChromosome as FighterChromosome).ApplyTo(fighter);
     }
@@ -60,6 +61,7 @@ namespace SharpFightingEngine.Test.Genetic
       var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation)
       {
         Termination = new GenerationNumberTermination(generations),
+        TaskExecutor = new ParallelTaskExecutor() { MinThreads = 100, MaxThreads = 250 },
       };
 
       var latestFitness = 0.0;

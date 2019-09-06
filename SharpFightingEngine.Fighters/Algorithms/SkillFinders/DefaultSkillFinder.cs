@@ -1,33 +1,34 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Battlefields;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Skills;
 
 namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
 {
   public class DefaultSkillFinder : ISkillFinder
   {
-    public ISkill GetSkill(IFighterStats actor, IFighterStats target, IEnumerable<ISkill> skills)
+    public ISkill GetSkill(IFighterStats actor, IFighterStats target, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
     {
       return skills
-        .Where(o => o.Energy <= actor.EnergyRemaining())
+        .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
         .Where(o => o.Range >= actor.GetDistanceAbs(target))
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
 
-    public ISkill GetMaxDamageSkill(IFighterStats actor, IEnumerable<ISkill> skills)
+    public ISkill GetMaxDamageSkill(IFighterStats actor, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
     {
       return skills
-        .Where(o => o.Energy <= actor.EnergyRemaining())
+        .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
 
-    public ISkill GetMaxRangeSkill(IFighterStats actor, IEnumerable<ISkill> skills)
+    public ISkill GetMaxRangeSkill(IFighterStats actor, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
     {
       return skills
-        .Where(o => o.Energy <= actor.EnergyRemaining())
+        .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
         .OrderByDescending(o => o.Range)
         .FirstOrDefault();
     }

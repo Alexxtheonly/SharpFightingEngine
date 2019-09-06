@@ -13,7 +13,7 @@ namespace SharpFightingEngine.Test.Genetic
 {
   public class FighterFitness : IFitness
   {
-    private const int DesiredPowerlevel = 500;
+    private const int DesiredPowerlevel = 300;
     private const int OpponentPowerlevel = 400;
 
     public double Evaluate(IChromosome chromosome)
@@ -36,24 +36,33 @@ namespace SharpFightingEngine.Test.Genetic
       }
 
       var json = File.ReadAllText("../../../Data/Json/strongFighters.json");
-      var strongFighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
 
-      var fighters = new List<IFighterStats>()
+      var winCount = 0;
+      var won = false;
+      var fitness = 0D;
+      do
       {
-        geneticFighter,
-      }.Union(strongFighters);
+        var strongFighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
 
-      Engine engine = Utility.GetDefaultEngine(fighters);
+        var fighters = new List<IFighterStats>()
+        {
+          geneticFighter,
+        }.Union(strongFighters);
 
-      double score = 0;
+        Engine engine = Utility.GetDefaultEngine(fighters);
+        var result = engine.StartMatch();
 
-      for (int i = 0; i < 5; i++)
-      {
-        var current = GetFitness(geneticFighter, engine.StartMatch());
-        score += current;
+        won = result.Wins.Any(o => o.Id == geneticFighter.Id);
+        if (won)
+        {
+          winCount++;
+        }
+
+        fitness += GetFitness(geneticFighter, result);
       }
+      while (won && winCount < 25);
 
-      return score;
+      return fitness;
     }
 
     private static double GetFitness(IFighterStats geneticFighter, IMatchResult result)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Combat;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters.Algorithms.PathFinders;
 using SharpFightingEngine.Fighters.Algorithms.SkillFinders;
@@ -117,7 +118,11 @@ namespace SharpFightingEngine.Fighters
       new RecklessShotSkill(),
     };
 
-    public virtual IFighterAction GetFighterAction(IEnumerable<IFighterStats> visibleFighters, IBattlefield battlefield, IEnumerable<EngineRoundTick> roundTicks)
+    public virtual IFighterAction GetFighterAction(
+      IEnumerable<IFighterStats> visibleFighters,
+      IBattlefield battlefield,
+      IEnumerable<EngineRoundTick> roundTicks,
+      EngineCalculationValues calculationValues)
     {
       var roam = new Move()
       {
@@ -136,10 +141,10 @@ namespace SharpFightingEngine.Fighters
       }
 
       var target = TargetFinder.GetTarget(visibleEnemies, this);
-      var skill = SkillFinder.GetSkill(this, target, Skills);
+      var skill = SkillFinder.GetSkill(this, target, Skills, calculationValues);
       if (skill == null)
       {
-        return GetSkillMove(battlefield, target);
+        return GetSkillMove(battlefield, target, calculationValues);
       }
 
       return new Attack()
@@ -150,9 +155,9 @@ namespace SharpFightingEngine.Fighters
       };
     }
 
-    protected IFighterAction GetSkillMove(IBattlefield battlefield, IFighterStats target)
+    protected IFighterAction GetSkillMove(IBattlefield battlefield, IFighterStats target, EngineCalculationValues calculationValues)
     {
-      var desiredSkill = 50F.Chance() ? SkillFinder.GetMaxDamageSkill(this, Skills) : SkillFinder.GetMaxRangeSkill(this, Skills);
+      var desiredSkill = 50F.Chance() ? SkillFinder.GetMaxDamageSkill(this, Skills, calculationValues) : SkillFinder.GetMaxRangeSkill(this, Skills, calculationValues);
       var distance = desiredSkill?.Range ?? 1;
 
       return new Move()

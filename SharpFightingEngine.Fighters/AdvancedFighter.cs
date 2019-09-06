@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Combat;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 
 namespace SharpFightingEngine.Fighters
@@ -13,7 +14,11 @@ namespace SharpFightingEngine.Fighters
     private bool flight;
     private IPosition flightPosition;
 
-    public override IFighterAction GetFighterAction(IEnumerable<IFighterStats> visibleFighters, IBattlefield battlefield, IEnumerable<EngineRoundTick> roundTicks)
+    public override IFighterAction GetFighterAction(
+      IEnumerable<IFighterStats> visibleFighters,
+      IBattlefield battlefield,
+      IEnumerable<EngineRoundTick> roundTicks,
+      EngineCalculationValues calculationValues)
     {
       var visibleEnemies = visibleFighters
         .Where(o => o.Team == null || o.Team != Team);
@@ -75,10 +80,10 @@ namespace SharpFightingEngine.Fighters
         target = TargetFinder.GetTarget(visibleEnemies, this);
       }
 
-      var skill = SkillFinder.GetSkill(this, target, Skills);
+      var skill = SkillFinder.GetSkill(this, target, Skills, calculationValues);
       if (skill == null)
       {
-        return GetSkillMove(battlefield, target);
+        return GetSkillMove(battlefield, target, calculationValues);
       }
 
       return new Attack()
