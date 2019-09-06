@@ -45,7 +45,7 @@ namespace SharpFightingEngine.Engines
 
     private Dictionary<Type, Func<IFighterAction, EngineTick>> ActionHandlers => new Dictionary<Type, Func<IFighterAction, EngineTick>>()
     {
-      [typeof(IMove)] = o => (o as IMove).Handle(Fighters),
+      [typeof(IMove)] = o => (o as IMove).Handle(Fighters, configuration.CalculationValues),
       [typeof(IAttack)] = o => (o as IAttack).Handle(Fighters, configuration.CalculationValues),
     };
 
@@ -114,8 +114,8 @@ namespace SharpFightingEngine.Engines
     {
       foreach (var fighter in Fighters.Values)
       {
-        fighter.Health = fighter.Health(configuration.CalculationValues);
-        fighter.Energy = fighter.Energy(configuration.CalculationValues);
+        fighter.Health = fighter.HealthRemaining(configuration.CalculationValues);
+        fighter.Energy = fighter.EnergyRemaining(configuration.CalculationValues);
       }
     }
 
@@ -170,7 +170,7 @@ namespace SharpFightingEngine.Engines
 
         foreach (IFighterAction action in actions)
         {
-          if (action.Actor.Health(configuration.CalculationValues) <= 0)
+          if (action.Actor.HealthRemaining(configuration.CalculationValues) <= 0)
           {
             // only process actions of alive fighters
             continue;
@@ -217,7 +217,11 @@ namespace SharpFightingEngine.Engines
 
       foreach (IFighterStats fighter in configuration.MoveOrder.Next(fighters))
       {
-        yield return fighter.GetFighterAction(fighters.GetVisibleFightersFor(fighter, configuration.CalculationValues), configuration.Battlefield, EngineRoundTicks);
+        yield return fighter.GetFighterAction(
+          fighters.GetVisibleFightersFor(fighter, configuration.CalculationValues),
+          configuration.Battlefield,
+          EngineRoundTicks,
+          configuration.CalculationValues);
       }
     }
 

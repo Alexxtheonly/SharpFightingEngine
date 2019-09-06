@@ -4,7 +4,7 @@
   {
     public float HealthRegenerationFactor { get; set; } = 0.4F;
 
-    public float EnergyRegenerationFactor { get; set; } = 4.33F;
+    public float EnergyRegenerationFactor { get; set; } = 0.33F;
 
     public float AttackPowerFactor { get; set; } = 2.2F;
 
@@ -22,7 +22,7 @@
 
     public float VitalityFactor { get; set; } = 6F;
 
-    public float SpeedFactor { get; set; } = 0.9F;
+    public float SpeedFactor { get; set; } = 1;
 
     public float StaminaFactor { get; set; } = 2.3F;
   }

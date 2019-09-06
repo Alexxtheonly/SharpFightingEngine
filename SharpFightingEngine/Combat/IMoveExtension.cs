@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Combat;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
 
@@ -10,7 +11,7 @@ namespace SharpFightingEngine.Combat
 {
   public static class IMoveExtension
   {
-    public static EngineTick Handle(this IMove move, Dictionary<Guid, IFighterStats> fighters)
+    public static EngineTick Handle(this IMove move, Dictionary<Guid, IFighterStats> fighters, EngineCalculationValues calculationValues)
     {
       var moveTick = new FighterMoveTick()
       {
@@ -18,7 +19,7 @@ namespace SharpFightingEngine.Combat
         Current = move.Actor.GetPosition(),
       };
 
-      if (move.HasEnoughSpeed())
+      if (move.HasEnoughSpeed(calculationValues))
       {
         fighters[move.Actor.Id].Set(move.NextPosition);
 
@@ -37,7 +38,7 @@ namespace SharpFightingEngine.Combat
         var startPosition = move.Actor.GetVector3();
         var endPosition = move.NextPosition.GetVector3();
 
-        var newPosition = startPosition + (Vector3.Normalize(endPosition - startPosition) * move.Actor.Speed);
+        var newPosition = startPosition + (Vector3.Normalize(endPosition - startPosition) * move.Actor.Velocity(calculationValues));
 
         fighters[move.Actor.Id].Set(newPosition);
 
@@ -51,9 +52,9 @@ namespace SharpFightingEngine.Combat
       return move.Actor.GetDistance(move.NextPosition);
     }
 
-    public static bool HasEnoughSpeed(this IMove move)
+    public static bool HasEnoughSpeed(this IMove move, EngineCalculationValues calculationValues)
     {
-      return move.Actor.Speed >= Math.Abs(move.GetDistance());
+      return move.Actor.Velocity(calculationValues) >= Math.Abs(move.GetDistance());
     }
   }
 }

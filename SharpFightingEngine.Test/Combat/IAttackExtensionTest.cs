@@ -35,10 +35,10 @@ namespace SharpFightingEngine.Test.Combat
         .Returns(skill.Object);
 
       attack
-        .Setup(o => o.Actor.Energy)
-        .Returns(available);
+        .Setup(o => o.Actor.Stamina)
+        .Returns(available / calculationValues.StaminaFactor);
 
-      Assert.Equal(expected, attack.Object.HasEnoughEnergy());
+      Assert.Equal(expected, attack.Object.HasEnoughEnergy(calculationValues));
     }
 
     [Theory]
@@ -47,13 +47,13 @@ namespace SharpFightingEngine.Test.Combat
     [InlineAutoData]
     [InlineAutoData]
     [InlineAutoData]
-    public void MisschanceShouldBeCorrect(float accuracy)
+    public void HitChanceShouldBeCorrect(float accuracy)
     {
       attack
         .Setup(o => o.Actor.Accuracy)
         .Returns(accuracy);
 
-      Assert.Equal(attack.Object.Actor.Accuracy / calculationValues.AccuracyFactor, attack.Object.MissChance(calculationValues));
+      Assert.Equal(100 + (attack.Object.Actor.Accuracy * calculationValues.AccuracyFactor), attack.Object.HitChance(calculationValues));
     }
 
     [Theory]
@@ -131,6 +131,23 @@ namespace SharpFightingEngine.Test.Combat
       var actual = attack.GetDistance();
 
       Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(1, 1, 100.7)]
+    [InlineData(1, 200, 1.199997)]
+    public void HitValueShouldBeCorrect(int accuracy, int agility, float expected)
+    {
+      attack
+        .Setup(o => o.Actor.Accuracy)
+        .Returns(accuracy);
+
+      attack
+        .Setup(o => o.Target.Agility)
+        .Returns(agility);
+
+      var hitvalue = attack.Object.HitValue(calculationValues);
+      Assert.Equal(expected, hitvalue);
     }
   }
 }

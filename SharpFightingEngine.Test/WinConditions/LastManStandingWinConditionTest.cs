@@ -63,7 +63,7 @@ namespace SharpFightingEngine.Test.WinConditions
     {
       foreach (var fighter in fighters)
       {
-        fighter.Health = fighter.Health(values);
+        fighter.Health = fighter.HealthRemaining(values);
       }
     }
   }

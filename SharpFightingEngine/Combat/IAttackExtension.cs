@@ -20,13 +20,13 @@ namespace SharpFightingEngine.Combat
         return attackTick;
       }
 
-      if (!attack.HasEnoughEnergy())
+      if (!attack.HasEnoughEnergy(calculationValues))
       {
         attackTick.InsufficientEnergy = true;
         return attackTick;
       }
 
-      if ((attack.DodgeChance(calculationValues) - attack.MissChance(calculationValues)).Chance())
+      if (!attack.HitValue(calculationValues).Chance())
       {
         attackTick.Dodged = true;
         return attackTick;
@@ -57,22 +57,27 @@ namespace SharpFightingEngine.Combat
 
     public static int GetDamage(this IAttack attack, EngineCalculationValues calculationValues)
     {
-      return (int)(attack.Skill.Damage * ((attack.Actor.Power * calculationValues.AttackPowerFactor) / (attack.Target.Toughness * calculationValues.ArmorDefenseFactor)));
+      return (int)(attack.Skill.Damage * (attack.Actor.PotentialPower(calculationValues) / attack.Target.PotentialDefense(calculationValues)));
     }
 
-    public static bool HasEnoughEnergy(this IAttack attack)
+    public static bool HasEnoughEnergy(this IAttack attack, EngineCalculationValues calculationValues)
     {
-      return attack.Skill.Energy <= attack.Actor.EnergyRemaining();
+      return attack.Skill.Energy <= attack.Actor.EnergyRemaining(calculationValues);
     }
 
     public static float DodgeChance(this IAttack attack, EngineCalculationValues calculationValues)
     {
-      return attack.Target.Agility * calculationValues.AgilityFactor;
+      return attack.Target.DodgeChance(calculationValues);
     }
 
-    public static float MissChance(this IAttack attack, EngineCalculationValues calculationValues)
+    public static float HitChance(this IAttack attack, EngineCalculationValues calculationValues)
     {
-      return attack.Actor.Accuracy / calculationValues.AccuracyFactor;
+      return attack.Actor.HitChance(calculationValues);
+    }
+
+    public static float HitValue(this IAttack attack, EngineCalculationValues calculationValues)
+    {
+      return attack.HitChance(calculationValues) - attack.DodgeChance(calculationValues);
     }
 
     private static T GetFighterTick<T>(this IAttack attack)
