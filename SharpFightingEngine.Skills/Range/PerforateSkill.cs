@@ -1,17 +1,20 @@
 ﻿using System;
+using SharpFightingEngine.Skills.General;
 
 namespace SharpFightingEngine.Skills.Range
 {
-  public class PerforateSkill : ISkill
+  public class PerforateSkill : SkillBase
   {
-    public Guid Id => new Guid("ABE67626-471D-499D-AA44-2C1468771C3E");
+    public override Guid Id => new Guid("ABE67626-471D-499D-AA44-2C1468771C3E");
 
-    public string Name => "Perforate";
+    public override string Name => "Perforate";
 
-    public int Damage => Energy;
+    public override float Range => 6;
 
-    public float Range => 6;
+    public override int Energy => 7;
 
-    public int Energy => 7;
+    public override int DamageLow => 5;
+
+    public override int DamageHigh => 9;
   }
 }

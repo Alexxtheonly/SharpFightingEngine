@@ -1,17 +1,20 @@
 ﻿using System;
+using SharpFightingEngine.Skills.General;
 
 namespace SharpFightingEngine.Skills.Range
 {
-  public class StoneThrowSkill : ISkill
+  public class StoneThrowSkill : SkillBase
   {
-    public Guid Id => new Guid("A99A67A3-F03A-4D5B-8DBD-F34DD886FA78");
+    public override Guid Id => new Guid("A99A67A3-F03A-4D5B-8DBD-F34DD886FA78");
 
-    public string Name => "Stone Throw";
+    public override string Name => "Stone Throw";
 
-    public int Damage => Energy;
+    public override float Range => 2.6F;
 
-    public float Range => 2.6F;
+    public override int Energy => 2;
 
-    public int Energy => 2;
+    public override int DamageLow => 1;
+
+    public override int DamageHigh => 4;
   }
 }

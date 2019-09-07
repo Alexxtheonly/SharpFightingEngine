@@ -1,17 +1,20 @@
 ﻿using System;
+using SharpFightingEngine.Skills.General;
 
 namespace SharpFightingEngine.Skills.Melee
 {
-  public class FrenzySmashSkill : ISkill
+  public class FrenzySmashSkill : SkillBase
   {
-    public Guid Id => new Guid("A3480692-AF37-4D23-95DA-50C005F82929");
+    public override Guid Id => new Guid("A3480692-AF37-4D23-95DA-50C005F82929");
 
-    public string Name => "Frenzy Smash";
+    public override string Name => "Frenzy Smash";
 
-    public int Damage => Energy;
+    public override float Range => 0.25F;
 
-    public float Range => 0.25F;
+    public override int Energy => 10;
 
-    public int Energy => 10;
+    public override int DamageLow => 7;
+
+    public override int DamageHigh => 13;
   }
 }

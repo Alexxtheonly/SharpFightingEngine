@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpFightingEngine.Skills.General;
 using Xunit;
 
 namespace SharpFightingEngine.Skills.Test.General
@@ -10,21 +11,42 @@ namespace SharpFightingEngine.Skills.Test.General
     [Fact]
     public void ShouldHaveUniqueSkillIds()
     {
+      var ids = new HashSet<Guid>();
+      var skills = GetSkills().ToList();
+      foreach (var skill in skills)
+      {
+        Assert.DoesNotContain(ids, o => o == skill.Id);
+
+        ids.Add(skill.Id);
+      }
+
+      Assert.Equal(skills.Count, ids.Count);
+    }
+
+    [Fact]
+    public void ShouldHaveCorrectDamage()
+    {
+      foreach (var skill in GetSkills())
+      {
+        Assert.True(skill.DamageLow <= skill.DamageHigh);
+        Assert.InRange(skill.Damage, skill.DamageLow, skill.DamageHigh);
+      }
+    }
+
+    private IEnumerable<SkillBase> GetSkills()
+    {
       var skillTypes = AppDomain.CurrentDomain
         .GetAssemblies()
         .Where(assembly => !assembly.FullName.StartsWith("Microsoft.VisualStudio.TraceDataCollector")) // workaround for https://github.com/microsoft/vstest/issues/2008
         .SelectMany(o => o.GetTypes())
-        .Where(o => o.GetInterfaces().Contains(typeof(ISkill)));
+        .Where(o => o.BaseType == typeof(SkillBase));
 
-      var ids = new HashSet<Guid>();
       foreach (var type in skillTypes)
       {
-        var skill = Assert.IsAssignableFrom<ISkill>(Activator.CreateInstance(type));
-        Assert.DoesNotContain(skill.Id, ids);
-        ids.Add(skill.Id);
-      }
+        var skill = Assert.IsAssignableFrom<SkillBase>(Activator.CreateInstance(type));
 
-      Assert.Equal(skillTypes.Count(), ids.Count);
+        yield return skill;
+      }
     }
   }
 }
