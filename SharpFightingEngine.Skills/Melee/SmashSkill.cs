@@ -9,7 +9,7 @@ namespace SharpFightingEngine.Skills.Melee
 
     public override string Name => "Smash";
 
-    public override float Range => 0.4F;
+    public override float Range => 1;
 
     public override int Energy => 8;
 

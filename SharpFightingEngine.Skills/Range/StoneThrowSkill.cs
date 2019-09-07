@@ -9,7 +9,7 @@ namespace SharpFightingEngine.Skills.Range
 
     public override string Name => "Stone Throw";
 
-    public override float Range => 2.6F;
+    public override float Range => 8;
 
     public override int Energy => 2;
 

@@ -9,7 +9,7 @@ namespace SharpFightingEngine.Skills.Range
 
     public override string Name => "Perforate";
 
-    public override float Range => 6;
+    public override float Range => 12;
 
     public override int Energy => 7;
 
