@@ -9,7 +9,7 @@ namespace SharpFightingEngine.Skills.Range
 
     public override string Name => "Reckless Shot";
 
-    public override float Range => 3.5F;
+    public override float Range => 15;
 
     public override int Energy => 9;
 
