@@ -1,17 +1,20 @@
 ﻿using System;
+using SharpFightingEngine.Skills.General;
 
 namespace SharpFightingEngine.Skills.Melee
 {
-  public class ExecuteSkill : ISkill
+  public class ExecuteSkill : SkillBase
   {
-    public Guid Id => new Guid("8C8229C8-A0A8-47F0-AD04-3DBE61EC6D32");
+    public override Guid Id => new Guid("8C8229C8-A0A8-47F0-AD04-3DBE61EC6D32");
 
-    public string Name => "Execute";
+    public override string Name => "Execute";
 
-    public int Damage => Energy;
+    public override float Range => 0.3F;
 
-    public float Range => 0.3F;
+    public override int Energy => 20;
 
-    public int Energy => 20;
+    public override int DamageLow => 14;
+
+    public override int DamageHigh => 28;
   }
 }
