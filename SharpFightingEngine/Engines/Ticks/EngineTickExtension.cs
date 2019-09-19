@@ -18,5 +18,12 @@ namespace SharpFightingEngine.Engines.Ticks
         .OrderByDescending(o => o.Round)
         .FirstOrDefault();
     }
+
+    public static IEnumerable<EngineTick> GetLastRounds(this IEnumerable<EngineRoundTick> roundTicks, int rounds)
+    {
+      var maxRound = roundTicks.Max(o => o.Round);
+
+      return roundTicks.GetRounds(maxRound - rounds, maxRound);
+    }
   }
 }

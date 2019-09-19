@@ -2,5 +2,6 @@
 {
   public interface IStats : IOffensiveStats, IDefensiveStats, IUtilityStats
   {
+    IStats Clone();
   }
 }

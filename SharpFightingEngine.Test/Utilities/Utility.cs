@@ -33,6 +33,7 @@ namespace SharpFightingEngine.Test.Utilities
 
       var features = new List<IEngineFeature>()
       {
+        new FeatureApplyCondition(),
         new FeatureRegenerateEnergy(),
         new FeatureRegenerateHealth(),
         new FeatureSacrificeToEntity(),

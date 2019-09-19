@@ -2,6 +2,7 @@
 using System.Linq;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines;
+using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Skills;
 
 namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
@@ -31,6 +32,20 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
         .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
         .OrderByDescending(o => o.Range)
         .FirstOrDefault();
+    }
+
+    public IEnumerable<ISkill> ExcludeSkillsOnCooldown(IFighterStats actor, IEnumerable<ISkill> skills, IEnumerable<EngineRoundTick> roundTicks)
+    {
+      return skills
+        .Where(o => o.Cooldown == 0 || !IsOnCooldown(actor, roundTicks, o));
+    }
+
+    private static bool IsOnCooldown(IFighterStats actor, IEnumerable<EngineRoundTick> roundTicks, ISkill o)
+    {
+      return roundTicks
+        .GetLastRounds(o.Cooldown)
+        .OfType<FighterAttackTick>()
+        .Any(t => t.Fighter.Id == actor.Id && t.Skill.Id == o.Id);
     }
   }
 }

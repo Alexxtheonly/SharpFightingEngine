@@ -27,16 +27,16 @@ namespace SharpFightingEngine.Test.WinConditions
     {
       foreach (var fighter in fightersNoTeam.Skip(1))
       {
-        fighter.Health = 0;
+        fighter.DamageTaken = fighter.HealthRemaining(values);
       }
 
-      Assert.True(winCondition.HasWinner(fightersNoTeam));
+      Assert.True(winCondition.HasWinner(fightersNoTeam, values));
     }
 
     [Fact]
     public void ShouldNotHaveWinnerNoTeams()
     {
-      Assert.False(winCondition.HasWinner(fightersNoTeam));
+      Assert.False(winCondition.HasWinner(fightersNoTeam, values));
     }
 
     [Fact]
@@ -46,17 +46,17 @@ namespace SharpFightingEngine.Test.WinConditions
       {
         foreach (var fighter in team)
         {
-          fighter.Health = 0;
+          fighter.DamageTaken = fighter.HealthRemaining(values);
         }
       }
 
-      Assert.True(winCondition.HasWinner(fightersTeam));
+      Assert.True(winCondition.HasWinner(fightersTeam, values));
     }
 
     [Fact]
     public void ShouldNotHaveWinnerTeams()
     {
-      Assert.False(winCondition.HasWinner(fightersTeam));
+      Assert.False(winCondition.HasWinner(fightersTeam, values));
     }
 
     private void CalculateFighterHealth(ref IEnumerable<IFighterStats> fighters)

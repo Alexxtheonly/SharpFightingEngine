@@ -43,6 +43,15 @@ namespace SharpFightingEngine.Battlefields
       return Math.Abs(position.GetDistance(other));
     }
 
+    public static IPosition GetPosition(this Vector2 vector2)
+    {
+      return new Position()
+      {
+        X = vector2.X,
+        Y = vector2.Y,
+      };
+    }
+
     public static IPosition GetPosition(this Vector3 vector3)
     {
       var pos = new Position()

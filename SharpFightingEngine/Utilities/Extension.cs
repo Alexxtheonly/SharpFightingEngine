@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SharpFightingEngine.Utilities
 {
@@ -14,6 +15,11 @@ namespace SharpFightingEngine.Utilities
     public static bool Chance(this float chance, int min, int max)
     {
       return Random.Next(min, max) < chance;
+    }
+
+    public static IEnumerable<T> Yield<T>(this T item)
+    {
+      yield return item;
     }
   }
 }

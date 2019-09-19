@@ -14,7 +14,7 @@ namespace SharpFightingEngine.Fighters.Test.Factories
     {
       var fighter = FighterFactory.GetFighter(powerlevel);
 
-      Assert.Equal(powerlevel, fighter.PowerLevel());
+      Assert.Equal(powerlevel, fighter.Stats.PowerLevel());
     }
   }
 }

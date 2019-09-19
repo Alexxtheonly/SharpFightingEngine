@@ -4,6 +4,8 @@ using System.Linq;
 using SharpFightingEngine.Combat;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
+using SharpFightingEngine.Skills.Conditions;
+using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Engines
 {
@@ -43,9 +45,9 @@ namespace SharpFightingEngine.Engines
 
     private Dictionary<Guid, IFighterStats> DeadFighters { get; set; } = new Dictionary<Guid, IFighterStats>();
 
-    private Dictionary<Type, Func<IFighterAction, EngineTick>> ActionHandlers => new Dictionary<Type, Func<IFighterAction, EngineTick>>()
+    private Dictionary<Type, Func<IFighterAction, IEnumerable<EngineTick>>> ActionHandlers => new Dictionary<Type, Func<IFighterAction, IEnumerable<EngineTick>>>()
     {
-      [typeof(IMove)] = o => (o as IMove).Handle(Fighters, configuration.CalculationValues),
+      [typeof(IMove)] = o => (o as IMove).Handle(Fighters, configuration.CalculationValues).Yield(),
       [typeof(IAttack)] = o => (o as IAttack).Handle(Fighters, configuration.CalculationValues),
     };
 
@@ -72,7 +74,7 @@ namespace SharpFightingEngine.Engines
 
         ProcessFeatures();
 
-        hasWinner = configuration.WinCondition.HasWinner(Fighters.Values);
+        hasWinner = configuration.WinCondition.HasWinner(Fighters.Values, configuration.CalculationValues);
         isStale = configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks);
       }
 
@@ -176,14 +178,24 @@ namespace SharpFightingEngine.Engines
             continue;
           }
 
-          CurrentRoundTick.Ticks.Add(HandleFighterAction(action));
+          if (action.Actor.States.OfType<ISkillCondition>().Any(o => o.PreventsPerformingActions))
+          {
+            CurrentRoundTick.Ticks.Add(new FighterStunnedTick()
+            {
+              Fighter = action.Actor.AsStruct(),
+            });
+
+            continue;
+          }
+
+          CurrentRoundTick.Ticks.AddRange(HandleFighterAction(action));
         }
       }
     }
 
     private void CollectDeadBodies()
     {
-      foreach (var fighter in Fighters.Values.Where(o => !o.IsAlive()))
+      foreach (var fighter in Fighters.Values.Where(o => !o.IsAlive(configuration.CalculationValues)))
       {
         DeadFighters.Add(fighter.Id, fighter);
         CurrentRoundTick.Ticks.Add(new EngineFighterDiedTick() { Fighter = fighter.AsStruct() });
@@ -213,7 +225,7 @@ namespace SharpFightingEngine.Engines
 
     private IEnumerable<IFighterAction> GetFighterActions()
     {
-      var fighters = Fighters.Values.Where(o => o.IsAlive());
+      var fighters = Fighters.Values.Where(o => o.IsAlive(configuration.CalculationValues));
 
       foreach (IFighterStats fighter in configuration.MoveOrder.Next(fighters))
       {
@@ -225,7 +237,7 @@ namespace SharpFightingEngine.Engines
       }
     }
 
-    private EngineTick HandleFighterAction(IFighterAction action)
+    private IEnumerable<EngineTick> HandleFighterAction(IFighterAction action)
     {
       return ActionHandlers[action.GetType().GetInterfaces().First()].Invoke(action);
     }
