@@ -9,8 +9,6 @@ using SharpFightingEngine.Fighters.Algorithms.PathFinders;
 using SharpFightingEngine.Fighters.Algorithms.SkillFinders;
 using SharpFightingEngine.Fighters.Algorithms.TargetFinders;
 using SharpFightingEngine.Skills;
-using SharpFightingEngine.Skills.Melee;
-using SharpFightingEngine.Skills.Range;
 using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Fighters
@@ -47,56 +45,6 @@ namespace SharpFightingEngine.Fighters
 
     public float Z { get; set; }
 
-    /// <summary>
-    /// Indicates the distance that can be covered in a round.
-    /// </summary>
-    public float Speed { get; set; }
-
-    /// <summary>
-    /// Indicates how much energy the fighter has. Energy is used to perform skills.
-    /// </summary>
-    public float Stamina { get; set; }
-
-    /// <summary>
-    /// Indicates how many life points the fighter has.
-    /// </summary>
-    public float Vitality { get; set; }
-
-    /// <summary>
-    /// Indicates the power of the fighter. Power increases the damage caused by abilities.
-    /// </summary>
-    public float Power { get; set; }
-
-    /// <summary>
-    /// Indicates the mobility of the fighter. Mobility increases the chance of avoiding enemy attacks.
-    /// </summary>
-    public float Agility { get; set; }
-
-    /// <summary>
-    /// Indicates the accuracy of the fighter. Accuracy reduces the chance of missing an opponent with an attack.
-    /// </summary>
-    public float Accuracy { get; set; }
-
-    /// <summary>
-    /// Indicates the armor of the fighter. Armor reduces the damage taken by enemy attacks.
-    /// </summary>
-    public float Toughness { get; set; }
-
-    /// <summary>
-    /// Indicates the fighter's ability to regenerate. Regeneration restores life points every round.
-    /// </summary>
-    public float Regeneration { get; set; }
-
-    /// <summary>
-    /// Indicates the vision of the fighter. The vision affects the distance the enemy can be seen at.
-    /// </summary>
-    public float Vision { get; set; }
-
-    /// <summary>
-    /// Indicates the expertise. Expertise increases chance of critical hits with attacks.
-    /// </summary>
-    public float Expertise { get; set; }
-
     public IPathFinder PathFinder { get; set; } = new DefaultPathFinder();
 
     public ITargetFinder TargetFinder { get; set; } = new DefaultTargetFinder();
@@ -108,15 +56,23 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     public IEnumerable<ISkill> Skills { get; set; } = new ISkill[]
     {
-      new PunchSkill(),
-      new StoneThrowSkill(),
-      new ExecuteSkill(),
-      new FrenzySmashSkill(),
-      new SmashSkill(),
-      new BombardmentSkill(),
-      new PerforateSkill(),
-      new RecklessShotSkill(),
     };
+
+    public ICollection<IExpiringState> States { get; set; } = new List<IExpiringState>();
+
+    public IStats Stats { get; set; } = default(Stats);
+
+    public IStats GetAdjustedStats()
+    {
+      var stats = Stats.Clone();
+
+      foreach (var state in States)
+      {
+        state.Apply(stats);
+      }
+
+      return stats;
+    }
 
     public virtual IFighterAction GetFighterAction(
       IEnumerable<IFighterStats> visibleFighters,
@@ -141,10 +97,10 @@ namespace SharpFightingEngine.Fighters
       }
 
       var target = TargetFinder.GetTarget(visibleEnemies, this);
-      var skill = SkillFinder.GetSkill(this, target, Skills, calculationValues);
+      var skill = SkillFinder.GetSkill(this, target, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues);
       if (skill == null)
       {
-        return GetSkillMove(battlefield, target, calculationValues);
+        return GetSkillMove(battlefield, target, roundTicks, calculationValues);
       }
 
       return new Attack()
@@ -155,9 +111,11 @@ namespace SharpFightingEngine.Fighters
       };
     }
 
-    protected IFighterAction GetSkillMove(IBattlefield battlefield, IFighterStats target, EngineCalculationValues calculationValues)
+    protected IFighterAction GetSkillMove(IBattlefield battlefield, IFighterStats target, IEnumerable<EngineRoundTick> roundTicks, EngineCalculationValues calculationValues)
     {
-      var desiredSkill = 50F.Chance() ? SkillFinder.GetMaxDamageSkill(this, Skills, calculationValues) : SkillFinder.GetMaxRangeSkill(this, Skills, calculationValues);
+      var desiredSkill = 50F.Chance() ?
+        SkillFinder.GetMaxDamageSkill(this, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues) :
+        SkillFinder.GetMaxRangeSkill(this, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues);
       var distance = desiredSkill?.Range ?? 1;
 
       return new Move()

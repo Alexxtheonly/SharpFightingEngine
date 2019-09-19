@@ -80,10 +80,10 @@ namespace SharpFightingEngine.Fighters
         target = TargetFinder.GetTarget(visibleEnemies, this);
       }
 
-      var skill = SkillFinder.GetSkill(this, target, Skills, calculationValues);
+      var skill = SkillFinder.GetSkill(this, target, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues);
       if (skill == null)
       {
-        return GetSkillMove(battlefield, target, calculationValues);
+        return GetSkillMove(battlefield, target, roundTicks, calculationValues);
       }
 
       return new Attack()

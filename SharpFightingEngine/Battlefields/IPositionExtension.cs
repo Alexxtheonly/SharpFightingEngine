@@ -40,9 +40,31 @@ namespace SharpFightingEngine.Battlefields
       var startPosition = position.GetVector3();
       var endPosition = desiredPosition.GetVector3();
 
-      var calculated = startPosition + (Vector3.Normalize(endPosition - startPosition) * distance);
+      var calculated = startPosition + (startPosition.GetDirection(endPosition) * distance);
 
       return calculated;
+    }
+
+    public static Vector3 GetDirection(this Vector3 position, Vector3 desiredPosition)
+    {
+      return Vector3.Normalize(desiredPosition - position);
+    }
+
+    public static IPosition CalculateKnockBackPosition(this IPosition actor, IPosition target, float distance)
+    {
+      var knockbackVector = actor.GetVector3().GetDirection(target.GetVector3());
+
+      return (target.GetVector3() + (knockbackVector * distance)).GetPosition();
+    }
+
+    public static IPosition CalculatePullPosition(this IPosition actor, IPosition target, float distance)
+    {
+      const float desiredDistanceAfterPull = 1;
+
+      var distanceBetween = actor.GetDistanceAbs(target);
+      var pullDistance = Math.Min(distanceBetween - desiredDistanceAfterPull, distance);
+
+      return target.GetDirection(actor, pullDistance).GetPosition();
     }
 
     public static bool IsInsideBounds(this IPosition position, IBounds bounds)

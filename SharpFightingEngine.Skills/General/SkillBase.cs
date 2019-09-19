@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SharpFightingEngine.Battlefields;
+using SharpFightingEngine.Engines;
+using SharpFightingEngine.Engines.Ticks;
+using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.Skills.General
 {
   public abstract class SkillBase : ISkill
   {
-    private static readonly Random Random = new Random();
+    protected static readonly Random Random = new Random();
 
     public abstract Guid Id { get; }
 
@@ -19,5 +25,22 @@ namespace SharpFightingEngine.Skills.General
     public abstract float Range { get; }
 
     public abstract int Energy { get; }
+
+    public abstract int Cooldown { get; }
+
+    public virtual IEnumerable<EngineTick> Perform(IFighterStats actor, IFighterStats target, EngineCalculationValues calculationValues)
+    {
+      return Enumerable.Empty<EngineTick>();
+    }
+
+    protected IPosition CalculateKnockBackPosition(IPosition actor, IPosition target, float distance)
+    {
+      return actor.CalculateKnockBackPosition(target, distance);
+    }
+
+    protected IPosition CalculatePullPosition(IPosition actor, IPosition target, float distance)
+    {
+      return actor.CalculatePullPosition(target, distance);
+    }
   }
 }

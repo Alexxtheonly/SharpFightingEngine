@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using SharpFightingEngine.Battlefields;
+using SharpFightingEngine.Skills;
 
 namespace SharpFightingEngine.Fighters
 {
@@ -16,5 +18,7 @@ namespace SharpFightingEngine.Fighters
     int Health { get; set; }
 
     int Energy { get; set; }
+
+    ICollection<IExpiringState> States { get; set; }
   }
 }

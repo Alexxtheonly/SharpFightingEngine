@@ -9,6 +9,6 @@ namespace SharpFightingEngine.WinConditions
   {
     Guid Id { get; }
 
-    bool HasWinner(IEnumerable<IFighterStats> fighters);
+    bool HasWinner(IEnumerable<IFighterStats> fighters, EngineCalculationValues calculationValues);
   }
 }

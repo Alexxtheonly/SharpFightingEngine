@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SharpFightingEngine.Skills;
+using SharpFightingEngine.Skills.General;
+using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Fighters.Factories
 {
@@ -14,6 +17,12 @@ namespace SharpFightingEngine.Fighters.Factories
     private static readonly IEnumerable<PropertyInfo> UtilityProperties = typeof(IUtilityStats).GetProperties();
 
     private static readonly Random Random = new Random();
+
+    private static readonly IEnumerable<ISkill> Skills = typeof(SkillBase)
+      .Assembly
+      .GetTypes()
+      .Where(o => o.GetInterfaces().Contains(typeof(ISkill)) && !o.IsAbstract)
+      .Select(o => (ISkill)Activator.CreateInstance(o));
 
     public static IEnumerable<IFighterStats> GetFighters(int count, int powerlevel)
     {
@@ -70,6 +79,8 @@ namespace SharpFightingEngine.Fighters.Factories
         Team = team,
       };
 
+      AddSkills(fighter);
+
       SetValues(ref fighter, OffensiveProperties, offensivePowerlevel);
       SetValues(ref fighter, DefensiveProperties, defensivePowerlevel);
       SetValues(ref fighter, UtilityProperties, utilityPowerlevel);
@@ -87,6 +98,14 @@ namespace SharpFightingEngine.Fighters.Factories
           yield return GetFighter(powerlevel, team);
         }
       }
+    }
+
+    public static void AddSkills(FighterBase fighter)
+    {
+      var defaultSkill = Skills.Where(o => o.Cooldown == 0).GetRandom();
+      var others = Skills.Shuffle().Take(3);
+
+      fighter.Skills = defaultSkill.Yield().Union(others);
     }
 
     private static void SetValues(ref AdvancedFighter fighter, IEnumerable<PropertyInfo> properties, int powerlevel)
@@ -110,9 +129,9 @@ namespace SharpFightingEngine.Fighters.Factories
             break;
           }
 
-          var current = (float)property.GetValue(fighter);
+          var current = (float)property.GetValue(fighter.Stats);
 
-          property.SetValue(fighter, current + value);
+          property.SetValue(fighter.Stats, current + value);
         }
       }
     }

@@ -22,9 +22,9 @@ namespace SharpFightingEngine.WinConditions
       };
     }
 
-    public bool HasWinner(IEnumerable<IFighterStats> fighters)
+    public bool HasWinner(IEnumerable<IFighterStats> fighters, EngineCalculationValues calculationValues)
     {
-      fighters = fighters.Where(o => o.IsAlive());
+      fighters = fighters.Where(o => o.IsAlive(calculationValues));
 
       if (fighters.Any(o => o.Team != null))
       {

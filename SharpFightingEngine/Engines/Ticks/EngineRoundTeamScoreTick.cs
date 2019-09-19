@@ -21,7 +21,7 @@ namespace SharpFightingEngine.Engines.Ticks
       // The engine ensures that only fighters of the same team are passed to this class.
       TeamId = teamFighters.First().Team.Value;
 
-      Powerlevel = (int)teamFighters.Sum(o => o.PowerLevel());
+      Powerlevel = (int)teamFighters.Sum(o => o.Stats.PowerLevel());
       Round = roundTick.Round;
       Health = teamFighters.Sum(o => Math.Max(0, o.Health));
       Energy = teamFighters.Sum(o => o.Energy);

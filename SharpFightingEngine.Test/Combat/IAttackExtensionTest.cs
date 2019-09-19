@@ -35,7 +35,7 @@ namespace SharpFightingEngine.Test.Combat
         .Returns(skill.Object);
 
       attack
-        .Setup(o => o.Actor.Stamina)
+        .Setup(o => o.Actor.GetAdjustedStats().Stamina)
         .Returns(available / calculationValues.StaminaFactor);
 
       Assert.Equal(expected, attack.Object.HasEnoughEnergy(calculationValues));
@@ -50,10 +50,10 @@ namespace SharpFightingEngine.Test.Combat
     public void HitChanceShouldBeCorrect(float accuracy)
     {
       attack
-        .Setup(o => o.Actor.Accuracy)
+        .Setup(o => o.Actor.GetAdjustedStats().Accuracy)
         .Returns(accuracy);
 
-      Assert.Equal(100 + (attack.Object.Actor.Accuracy * calculationValues.AccuracyFactor), attack.Object.HitChance(calculationValues));
+      Assert.Equal(100 + (attack.Object.Actor.GetAdjustedStats().Accuracy * calculationValues.AccuracyFactor), attack.Object.HitChance(calculationValues));
     }
 
     [Theory]
@@ -65,10 +65,10 @@ namespace SharpFightingEngine.Test.Combat
     public void DodgechanceShouldBeCorrect(float agility)
     {
       attack
-        .Setup(o => o.Target.Agility)
+        .Setup(o => o.Target.GetAdjustedStats().Agility)
         .Returns(agility);
 
-      Assert.Equal(attack.Object.Target.Agility * calculationValues.AgilityFactor, attack.Object.DodgeChance(calculationValues));
+      Assert.Equal(attack.Object.Target.GetAdjustedStats().Agility * calculationValues.AgilityFactor, attack.Object.DodgeChance(calculationValues));
     }
 
     [Theory]
@@ -84,14 +84,14 @@ namespace SharpFightingEngine.Test.Combat
         .Returns(skillDamage);
 
       attack
-        .Setup(o => o.Actor.Power)
+        .Setup(o => o.Actor.GetAdjustedStats().Power)
         .Returns(power);
 
       attack
-        .Setup(o => o.Target.Toughness)
+        .Setup(o => o.Target.GetAdjustedStats().Toughness)
         .Returns(toughness);
 
-      var expected = (int)(attack.Object.Skill.Damage * ((attack.Object.Actor.Power * calculationValues.AttackPowerFactor) / (attack.Object.Target.Toughness * calculationValues.ArmorDefenseFactor)));
+      var expected = (int)(attack.Object.Skill.Damage * ((attack.Object.Actor.GetAdjustedStats().Power * calculationValues.AttackPowerFactor) / (attack.Object.Target.GetAdjustedStats().Toughness * calculationValues.ArmorDefenseFactor)));
 
       Assert.Equal(expected, attack.Object.GetDamage(calculationValues));
     }
@@ -139,11 +139,11 @@ namespace SharpFightingEngine.Test.Combat
     public void HitValueShouldBeCorrect(int accuracy, int agility, float expected)
     {
       attack
-        .Setup(o => o.Actor.Accuracy)
+        .Setup(o => o.Actor.GetAdjustedStats().Accuracy)
         .Returns(accuracy);
 
       attack
-        .Setup(o => o.Target.Agility)
+        .Setup(o => o.Target.GetAdjustedStats().Agility)
         .Returns(agility);
 
       var hitvalue = attack.Object.HitValue(calculationValues);

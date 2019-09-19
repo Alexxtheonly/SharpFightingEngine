@@ -5,6 +5,7 @@ using System.Reflection;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
+using SharpFightingEngine.Skills.Conditions;
 
 namespace SharpFightingEngine.Fighters
 {
@@ -23,9 +24,9 @@ namespace SharpFightingEngine.Fighters
     /// <summary>
     /// Indicates if the fighter is alive.
     /// </summary>
-    public static bool IsAlive(this IFighterStats fighter)
+    public static bool IsAlive(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Health > 0;
+      return fighter.HealthRemaining(calculationValues) > 0;
     }
 
     /// <summary>
@@ -67,7 +68,7 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     public static int Health(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return (int)(fighter.Vitality * calculationValues.VitalityFactor);
+      return (int)(fighter.GetAdjustedStats().Vitality * calculationValues.VitalityFactor);
     }
 
     /// <summary>
@@ -75,17 +76,17 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     public static int Energy(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return (int)(fighter.Stamina * calculationValues.StaminaFactor);
+      return (int)(fighter.GetAdjustedStats().Stamina * calculationValues.StaminaFactor);
     }
 
     public static float PotentialPower(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Power * calculationValues.AttackPowerFactor;
+      return fighter.GetAdjustedStats().Power * calculationValues.AttackPowerFactor;
     }
 
     public static float PotentialDefense(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Toughness * calculationValues.ArmorDefenseFactor;
+      return fighter.GetAdjustedStats().Toughness * calculationValues.ArmorDefenseFactor;
     }
 
     public static int EnergyRemaining(this IFighterStats fighter, EngineCalculationValues calculationValues)
@@ -100,7 +101,7 @@ namespace SharpFightingEngine.Fighters
 
     public static float Velocity(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Speed * calculationValues.SpeedFactor;
+      return fighter.GetAdjustedStats().Speed * calculationValues.SpeedFactor;
     }
 
     /// <summary>
@@ -108,27 +109,40 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     public static float VisualRange(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Vision * calculationValues.VisualRangeFactor;
+      return fighter.GetAdjustedStats().Vision * calculationValues.VisualRangeFactor;
     }
 
     public static float CriticalHitChance(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Expertise * calculationValues.CriticalHitChanceFactor;
+      return fighter.GetAdjustedStats().Expertise * calculationValues.CriticalHitChanceFactor;
     }
 
     public static float DodgeChance(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Agility * calculationValues.AgilityFactor;
+      return fighter.GetAdjustedStats().Agility * calculationValues.AgilityFactor;
     }
 
     public static float HitChance(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return 100 + (fighter.Accuracy * calculationValues.AccuracyFactor);
+      return 100 + (fighter.GetAdjustedStats().Accuracy * calculationValues.AccuracyFactor);
     }
 
     public static int HealthRegeneration(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return (int)(fighter.Regeneration * calculationValues.HealthRegenerationFactor);
+      var potentialRegeneration = (int)(fighter.GetAdjustedStats().Regeneration * calculationValues.HealthRegenerationFactor);
+
+      var reducedHealing = fighter.States
+        .OfType<ISkillCondition>()
+        .Where(o => o.HealingReduced != null)
+        .Max(o => o.HealingReduced);
+
+      var actualRegeneration = potentialRegeneration;
+      if (reducedHealing != null)
+      {
+        actualRegeneration -= (int)(potentialRegeneration * reducedHealing);
+      }
+
+      return actualRegeneration;
     }
 
     /// <summary>

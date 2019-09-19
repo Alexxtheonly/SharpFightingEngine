@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using SharpFightingEngine.Skills;
 
 namespace SharpFightingEngine.Fighters
 {
@@ -21,5 +23,7 @@ namespace SharpFightingEngine.Fighters
     public int DamageTaken { get; set; }
 
     public int EnergyUsed { get; set; }
+
+    public ICollection<IExpiringState> States { get; set; }
   }
 }

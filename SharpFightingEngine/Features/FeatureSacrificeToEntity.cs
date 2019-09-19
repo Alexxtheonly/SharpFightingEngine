@@ -15,11 +15,11 @@ namespace SharpFightingEngine.Features
     public IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues)
     {
       var sacrifices = fighters
-        .Where(o => (o.DefensivePowerLevel() / o.PowerLevel()) > 0.7);
+        .Where(o => (o.Stats.DefensivePowerLevel() / o.Stats.PowerLevel()) > 0.7);
 
       foreach (var sacrifice in sacrifices)
       {
-        sacrifice.DamageTaken += sacrifice.Health;
+        sacrifice.DamageTaken += sacrifice.HealthRemaining(calculationValues);
 
         yield return new FighterSacrificedTick()
         {

@@ -30,9 +30,9 @@ namespace SharpFightingEngine.Test.Genetic
       };
       fighterChromosome.ApplyTo(geneticFighter);
 
-      if (geneticFighter.PowerLevel() != DesiredPowerlevel)
+      if (geneticFighter.Stats.PowerLevel() != DesiredPowerlevel)
       {
-        return (Math.Min(DesiredPowerlevel, geneticFighter.PowerLevel()) - Math.Max(DesiredPowerlevel, geneticFighter.PowerLevel())) * 1000;
+        return (Math.Min(DesiredPowerlevel, geneticFighter.Stats.PowerLevel()) - Math.Max(DesiredPowerlevel, geneticFighter.Stats.PowerLevel())) * 1000;
       }
 
       var json = File.ReadAllText("../../../Data/Json/strongFighters.json");

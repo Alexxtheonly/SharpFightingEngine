@@ -59,5 +59,21 @@ namespace SharpFightingEngine.Test.Battlefields
       var actual = startPos.GetDirection(endPos, distance);
       Assert.Equal(expected, actual);
     }
+
+    [Theory]
+    [ClassData(typeof(KnockbackTheoryData))]
+    public void ShouldReturnKnockbackPosition(IPosition actor, IPosition target, float distance, IPosition expected)
+    {
+      var actual = actor.CalculateKnockBackPosition(target, distance);
+      Assert.Equal(expected.GetVector2(), actual.GetVector2());
+    }
+
+    [Theory]
+    [ClassData(typeof(PullTheoryData))]
+    public void ShouldReturnPullPosition(IPosition actor, IPosition target, float distance, IPosition expected)
+    {
+      var actual = actor.CalculatePullPosition(target, distance);
+      Assert.Equal(expected.GetVector2(), actual.GetVector2());
+    }
   }
 }

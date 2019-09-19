@@ -58,7 +58,7 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
           engineCalculationChromosome.ApplyTo(cfg.CalculationValues);
 
           return cfg;
-        }, GetFighters(FighterCount, RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax)));
+        }, GetFighters(FighterCount));
 
         fitness += GetFitness(engine);
       }
@@ -99,23 +99,26 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
       return fitness;
     }
 
-    private IEnumerable<IFighterStats> GetFighters(int count, int powerLevel)
+    private IEnumerable<IFighterStats> GetFighters(int count)
     {
       for (int i = 0; i < count; i++)
       {
         yield return new GenericFighter()
         {
           Id = Guid.NewGuid(),
-          Accuracy = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Agility = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Toughness = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Power = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Regeneration = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Speed = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Stamina = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Vision = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Vitality = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-          Expertise = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+          Stats = new Stats()
+          {
+            Accuracy = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Agility = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Toughness = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Power = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Regeneration = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Speed = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Stamina = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Vision = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Vitality = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Expertise = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+          },
         };
       }
     }
