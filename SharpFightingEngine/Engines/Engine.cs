@@ -68,11 +68,11 @@ namespace SharpFightingEngine.Engines
 
         CalculateFighterStats();
 
-        CalculateRoundScore();
-
         CollectDeadBodies();
 
         ProcessFeatures();
+
+        CollectDeadBodies();
 
         hasWinner = configuration.WinCondition.HasWinner(Fighters.Values, configuration.CalculationValues);
         isStale = configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks);
@@ -97,8 +97,6 @@ namespace SharpFightingEngine.Engines
       SpawnFighters();
 
       CalculateFighterStats();
-
-      CalculateRoundScore();
     }
 
     private void SpawnFighters()
@@ -126,24 +124,6 @@ namespace SharpFightingEngine.Engines
       CalculateFighterStats();
 
       configuration.PositionGenerator.SetFighterPositions(Fighters, configuration.Battlefield);
-    }
-
-    private void CalculateRoundScore()
-    {
-      foreach (var fighter in Fighters.Values)
-      {
-        CurrentRoundTick.ScoreTick.Add(new EngineRoundScoreTick(CurrentRoundTick, fighter));
-      }
-
-      if (TeamMode)
-      {
-        foreach (var team in Fighters.Values
-          .Where(o => o.Team != null)
-          .GroupBy(o => o.Team))
-        {
-          CurrentRoundTick.ScoreTick.Add(new EngineRoundTeamScoreTick(CurrentRoundTick, team));
-        }
-      }
     }
 
     private void ProcessNewRound()

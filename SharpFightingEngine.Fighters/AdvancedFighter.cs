@@ -116,7 +116,7 @@ namespace SharpFightingEngine.Fighters
     /// <returns></returns>
     private IEnumerable<AttackerThreat> GetCurrentAttackers(IEnumerable<EngineRoundTick> roundTicks, IEnumerable<IFighterStats> enemies)
     {
-      var currentRound = roundTicks.GetMaxRound();
+      var currentRound = roundTicks.GetLastRound();
 
       return roundTicks
         .GetRounds(currentRound.Round - 1, currentRound.Round)
@@ -140,7 +140,7 @@ namespace SharpFightingEngine.Fighters
     /// <returns></returns>
     private IEnumerable<TargetChallenge> GetCurrentTargetChallenges(IEnumerable<EngineRoundTick> roundTicks)
     {
-      var currentRound = roundTicks.GetMaxRound();
+      var currentRound = roundTicks.GetLastRound();
 
       return roundTicks
         .GetRounds(currentRound.Round - 1, currentRound.Round)

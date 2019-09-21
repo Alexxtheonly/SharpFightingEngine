@@ -10,8 +10,8 @@ namespace SharpFightingEngine.StaleConditions
 {
   public class NoWinnerCanBeDeterminedStaleCondition : IStaleCondition
   {
-    private const int MaxStaleRounds = 20;
-    private const int MaxRounds = 250;
+    private const int MaxStaleRounds = 25;
+    private const int MaxRounds = 150;
 
     private int staleCounter = 0;
 
@@ -22,8 +22,6 @@ namespace SharpFightingEngine.StaleConditions
       return new MatchResult()
       {
         Ticks = engineRoundTicks,
-        Draws = fighters.Where(o => o.Health > 0).ToList(),
-        Loses = fighters.Where(o => o.Health <= 0).ToList(),
       };
     }
 
@@ -41,18 +39,8 @@ namespace SharpFightingEngine.StaleConditions
       {
         staleCounter++;
       }
-      else
-      {
-        var mortals = previousRound.ScoreTick
-          .Where(o => o.DamageTaken > o.RestoredHealth);
 
-        if (!mortals.Any())
-        {
-          staleCounter++;
-        }
-      }
-
-      return staleCounter > MaxStaleRounds || roundTicks.GetMaxRound().Round >= MaxRounds;
+      return staleCounter > MaxStaleRounds || roundTicks.GetLastRound().Round >= MaxRounds;
     }
   }
 }

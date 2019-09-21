@@ -52,7 +52,7 @@ namespace SharpFightingEngine.Test.Genetic
         Engine engine = Utility.GetDefaultEngine(fighters);
         var result = engine.StartMatch();
 
-        won = result.Wins.Any(o => o.Id == geneticFighter.Id);
+        won = result.Scores.First().Id == geneticFighter.Id;
         if (won)
         {
           winCount++;
@@ -67,27 +67,19 @@ namespace SharpFightingEngine.Test.Genetic
 
     private static double GetFitness(IFighterStats geneticFighter, IMatchResult result)
     {
+      var contribution = result.Contributions.First(o => o.FighterId == geneticFighter.Id);
+
       var fitness = 0D;
-      var score = result.Scores.FirstOrDefault(o => o.Id == geneticFighter.Id);
-
-      fitness += score.TotalKills * 25;
-      fitness += score.TotalDamageDone * 0.2;
-
-      if (result.Loses.Any(o => o.Id == geneticFighter.Id))
+      if (contribution.HasWon)
       {
-        fitness -= (result.Loses.TakeWhile(o => o.Id != geneticFighter.Id).Count() + 1) * 5;
-
-        return fitness;
+        fitness += 200;
       }
 
-      if (result.Draws.Any(o => o.Id == geneticFighter.Id))
-      {
-        fitness += result.Loses.TakeWhile(o => o.Id != geneticFighter.Id).Count() + 1;
+      fitness += contribution.KillsAndAssists * 50;
+      fitness += 25 * contribution.PercentageOfRoundsAlive;
+      fitness += 15 * contribution.MatchParticipation;
 
-        return fitness;
-      }
-
-      return fitness + 2500;
+      return fitness;
     }
   }
 }

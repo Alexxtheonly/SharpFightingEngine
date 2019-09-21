@@ -6,12 +6,6 @@ namespace SharpFightingEngine.Engines
   {
     Guid Id { get; set; }
 
-    int Powerlevel { get; set; }
-
-    int MaxHealth { get; set; }
-
-    int MaxEnergy { get; set; }
-
     int TotalDamageDone { get; set; }
 
     int TotalDamageTaken { get; set; }
