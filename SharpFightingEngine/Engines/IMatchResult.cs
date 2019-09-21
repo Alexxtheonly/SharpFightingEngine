@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using SharpFightingEngine.Engines.Ticks;
-using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.Engines
 {
@@ -12,10 +11,6 @@ namespace SharpFightingEngine.Engines
 
     IEnumerable<TeamMatchScore> TeamScores { get; }
 
-    ICollection<IFighter> Wins { get; set; }
-
-    ICollection<IFighter> Draws { get; set; }
-
-    ICollection<IFighter> Loses { get; set; }
+    IEnumerable<FighterContribution> Contributions { get; }
   }
 }

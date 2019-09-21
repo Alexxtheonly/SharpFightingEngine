@@ -17,8 +17,6 @@ namespace SharpFightingEngine.WinConditions
       return new MatchResult()
       {
         Ticks = engineRoundTicks,
-        Wins = fighters.Where(o => o.Health > 0).ToList(),
-        Loses = fighters.Where(o => o.Health <= 0).ToList(),
       };
     }
 

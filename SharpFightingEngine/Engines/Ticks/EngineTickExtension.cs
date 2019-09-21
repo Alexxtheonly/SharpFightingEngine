@@ -12,7 +12,7 @@ namespace SharpFightingEngine.Engines.Ticks
         .SelectMany(o => o.Ticks);
     }
 
-    public static EngineRoundTick GetMaxRound(this IEnumerable<EngineRoundTick> roundTicks)
+    public static EngineRoundTick GetLastRound(this IEnumerable<EngineRoundTick> roundTicks)
     {
       return roundTicks
         .OrderByDescending(o => o.Round)

@@ -108,7 +108,7 @@ namespace SharpFightingEngine.Test.Engines
 
       Assert.NotEmpty(ticks);
       var score = result.Scores.FirstOrDefault(o => o.Id == ticks.First().Fighter.Id);
-      Assert.True(score.RoundsAlive == 2);
+      Assert.True(score.RoundsAlive == 1);
       Assert.True(score.TotalDeaths == 1);
     }
 
@@ -129,6 +129,19 @@ namespace SharpFightingEngine.Test.Engines
       {
         VerifyMatchScore(allFighterTicks, teamScore, o => o.Fighter.Team == teamScore.Id, o => o.Target.Team == teamScore.Id);
       }
+
+      foreach (var contribution in result.Contributions)
+      {
+        var score = result.Scores.First(o => o.Id == contribution.FighterId);
+
+        Assert.Equal(score.TotalKills, contribution.KillsAndAssists);
+        Assert.Equal(result.Scores.First().Id == contribution.FighterId, contribution.HasWon);
+      }
+
+      var contributedKills = result.Contributions.Sum(o => o.KillsAndAssists);
+      Assert.True(contributedKills >= result.Scores.Count());
+      Assert.NotEqual(0, result.Contributions.Sum(o => o.MatchParticipation));
+      Assert.NotEqual(0, result.Contributions.Sum(o => o.PercentageOfRoundsAlive));
     }
 
     private void VerifyMatchScore(IEnumerable<FighterTick> allFighterTicks, IMatchScore score, Func<FighterTick, bool> actorQuery, Func<FighterAttackTick, bool> targetQuery)

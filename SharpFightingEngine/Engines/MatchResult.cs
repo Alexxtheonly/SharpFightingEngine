@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Engines.Ticks;
-using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.Engines
 {
@@ -9,26 +8,50 @@ namespace SharpFightingEngine.Engines
   {
     public IEnumerable<EngineRoundTick> Ticks { get; set; }
 
-    public ICollection<IFighter> Wins { get; set; } = new List<IFighter>();
-
-    public ICollection<IFighter> Draws { get; set; } = new List<IFighter>();
-
-    public ICollection<IFighter> Loses { get; set; } = new List<IFighter>();
-
     public IEnumerable<FighterMatchScore> Scores => Ticks
-      .SelectMany(o => o.ScoreTick)
-      .OrderByDescending(o => o.Round)
-      .OfType<EngineRoundScoreTick>()
-      .GroupBy(o => o.FighterId)
-      .CreateFighterMatchScores()
+      .CalculateFighterMatchScores()
       .OrderScores();
 
-    public IEnumerable<TeamMatchScore> TeamScores => Ticks
-      .SelectMany(o => o.ScoreTick)
-      .OrderByDescending(o => o.Round)
-      .OfType<EngineRoundTeamScoreTick>()
+    public IEnumerable<TeamMatchScore> TeamScores => Scores
+      .Where(o => o.TeamId != null)
       .GroupBy(o => o.TeamId)
-      .CreateTeamMatchScores()
+      .Select(o => new TeamMatchScore()
+      {
+        Id = o.Key ?? default,
+        RoundsAlive = o.Max(x => x.RoundsAlive),
+        TotalDamageDone = o.Sum(x => x.TotalDamageDone),
+        TotalDamageTaken = o.Sum(x => x.TotalDamageTaken),
+        TotalDeaths = o.Sum(x => x.TotalDeaths),
+        TotalDistanceTraveled = o.Sum(x => x.TotalDistanceTraveled),
+        TotalEnergyUsed = o.Sum(x => x.TotalEnergyUsed),
+        TotalKills = o.Sum(x => x.TotalKills),
+        TotalRegeneratedEnergy = o.Sum(x => x.TotalRegeneratedEnergy),
+        TotalRegeneratedHealth = o.Sum(x => x.TotalRegeneratedHealth),
+      })
       .OrderScores();
+
+    public IEnumerable<FighterContribution> Contributions
+    {
+      get
+      {
+        double rounds = Ticks.GetLastRound().Round;
+
+        foreach (var score in Scores)
+        {
+          var attackCount = Ticks.SelectMany(o => o.Ticks).OfType<FighterAttackTick>().Where(o => o.Fighter.Id == score.Id).Count();
+          var moveCount = Ticks.SelectMany(o => o.Ticks).OfType<FighterMoveTick>().Where(o => o.Fighter.Id == score.Id).Count();
+          double sum = attackCount + moveCount;
+
+          yield return new FighterContribution()
+          {
+            FighterId = score.Id,
+            HasWon = score.Id == Scores.First().Id,
+            KillsAndAssists = score.TotalKills,
+            MatchParticipation = sum == 0 ? 0 : attackCount / sum,
+            PercentageOfRoundsAlive = score.RoundsAlive / rounds,
+          };
+        }
+      }
+    }
   }
 }
