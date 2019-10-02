@@ -13,11 +13,7 @@ namespace SharpFightingEngine.Fighters
 
     int DamageTaken { get; set; }
 
-    int EnergyUsed { get; set; }
-
     int Health { get; set; }
-
-    int Energy { get; set; }
 
     ICollection<IExpiringState> States { get; set; }
   }

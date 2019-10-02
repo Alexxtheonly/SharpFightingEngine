@@ -9,27 +9,27 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
 {
   public class DefaultSkillFinder : ISkillFinder
   {
-    public ISkill GetSkill(IFighterStats actor, IFighterStats target, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
+    public IDamageSkill GetSkill(IFighterStats actor, IFighterStats target, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
     {
       return skills
-        .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
+        .OfType<IDamageSkill>()
         .Where(o => o.Range >= actor.GetDistanceAbs(target))
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
 
-    public ISkill GetMaxDamageSkill(IFighterStats actor, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
+    public IDamageSkill GetMaxDamageSkill(IFighterStats actor, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
     {
       return skills
-        .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
+        .OfType<IDamageSkill>()
         .OrderByDescending(o => o.Damage)
         .FirstOrDefault();
     }
 
-    public ISkill GetMaxRangeSkill(IFighterStats actor, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
+    public IDamageSkill GetMaxRangeSkill(IFighterStats actor, IEnumerable<ISkill> skills, EngineCalculationValues calculationValues)
     {
       return skills
-        .Where(o => o.Energy <= actor.EnergyRemaining(calculationValues))
+        .OfType<IDamageSkill>()
         .OrderByDescending(o => o.Range)
         .FirstOrDefault();
     }
@@ -40,11 +40,19 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
         .Where(o => o.Cooldown == 0 || !IsOnCooldown(actor, roundTicks, o));
     }
 
+    public IHealSkill GetHealSkill(IFighterStats actor, IEnumerable<ISkill> skills, IEnumerable<EngineRoundTick> roundTicks, EngineCalculationValues calculationValues)
+    {
+      return ExcludeSkillsOnCooldown(actor, skills, roundTicks)
+        .OfType<IHealSkill>()
+        .OrderByDescending(o => o.Heal)
+        .FirstOrDefault();
+    }
+
     private static bool IsOnCooldown(IFighterStats actor, IEnumerable<EngineRoundTick> roundTicks, ISkill o)
     {
       return roundTicks
         .GetLastRounds(o.Cooldown)
-        .OfType<FighterAttackTick>()
+        .OfType<FighterSkillTick>()
         .Any(t => t.Fighter.Id == actor.Id && t.Skill.Id == o.Id);
     }
   }

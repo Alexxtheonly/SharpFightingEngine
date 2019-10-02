@@ -11,7 +11,11 @@ namespace SharpFightingEngine.Combat
 {
   public static class IAttackExtension
   {
-    public static IEnumerable<EngineTick> Handle(this IAttack attack, Dictionary<Guid, IFighterStats> fighters, EngineCalculationValues calculationValues)
+    public static IEnumerable<EngineTick> Handle(
+      this IAttack attack,
+      Dictionary<Guid, IFighterStats> fighters,
+      IEnumerable<EngineRoundTick> roundTicks,
+      EngineCalculationValues calculationValues)
     {
       var ticks = new List<EngineTick>();
 
@@ -19,15 +23,15 @@ namespace SharpFightingEngine.Combat
 
       ticks.Add(attackTick);
 
-      if (!attack.IsInRange())
+      if (attack.IsOnCooldown(roundTicks))
       {
-        attackTick.OutOfRange = true;
+        attackTick.OnCooldown = true;
         return ticks;
       }
 
-      if (!attack.HasEnoughEnergy(calculationValues))
+      if (!attack.IsInRange())
       {
-        attackTick.InsufficientEnergy = true;
+        attackTick.OutOfRange = true;
         return ticks;
       }
 
@@ -40,12 +44,11 @@ namespace SharpFightingEngine.Combat
       attackTick.Damage = attack.GetDamage(calculationValues);
       if (attack.Actor.CriticalHitChance(calculationValues).Chance())
       {
-        attackTick.Damage = (int)(attackTick.Damage * calculationValues.CriticalHitDamageFactor);
+        attackTick.Damage = (int)(attackTick.Damage * attack.Actor.PotentialFerocity(calculationValues));
         attackTick.Critical = true;
       }
 
       fighters[attack.Target.Id].DamageTaken += attackTick.Damage;
-      fighters[attack.Actor.Id].EnergyUsed += attack.Skill.Energy;
 
       var additionalTicks = attack.Skill.Perform(attack.Actor, attack.Target, calculationValues);
       foreach (var tick in additionalTicks.OfType<FighterTick>())
@@ -63,6 +66,15 @@ namespace SharpFightingEngine.Combat
       return attack.GetDistance() <= attack.Skill.Range;
     }
 
+    public static bool IsOnCooldown(this IAttack attack, IEnumerable<EngineRoundTick> roundTicks)
+    {
+      return attack.Skill.Cooldown > 0 && roundTicks
+        .GetLastRounds(attack.Skill.Cooldown)
+        .OfType<FighterAttackTick>()
+        .Where(o => o.Fighter.Id == attack.Actor.Id)
+        .Any(o => o.AttackSkill.Id == attack.Skill.Id);
+    }
+
     public static float GetDistance(this IAttack attack)
     {
       return attack.Actor.GetDistanceAbs(attack.Target);
@@ -70,12 +82,8 @@ namespace SharpFightingEngine.Combat
 
     public static int GetDamage(this IAttack attack, EngineCalculationValues calculationValues)
     {
-      return (int)(attack.Skill.Damage * (attack.Actor.PotentialPower(calculationValues) / attack.Target.PotentialDefense(calculationValues)));
-    }
-
-    public static bool HasEnoughEnergy(this IAttack attack, EngineCalculationValues calculationValues)
-    {
-      return attack.Skill.Energy <= attack.Actor.EnergyRemaining(calculationValues);
+      // (Weapon strength * Power * Skill coefficient) / Armor
+      return (int)((attack.Skill.Damage * attack.Actor.GetAdjustedStats().Level * attack.Actor.PotentialPower(calculationValues)) / attack.Target.PotentialDefense(calculationValues));
     }
 
     public static float DodgeChance(this IAttack attack, EngineCalculationValues calculationValues)

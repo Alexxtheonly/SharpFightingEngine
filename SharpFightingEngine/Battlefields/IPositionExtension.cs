@@ -50,6 +50,11 @@ namespace SharpFightingEngine.Battlefields
       return Vector3.Normalize(desiredPosition - position);
     }
 
+    public static IPosition CalculateChargePosition(this IPosition actor, IPosition target, float distance)
+    {
+      return target.CalculatePullPosition(actor, distance);
+    }
+
     public static IPosition CalculateKnockBackPosition(this IPosition actor, IPosition target, float distance)
     {
       var knockbackVector = actor.GetVector3().GetDirection(target.GetVector3());

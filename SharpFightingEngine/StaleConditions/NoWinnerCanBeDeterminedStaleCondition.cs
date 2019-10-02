@@ -11,7 +11,7 @@ namespace SharpFightingEngine.StaleConditions
   public class NoWinnerCanBeDeterminedStaleCondition : IStaleCondition
   {
     private const int MaxStaleRounds = 25;
-    private const int MaxRounds = 150;
+    private const int MaxRounds = 100;
 
     private int staleCounter = 0;
 

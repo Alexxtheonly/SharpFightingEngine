@@ -10,19 +10,17 @@ using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Skills.Melee
 {
-  public class BurningSmash : SkillBase
+  public class BurningSmash : DamageSkillBase
   {
     public override Guid Id => new Guid("483007BD-DC6D-400C-A570-01AC8A7F91D8");
 
     public override string Name => "Burning Smash";
 
-    public override int DamageLow => 12;
+    public override int DamageLow => 5;
 
-    public override int DamageHigh => 18;
+    public override int DamageHigh => 8;
 
     public override float Range => 1;
-
-    public override int Energy => 10;
 
     public override int Cooldown => 2;
 
@@ -33,7 +31,7 @@ namespace SharpFightingEngine.Skills.Melee
         return Enumerable.Empty<EngineTick>();
       }
 
-      var condition = new BurnSkillCondition();
+      var condition = new BurnSkillCondition(actor);
 
       target.States.Add(condition);
 

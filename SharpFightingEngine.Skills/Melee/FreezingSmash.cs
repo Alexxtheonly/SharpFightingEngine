@@ -10,19 +10,17 @@ using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Skills.Melee
 {
-  public class FreezingSmash : SkillBase
+  public class FreezingSmash : DamageSkillBase
   {
     public override Guid Id => new Guid("3A9C5948-D0A2-4D86-91E4-C2285337B0E9");
 
     public override string Name => "Freezing Smash";
 
-    public override int DamageLow => 12;
+    public override int DamageLow => 5;
 
-    public override int DamageHigh => 18;
+    public override int DamageHigh => 8;
 
     public override float Range => 1;
-
-    public override int Energy => 11;
 
     public override int Cooldown => 1;
 
@@ -33,7 +31,7 @@ namespace SharpFightingEngine.Skills.Melee
         return Enumerable.Empty<EngineTick>();
       }
 
-      var condition = new FreezeSkillCondition();
+      var condition = new FreezeSkillCondition(actor);
 
       target.States.Add(condition);
 

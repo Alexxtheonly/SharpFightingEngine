@@ -1,27 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using SharpFightingEngine.Battlefields;
-using SharpFightingEngine.Battlefields.Bounds;
-using SharpFightingEngine.Battlefields.Plain;
 using SharpFightingEngine.Engines;
-using SharpFightingEngine.Engines.FighterPositionGenerators;
-using SharpFightingEngine.Engines.MoveOrders;
 using SharpFightingEngine.Engines.Ticks;
-using SharpFightingEngine.Features;
-using SharpFightingEngine.Fighters;
-using SharpFightingEngine.StaleConditions;
 using SharpFightingEngine.Test.Data.Engines;
 using SharpFightingEngine.Test.Utilities;
-using SharpFightingEngine.WinConditions;
 using Xunit;
 
 namespace SharpFightingEngine.Test.Engines
 {
   public class EngineTest
   {
+    [Theory]
+    [InlineData(1, 0, 0, 0, 0)]
+    [InlineData(1, 5, 0, 0, 0)]
+    [InlineData(1, 7, 0, 5, 0)]
+    [InlineData(8, 0, 0, 0, 0)]
+    [InlineData(16, 0, 0, 0, 0)]
+    [InlineData(24, 0, 0, 0, 0)]
+    [InlineData(32, 7, 5, 5, 4)]
+    public void ShouldReturnMatchResultFor(int level, int weaponPlus, int weaponRarity, int armorPlus, int armorRarity)
+    {
+      var engine = Utility.GetDefaultEngine(20, stats =>
+      {
+        Utility.SetStats(stats, level, weaponPlus, armorPlus, weaponRarity, armorRarity);
+      });
+
+      var result = engine.StartMatch();
+
+      Assert.NotNull(result);
+      Assert.NotEmpty(result.Ticks);
+      Assert.NotEmpty(result.Scores);
+      VerifyMatchResult(result);
+    }
+
     [Theory]
     [ClassData(typeof(AllRandomGenericFighterTheoryData))]
     [ClassData(typeof(AllRandomGenericFighterTheoryData))]
@@ -44,72 +57,6 @@ namespace SharpFightingEngine.Test.Engines
       var result = engine.StartMatch();
 
       VerifyMatchResult(result);
-    }
-
-    [Fact]
-    public void ShouldHaveRegenerateHealthTicks()
-    {
-      var engine = Utility.GetDefaultEngine(20, 500);
-      var result = engine.StartMatch();
-
-      Assert.NotEmpty(result.Ticks.SelectMany(o => o.Ticks).OfType<FighterRegenerateHealthTick>());
-    }
-
-    [Fact]
-    public void ShouldHaveRegenerateEnergyTicks()
-    {
-      var engine = Utility.GetDefaultEngine(20);
-      var result = engine.StartMatch();
-
-      Assert.NotEmpty(result.Ticks.SelectMany(o => o.Ticks).OfType<FighterRegenerateEnergyTick>());
-    }
-
-    [Fact]
-    public void ShouldRegenerateCorrectEnergy()
-    {
-      var json = File.ReadAllText(@"../../../Data/Json/league300-20190906.json");
-
-      var fighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
-
-      var engine = Utility.GetDefaultEngine(fighters);
-      var result = engine.StartMatch();
-    }
-
-    [Fact]
-    public void ShouldHaveFighterSacrificedTick()
-    {
-      var json = File.ReadAllText(@"../../../Data/Json/fightersWithTroll.json");
-
-      var fighters = JsonConvert.DeserializeObject<IEnumerable<AdvancedFighter>>(json);
-
-      var battlefield = new PlainBattlefield();
-      var features = new List<IEngineFeature>()
-      {
-        new FeatureRegenerateEnergy(),
-        new FeatureRegenerateHealth(),
-        new FeatureSacrificeToEntity(),
-      };
-
-      var engine = Utility.GetEngine(
-        fighters,
-        battlefield,
-        new Small(),
-        features,
-        new AllRandomMoveOrder(),
-        new AllRandomPositionGenerator(),
-        new LastManStandingWinCondition(),
-        new NoWinnerCanBeDeterminedStaleCondition(),
-        2);
-
-      var result = engine.StartMatch();
-      var ticks = result.Ticks
-        .SelectMany(o => o.Ticks)
-        .OfType<FighterSacrificedTick>();
-
-      Assert.NotEmpty(ticks);
-      var score = result.Scores.FirstOrDefault(o => o.Id == ticks.First().Fighter.Id);
-      Assert.True(score.RoundsAlive == 1);
-      Assert.True(score.TotalDeaths == 1);
     }
 
     private void VerifyMatchResult(IMatchResult result)
@@ -139,7 +86,7 @@ namespace SharpFightingEngine.Test.Engines
       }
 
       var contributedKills = result.Contributions.Sum(o => o.KillsAndAssists);
-      Assert.True(contributedKills >= result.Scores.Count());
+      Assert.True(contributedKills >= result.Scores.Count() - 1);
       Assert.NotEqual(0, result.Contributions.Sum(o => o.MatchParticipation));
       Assert.NotEqual(0, result.Contributions.Sum(o => o.PercentageOfRoundsAlive));
     }
@@ -154,7 +101,6 @@ namespace SharpFightingEngine.Test.Engines
       Assert.Equal(fighterTicks.OfType<FighterAttackTick>().Where(o => o.Hit).Sum(o => o.Damage), score.TotalDamageDone);
       Assert.Equal(allFighterTicks.OfType<FighterAttackTick>().Where(targetQuery).Where(o => o.Hit).Sum(o => o.Damage), score.TotalDamageTaken);
       Assert.Equal(fighterTicks.OfType<EngineFighterDiedTick>().Count(), score.TotalDeaths);
-      Assert.Equal(fighterTicks.OfType<FighterAttackTick>().Sum(o => o.Skill.Energy), score.TotalEnergyUsed);
     }
   }
 }

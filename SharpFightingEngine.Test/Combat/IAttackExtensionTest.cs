@@ -5,7 +5,6 @@ using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Combat;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Fighters;
-using SharpFightingEngine.Skills;
 using SharpFightingEngine.Test.Data.Combat;
 using Xunit;
 
@@ -17,37 +16,12 @@ namespace SharpFightingEngine.Test.Combat
     private readonly EngineCalculationValues calculationValues = new EngineCalculationValues();
 
     [Theory]
-    [InlineData(5, 20, true)]
-    [InlineData(1, 1, true)]
-    [InlineData(20, 5, false)]
-    [InlineData(0, 0, true)]
-    [InlineData(30, 31, true)]
-    [InlineData(50, 5, false)]
-    public void ShouldValidateEnergy(int energy, int available, bool expected)
-    {
-      var skill = new Mock<ISkill>();
-      skill
-        .Setup(o => o.Energy)
-        .Returns(energy);
-
-      attack
-        .Setup(o => o.Skill)
-        .Returns(skill.Object);
-
-      attack
-        .Setup(o => o.Actor.GetAdjustedStats().Stamina)
-        .Returns(available / calculationValues.StaminaFactor);
-
-      Assert.Equal(expected, attack.Object.HasEnoughEnergy(calculationValues));
-    }
-
-    [Theory]
     [InlineAutoData]
     [InlineAutoData]
     [InlineAutoData]
     [InlineAutoData]
     [InlineAutoData]
-    public void HitChanceShouldBeCorrect(float accuracy)
+    public void HitChanceShouldBeCorrect(int accuracy)
     {
       attack
         .Setup(o => o.Actor.GetAdjustedStats().Accuracy)
@@ -62,7 +36,7 @@ namespace SharpFightingEngine.Test.Combat
     [InlineAutoData]
     [InlineAutoData]
     [InlineAutoData]
-    public void DodgechanceShouldBeCorrect(float agility)
+    public void DodgechanceShouldBeCorrect(int agility)
     {
       attack
         .Setup(o => o.Target.GetAdjustedStats().Agility)
@@ -77,7 +51,7 @@ namespace SharpFightingEngine.Test.Combat
     [InlineAutoData]
     [InlineAutoData]
     [InlineAutoData]
-    public void DamageShouldBeCorrect(int skillDamage, float power, float toughness)
+    public void DamageShouldBeCorrect(int skillDamage, int power, int toughness)
     {
       attack
         .Setup(o => o.Skill.Damage)
@@ -88,10 +62,10 @@ namespace SharpFightingEngine.Test.Combat
         .Returns(power);
 
       attack
-        .Setup(o => o.Target.GetAdjustedStats().Toughness)
+        .Setup(o => o.Target.GetAdjustedStats().Armor)
         .Returns(toughness);
 
-      var expected = (int)(attack.Object.Skill.Damage * ((attack.Object.Actor.GetAdjustedStats().Power * calculationValues.AttackPowerFactor) / (attack.Object.Target.GetAdjustedStats().Toughness * calculationValues.ArmorDefenseFactor)));
+      var expected = (int)(attack.Object.Skill.Damage * attack.Object.Actor.GetAdjustedStats().Level * ((attack.Object.Actor.GetAdjustedStats().Power * calculationValues.AttackPowerFactor) / (attack.Object.Target.GetAdjustedStats().Armor * calculationValues.ArmorFactor)));
 
       Assert.Equal(expected, attack.Object.GetDamage(calculationValues));
     }
@@ -134,8 +108,8 @@ namespace SharpFightingEngine.Test.Combat
     }
 
     [Theory]
-    [InlineData(1, 1, 100.7)]
-    [InlineData(1, 200, 1.199997)]
+    [InlineData(1, 1, 100)]
+    [InlineData(0, 100, 0)]
     public void HitValueShouldBeCorrect(int accuracy, int agility, float expected)
     {
       attack

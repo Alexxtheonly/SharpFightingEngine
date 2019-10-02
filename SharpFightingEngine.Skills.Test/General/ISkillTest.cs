@@ -33,17 +33,17 @@ namespace SharpFightingEngine.Skills.Test.General
       }
     }
 
-    private IEnumerable<SkillBase> GetSkills()
+    private IEnumerable<DamageSkillBase> GetSkills()
     {
       var skillTypes = AppDomain.CurrentDomain
         .GetAssemblies()
         .Where(assembly => !assembly.FullName.StartsWith("Microsoft.VisualStudio.TraceDataCollector")) // workaround for https://github.com/microsoft/vstest/issues/2008
         .SelectMany(o => o.GetTypes())
-        .Where(o => o.BaseType == typeof(SkillBase));
+        .Where(o => o.BaseType == typeof(DamageSkillBase));
 
       foreach (var type in skillTypes)
       {
-        var skill = Assert.IsAssignableFrom<SkillBase>(Activator.CreateInstance(type));
+        var skill = Assert.IsAssignableFrom<DamageSkillBase>(Activator.CreateInstance(type));
 
         yield return skill;
       }

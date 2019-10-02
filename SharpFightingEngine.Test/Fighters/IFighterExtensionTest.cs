@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Moq;
+using SharpFightingEngine.Combat;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Skills;
@@ -13,7 +14,7 @@ namespace SharpFightingEngine.Test.Fighters
     private static readonly EngineCalculationValues Values = new EngineCalculationValues();
 
     [Fact]
-    public void ConditionShouldReduceRegeneration()
+    public void ConditionShouldReduceHeal()
     {
       var fighter = new Mock<IFighterStats>();
 
@@ -23,6 +24,10 @@ namespace SharpFightingEngine.Test.Fighters
         .Returns(0.5F);
 
       fighter
+        .Setup(o => o.DamageTaken)
+        .Returns(200);
+
+      fighter
         .Setup(o => o.States)
         .Returns(new List<IExpiringState>()
         {
@@ -30,11 +35,20 @@ namespace SharpFightingEngine.Test.Fighters
         });
 
       fighter
-        .Setup(o => o.GetAdjustedStats().Regeneration)
+        .Setup(o => o.GetAdjustedStats().HealingPower)
+        .Returns(0);
+
+      var heal = new Mock<IHeal>();
+      heal
+        .Setup(o => o.Actor)
+        .Returns(fighter.Object);
+
+      heal
+        .Setup(o => o.Skill.Heal)
         .Returns(30);
 
-      var expected = (int)((30 * Values.HealthRegenerationFactor) * 0.5F);
-      var actual = fighter.Object.HealthRegeneration(Values);
+      var expected = (int)(30 * Values.HealingPowerFactor * 0.5F);
+      var actual = fighter.Object.Heal(heal.Object.GetHealValue(Values));
 
       Assert.Equal(expected, actual);
     }

@@ -4,7 +4,7 @@
   {
     public override string ToString()
     {
-      return $"{base.ToString()} spawned with {Fighter.Health} health, {Fighter.Energy} energy";
+      return $"{base.ToString()} spawned with {Fighter.Health} health";
     }
   }
 }

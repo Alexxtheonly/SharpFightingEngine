@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines;
-using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Skills.Conditions;
 
 namespace SharpFightingEngine.Fighters
@@ -39,12 +38,10 @@ namespace SharpFightingEngine.Fighters
         Id = fighter.Id,
         Team = fighter.Team,
         Health = fighter.Health,
-        Energy = fighter.Energy,
         X = fighter.X,
         Y = fighter.Y,
         Z = fighter.Z,
         DamageTaken = fighter.DamageTaken,
-        EnergyUsed = fighter.EnergyUsed,
       };
 
       return fighterStruct;
@@ -71,14 +68,6 @@ namespace SharpFightingEngine.Fighters
       return (int)(fighter.GetAdjustedStats().Vitality * calculationValues.VitalityFactor);
     }
 
-    /// <summary>
-    /// The Fighter's Energy
-    /// </summary>
-    public static int Energy(this IFighterStats fighter, EngineCalculationValues calculationValues)
-    {
-      return (int)(fighter.GetAdjustedStats().Stamina * calculationValues.StaminaFactor);
-    }
-
     public static float PotentialPower(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
       return fighter.GetAdjustedStats().Power * calculationValues.AttackPowerFactor;
@@ -86,17 +75,53 @@ namespace SharpFightingEngine.Fighters
 
     public static float PotentialDefense(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.GetAdjustedStats().Toughness * calculationValues.ArmorDefenseFactor;
+      return fighter.GetAdjustedStats().Armor * calculationValues.ArmorFactor;
     }
 
-    public static int EnergyRemaining(this IFighterStats fighter, EngineCalculationValues calculationValues)
+    public static float PotentialConditionPower(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.Energy(calculationValues) - fighter.EnergyUsed;
+      return fighter.GetAdjustedStats().ConditionPower * calculationValues.ConditionPowerFactor;
+    }
+
+    public static float PotentialHealingPower(this IFighterStats fighter, EngineCalculationValues calculationValues)
+    {
+      return fighter.GetAdjustedStats().HealingPower * calculationValues.HealingPowerFactor;
+    }
+
+    public static float PotentialFerocity(this IFighterStats fighter, EngineCalculationValues calculationValues)
+    {
+      return 1 + (fighter.GetAdjustedStats().Ferocity * calculationValues.FerocityFactor);
     }
 
     public static int HealthRemaining(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
       return fighter.Health(calculationValues) - fighter.DamageTaken;
+    }
+
+    public static int Heal(this IFighterStats fighter, int potentialHeal)
+    {
+      if (fighter.DamageTaken == 0)
+      {
+        return 0;
+      }
+
+      var reducedHealing = fighter.States
+        .OfType<ISkillCondition>()
+        .Where(o => o.HealingReduced != null)
+        .Max(o => o.HealingReduced);
+
+      var actualHeal = potentialHeal;
+      if (reducedHealing != null)
+      {
+        actualHeal -= (int)(potentialHeal * reducedHealing);
+      }
+
+      return Math.Min(fighter.DamageTaken, actualHeal);
+    }
+
+    public static int GetConditionDamage(this IFighterStats fighter, EngineCalculationValues calculationValues, ISkillCondition condition)
+    {
+      return (int)(condition.Damage * (fighter.GetAdjustedStats().ConditionPower * calculationValues.ConditionPowerFactor));
     }
 
     public static float Velocity(this IFighterStats fighter, EngineCalculationValues calculationValues)
@@ -109,12 +134,12 @@ namespace SharpFightingEngine.Fighters
     /// </summary>
     public static float VisualRange(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.GetAdjustedStats().Vision * calculationValues.VisualRangeFactor;
+      return fighter.GetAdjustedStats().Vision * calculationValues.VisionFactor;
     }
 
     public static float CriticalHitChance(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
-      return fighter.GetAdjustedStats().Expertise * calculationValues.CriticalHitChanceFactor;
+      return fighter.GetAdjustedStats().Precision * calculationValues.PrecisionFactor;
     }
 
     public static float DodgeChance(this IFighterStats fighter, EngineCalculationValues calculationValues)
@@ -125,67 +150,6 @@ namespace SharpFightingEngine.Fighters
     public static float HitChance(this IFighterStats fighter, EngineCalculationValues calculationValues)
     {
       return 100 + (fighter.GetAdjustedStats().Accuracy * calculationValues.AccuracyFactor);
-    }
-
-    public static int HealthRegeneration(this IFighterStats fighter, EngineCalculationValues calculationValues)
-    {
-      var potentialRegeneration = (int)(fighter.GetAdjustedStats().Regeneration * calculationValues.HealthRegenerationFactor);
-
-      var reducedHealing = fighter.States
-        .OfType<ISkillCondition>()
-        .Where(o => o.HealingReduced != null)
-        .Max(o => o.HealingReduced);
-
-      var actualRegeneration = potentialRegeneration;
-      if (reducedHealing != null)
-      {
-        actualRegeneration -= (int)(potentialRegeneration * reducedHealing);
-      }
-
-      return actualRegeneration;
-    }
-
-    /// <summary>
-    /// Restores health points based on the value of regeneration.
-    /// </summary>
-    /// <returns>Returns how many health points have been regenerated.</returns>
-    public static FighterRegenerateHealthTick RegenerateHealth(this IFighterStats fighter, EngineCalculationValues calculationValues)
-    {
-      if (fighter.DamageTaken == 0)
-      {
-        return null;
-      }
-
-      var recoveredDamage = Math.Min(fighter.DamageTaken, fighter.HealthRegeneration(calculationValues));
-      fighter.DamageTaken -= recoveredDamage;
-
-      return new FighterRegenerateHealthTick()
-      {
-        Fighter = fighter.AsStruct(),
-        HealthPointsRegenerated = recoveredDamage,
-      };
-    }
-
-    public static int EnergyRegeneration(this IFighterStats fighter, EngineCalculationValues calculationValues)
-    {
-      return (int)(fighter.Energy(calculationValues) * calculationValues.EnergyRegenerationFactor);
-    }
-
-    public static FighterRegenerateEnergyTick RegenerateEnergy(this IFighterStats fighter, EngineCalculationValues calculationValues)
-    {
-      if (fighter.EnergyUsed == 0)
-      {
-        return null;
-      }
-
-      var regeneratedEnergy = Math.Min(fighter.EnergyUsed, fighter.EnergyRegeneration(calculationValues));
-      fighter.EnergyUsed -= regeneratedEnergy;
-
-      return new FighterRegenerateEnergyTick()
-      {
-        Fighter = fighter.AsStruct(),
-        RegeneratedEnergy = regeneratedEnergy,
-      };
     }
 
     public static float OffensivePowerLevel(this IStats fighter)
@@ -214,7 +178,7 @@ namespace SharpFightingEngine.Fighters
 
       foreach (var statproperty in properties)
       {
-        powerLevel += (float)statproperty.GetValue(fighter);
+        powerLevel += (int)statproperty.GetValue(fighter);
       }
 
       return powerLevel;

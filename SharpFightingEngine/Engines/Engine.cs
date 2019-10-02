@@ -39,8 +39,6 @@ namespace SharpFightingEngine.Engines
 
     private int Round { get; set; }
 
-    private bool TeamMode { get; set; }
-
     private Dictionary<Guid, IFighterStats> Fighters { get; set; }
 
     private Dictionary<Guid, IFighterStats> DeadFighters { get; set; } = new Dictionary<Guid, IFighterStats>();
@@ -48,7 +46,8 @@ namespace SharpFightingEngine.Engines
     private Dictionary<Type, Func<IFighterAction, IEnumerable<EngineTick>>> ActionHandlers => new Dictionary<Type, Func<IFighterAction, IEnumerable<EngineTick>>>()
     {
       [typeof(IMove)] = o => (o as IMove).Handle(Fighters, configuration.CalculationValues).Yield(),
-      [typeof(IAttack)] = o => (o as IAttack).Handle(Fighters, configuration.CalculationValues),
+      [typeof(IAttack)] = o => (o as IAttack).Handle(Fighters, EngineRoundTicks, configuration.CalculationValues),
+      [typeof(IHeal)] = o => (o as IHeal).Handle(Fighters, EngineRoundTicks, configuration.CalculationValues),
     };
 
     public IMatchResult StartMatch()
@@ -87,9 +86,6 @@ namespace SharpFightingEngine.Engines
     {
       Round = 0;
 
-      // if any fighter has a team we consider it team mode
-      TeamMode = Fighters.Values.Any(o => o.Team != null);
-
       ProcessNewRound();
 
       PrepareFighters();
@@ -115,7 +111,6 @@ namespace SharpFightingEngine.Engines
       foreach (var fighter in Fighters.Values)
       {
         fighter.Health = fighter.HealthRemaining(configuration.CalculationValues);
-        fighter.Energy = fighter.EnergyRemaining(configuration.CalculationValues);
       }
     }
 

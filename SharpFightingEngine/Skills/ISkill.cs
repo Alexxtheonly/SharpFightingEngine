@@ -12,11 +12,7 @@ namespace SharpFightingEngine.Skills
 
     string Name { get; }
 
-    int Damage { get; }
-
     float Range { get; }
-
-    int Energy { get; }
 
     int Cooldown { get; }
 

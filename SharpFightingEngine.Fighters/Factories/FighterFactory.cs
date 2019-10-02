@@ -18,11 +18,28 @@ namespace SharpFightingEngine.Fighters.Factories
 
     private static readonly Random Random = new Random();
 
-    private static readonly IEnumerable<ISkill> Skills = typeof(SkillBase)
+    private static readonly IEnumerable<ISkill> Skills = typeof(DamageSkillBase)
       .Assembly
       .GetTypes()
       .Where(o => o.GetInterfaces().Contains(typeof(ISkill)) && !o.IsAbstract)
       .Select(o => (ISkill)Activator.CreateInstance(o));
+
+    public static IEnumerable<IFighterStats> GetFighters(int count, Action<IStats> customStats)
+    {
+      for (int i = 0; i < count; i++)
+      {
+        var fighter = new AdvancedFighter()
+        {
+          Id = Guid.NewGuid(),
+        };
+
+        AddSkills(fighter);
+
+        customStats.Invoke(fighter.Stats);
+
+        yield return fighter;
+      }
+    }
 
     public static IEnumerable<IFighterStats> GetFighters(int count, int powerlevel)
     {
@@ -129,7 +146,7 @@ namespace SharpFightingEngine.Fighters.Factories
             break;
           }
 
-          var current = (float)property.GetValue(fighter.Stats);
+          var current = (int)property.GetValue(fighter.Stats);
 
           property.SetValue(fighter.Stats, current + value);
         }
