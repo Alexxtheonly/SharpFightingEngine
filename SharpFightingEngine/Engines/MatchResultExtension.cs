@@ -35,12 +35,19 @@ namespace SharpFightingEngine.Engines
 
         var attacks = group.OfType<FighterAttackTick>().Where(o => o.Fighter.Id == group.Key);
 
+        var conditionAttacks = roundTicks
+          .SelectMany(o => o.Ticks)
+          .OfType<FighterConditionDamageTick>()
+          .Where(o => o.Source.Id == group.Key);
+
         var attacksOnDeadFighters = attacks.Where(o => o.Hit && deaths.Select(d => d.Fighter.Id).Contains(o.Target.Id));
 
         int kills = 0;
         foreach (var mutualKill in attacksOnDeadFighters.GroupBy(o => o.Target.Id))
         {
-          double totalDamage = mutualKill.Sum(o => o.Damage);
+          double totalConditionDamage = conditionAttacks.Where(o => o.Fighter.Id == mutualKill.Key).Sum(o => o.Damage);
+          double totalSkillDamage = mutualKill.Sum(o => o.Damage);
+          double totalDamage = totalSkillDamage + totalConditionDamage;
           double totalHealth = spawns.First(o => o.Fighter.Id == mutualKill.Key).Fighter.Health;
 
           if (totalDamage / totalHealth >= PercentOfTotalHealthNeeded)
@@ -54,16 +61,14 @@ namespace SharpFightingEngine.Engines
           Id = group.Key,
           TeamId = spawn.Fighter.Team,
           MaxHealth = spawn.Fighter.Health,
-          MaxEnergy = spawn.Fighter.Energy,
           RoundsAlive = roundTicks.Where(o => o.Ticks.OfType<FighterTick>().Any(t => t.Fighter.Id == group.Key)).GetLastRound().Round,
           TotalDamageDone = attacks.Where(o => o.Hit).Sum(o => o.Damage),
           TotalDamageTaken = roundTicks.SelectMany(o => o.Ticks).OfType<FighterAttackTick>().Where(o => o.Target.Id == group.Key && o.Hit).Sum(o => o.Damage),
-          TotalDeaths = group.OfType<EngineFighterDiedTick>().Where(o => o.Fighter.Id == group.Key).Count(),
-          TotalDistanceTraveled = group.OfType<FighterMoveTick>().Where(o => o.Fighter.Id == group.Key).Sum(o => o.Current.GetDistance(o.Next)),
-          TotalEnergyUsed = attacks.Sum(o => o.Energy),
+          TotalDeaths = group.OfType<EngineFighterDiedTick>().Where(o => o.Fighter.Id == group.Key).Count(), // todo: o.Fighter.Id == group.Key necessary?
+          TotalDistanceTraveled = group.OfType<FighterMoveTick>().Where(o => o.Fighter.Id == group.Key).Sum(o => o.Current.GetDistance(o.Next)), // todo: o.Fighter.Id == group.Key necessary?
           TotalKills = kills,
-          TotalRegeneratedHealth = group.OfType<FighterRegenerateHealthTick>().Sum(o => o.HealthPointsRegenerated),
-          TotalRegeneratedEnergy = group.OfType<FighterRegenerateEnergyTick>().Sum(o => o.RegeneratedEnergy),
+          TotalHealingDone = group.OfType<FighterHealTick>().Sum(o => o.AppliedHealing),
+          TotalHealingRecieved = 0, // todo
         };
       }
     }

@@ -4,17 +4,17 @@ using SharpFightingEngine.Skills;
 
 namespace SharpFightingEngine.Engines.Ticks
 {
-  public class FighterAttackTick : FighterTick
+  public class FighterAttackTick : FighterSkillTick
   {
     public IFighter Target { get; set; }
 
     public IAttack Attack { get; set; }
 
-    public ISkill Skill => Attack.Skill;
+    public override ISkill Skill => Attack.Skill;
+
+    public IDamageSkill AttackSkill => Attack.Skill;
 
     public int Damage { get; set; }
-
-    public int Energy => Skill.Energy;
 
     public float Distance => Attack.GetDistance();
 
@@ -24,17 +24,17 @@ namespace SharpFightingEngine.Engines.Ticks
 
     public bool OutOfRange { get; set; }
 
-    public bool InsufficientEnergy { get; set; }
+    public bool OnCooldown { get; set; }
 
-    public bool Hit => !(Dodged || OutOfRange || InsufficientEnergy);
+    public bool Hit => !(Dodged || OutOfRange || OnCooldown);
 
     public override string ToString()
     {
-      return $"{base.ToString()} attacking {Target.Id} with {Attack.Skill.Name} damage {Damage} " +
+      return $"{base.ToString()} attacking {Target.Id} with {AttackSkill.Name} damage {Damage} " +
         $"{(Critical ? "critical" : string.Empty)}" +
         $"{(Dodged ? "dodged" : string.Empty)} " +
         $"{(OutOfRange ? "out of range" : string.Empty)} " +
-        $"{(InsufficientEnergy ? "insufficient energy" : string.Empty)}";
+        $"{(OnCooldown ? "on cooldown" : string.Empty)}";
     }
   }
 }

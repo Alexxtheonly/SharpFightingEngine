@@ -42,6 +42,20 @@ namespace SharpFightingEngine.Fighters
 
       var healthPercent = Health / maxHealth;
 
+      if (healthPercent < 0.4)
+      {
+        var healskill = SkillFinder.GetHealSkill(this, Skills, roundTicks, calculationValues);
+        if (healskill != null)
+        {
+          return new Heal()
+          {
+            Actor = this,
+            Target = this,
+            Skill = healskill,
+          };
+        }
+      }
+
       if (!flight && (healthPercent < 0.33 && attackerCount > 1))
       {
         flight = true;

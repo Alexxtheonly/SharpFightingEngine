@@ -10,19 +10,17 @@ using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Skills.Melee
 {
-  public class BleedingSmash : SkillBase
+  public class BleedingSmash : DamageSkillBase
   {
     public override Guid Id => new Guid("6470DC6D-12EB-44F2-A69D-1BDE9469DF9A");
 
     public override string Name => "Bleeding Smash";
 
-    public override int DamageLow => 12;
+    public override int DamageLow => 5;
 
-    public override int DamageHigh => 18;
+    public override int DamageHigh => 8;
 
     public override float Range => 1;
-
-    public override int Energy => 5;
 
     public override int Cooldown => 1;
 
@@ -33,7 +31,7 @@ namespace SharpFightingEngine.Skills.Melee
         return Enumerable.Empty<EngineTick>();
       }
 
-      var condition = new BleedSkillCondition();
+      var condition = new BleedSkillCondition(actor);
       target.States.Add(condition);
 
       return new FighterConditionAppliedTick()

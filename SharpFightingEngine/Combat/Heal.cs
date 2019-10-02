@@ -3,11 +3,11 @@ using SharpFightingEngine.Skills;
 
 namespace SharpFightingEngine.Combat
 {
-  public class Attack : IAttack
+  public class Heal : IHeal
   {
-    public IDamageSkill Skill { get; set; }
-
     public IFighterStats Target { get; set; }
+
+    public IHealSkill Skill { get; set; }
 
     public IFighterStats Actor { get; set; }
   }

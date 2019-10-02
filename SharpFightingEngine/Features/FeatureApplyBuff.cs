@@ -19,7 +19,7 @@ namespace SharpFightingEngine.Features
       {
         foreach (var buff in fighter.States.OfType<ISkillBuff>())
         {
-          foreach (var tick in buff.Apply(fighter))
+          foreach (var tick in buff.Apply(fighter, buff.Source, calculationValues))
           {
             yield return tick;
           }

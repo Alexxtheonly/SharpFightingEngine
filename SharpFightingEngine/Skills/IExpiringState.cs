@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
 
@@ -15,8 +16,10 @@ namespace SharpFightingEngine.Skills
 
     int Initial { get; }
 
+    IFighterStats Source { get; }
+
     void Apply(IStats stats);
 
-    IEnumerable<EngineTick> Apply(IFighterStats fighter);
+    IEnumerable<EngineTick> Apply(IFighterStats target, IFighterStats source, EngineCalculationValues calculationValues);
   }
 }

@@ -2,28 +2,26 @@
 {
   public class EngineCalculationValues
   {
-    public float HealthRegenerationFactor { get; set; } = 0.4F;
+    public float AttackPowerFactor { get; set; } = 1;
 
-    public float EnergyRegenerationFactor { get; set; } = 0.33F;
+    public float ArmorFactor { get; set; } = 1;
 
-    public float AttackPowerFactor { get; set; } = 2.2F;
+    public float ConditionPowerFactor { get; set; } = 0.1F;
 
-    public float ArmorDefenseFactor { get; set; } = 1.2F;
+    public float HealingPowerFactor { get; set; } = 1;
 
-    public float VisualRangeFactor { get; set; } = 4F;
+    public float VisionFactor { get; set; } = 1;
 
-    public float CriticalHitChanceFactor { get; set; } = 0.4F;
+    public float PrecisionFactor { get; set; } = 1;
 
-    public float CriticalHitDamageFactor { get; set; } = 2.5F;
+    public float FerocityFactor { get; set; } = 0.01F;
 
-    public float AccuracyFactor { get; set; } = 1.2F;
+    public float AccuracyFactor { get; set; } = 1;
 
-    public float AgilityFactor { get; set; } = 0.5F;
+    public float AgilityFactor { get; set; } = 1;
 
-    public float VitalityFactor { get; set; } = 6F;
+    public float VitalityFactor { get; set; } = 10;
 
     public float SpeedFactor { get; set; } = 1;
-
-    public float StaminaFactor { get; set; } = 2.3F;
   }
 }

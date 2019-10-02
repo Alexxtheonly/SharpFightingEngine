@@ -16,9 +16,32 @@ namespace SharpFightingEngine.Test.Utilities
 {
   public static class Utility
   {
+    public static void SetStats(IStats stats, int level, int weaponPlus, int armorPlus, int weaponRarity, int armorRarity)
+    {
+      const int baseValue = 10;
+
+      stats.Power = baseValue * (level + weaponPlus + weaponRarity);
+      stats.Armor = baseValue * (level + armorPlus + armorRarity);
+      stats.Accuracy = baseValue * level;
+      stats.Agility = baseValue * level;
+      stats.ConditionPower = baseValue * level;
+      stats.Ferocity = 50;
+      stats.HealingPower = baseValue * level;
+      stats.Level = level;
+      stats.Precision = 20;
+      stats.Speed = 10;
+      stats.Vision = 10;
+      stats.Vitality = baseValue * level;
+    }
+
     public static Engine GetDefaultEngine(int fighterCount)
     {
       return GetDefaultEngine(fighterCount, 300);
+    }
+
+    public static Engine GetDefaultEngine(int fighterCount, Action<IStats> customStats)
+    {
+      return GetDefaultEngine(FighterFactory.GetFighters(fighterCount, customStats));
     }
 
     public static Engine GetDefaultEngine(int fighterCount, int powerlevel)
@@ -34,8 +57,6 @@ namespace SharpFightingEngine.Test.Utilities
       var features = new List<IEngineFeature>()
       {
         new FeatureApplyCondition(),
-        new FeatureRegenerateEnergy(),
-        new FeatureRegenerateHealth(),
         new FeatureSacrificeToEntity(),
       };
 

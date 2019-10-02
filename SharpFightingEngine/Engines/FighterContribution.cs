@@ -12,6 +12,16 @@ namespace SharpFightingEngine.Engines
     public bool HasWon { get; set; }
 
     /// <summary>
+    /// Is true if the fighter finished second place
+    /// </summary>
+    public bool IsSecond { get; set; }
+
+    /// <summary>
+    /// Is true if the fighter finished third place
+    /// </summary>
+    public bool IsThird { get; set; }
+
+    /// <summary>
     /// The kills and assists in this match. At least 25% of the target's health must be dealt damage.
     /// </summary>
     public int KillsAndAssists { get; set; }

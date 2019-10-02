@@ -8,7 +8,7 @@ using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.Skills.General
 {
-  public abstract class SkillBase : ISkill
+  public abstract class DamageSkillBase : IDamageSkill
   {
     protected static readonly Random Random = new Random();
 
@@ -23,8 +23,6 @@ namespace SharpFightingEngine.Skills.General
     public abstract int DamageHigh { get; }
 
     public abstract float Range { get; }
-
-    public abstract int Energy { get; }
 
     public abstract int Cooldown { get; }
 

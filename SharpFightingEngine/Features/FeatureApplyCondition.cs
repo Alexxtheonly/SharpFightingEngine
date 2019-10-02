@@ -27,7 +27,7 @@ namespace SharpFightingEngine.Features
             fighter.States.Remove(condition);
           }
 
-          foreach (var tick in condition.Apply(fighter))
+          foreach (var tick in condition.Apply(fighter, condition.Source, calculationValues))
           {
             yield return tick;
           }

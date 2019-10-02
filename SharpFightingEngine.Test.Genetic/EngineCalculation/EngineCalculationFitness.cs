@@ -38,8 +38,6 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
 
       var features = new List<IEngineFeature>()
       {
-        new FeatureRegenerateEnergy(),
-        new FeatureRegenerateHealth(),
       };
 
       double fitness = 0;
@@ -73,9 +71,6 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
       var allTicks = result.Ticks.SelectMany(o => o.Ticks);
 
       var totalDamageTaken = result.Scores.Sum(o => o.TotalDamageTaken);
-      var totalRegeneratedHealth = result.Scores.Sum(o => o.TotalRegeneratedHealth);
-      var totalEnergyUsed = result.Scores.Sum(o => o.TotalEnergyUsed);
-      var totalRegeneratedEnergy = result.Scores.Sum(o => o.TotalRegeneratedEnergy);
       var totalMaxHealth = result.Scores.Sum(o => o.MaxHealth);
       var totalDamageDone = result.Scores.Sum(o => o.TotalDamageDone);
 
@@ -110,14 +105,11 @@ namespace SharpFightingEngine.Test.Genetic.EngineCalculation
           {
             Accuracy = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
             Agility = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-            Toughness = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
+            Armor = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
             Power = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-            Regeneration = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
             Speed = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-            Stamina = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
             Vision = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
             Vitality = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
-            Expertise = RandomizationProvider.Current.GetInt(SinglePowerLevelMin, SinglePowerLevelMax),
           },
         };
       }

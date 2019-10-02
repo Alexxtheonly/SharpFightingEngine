@@ -10,19 +10,17 @@ using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Skills.Melee
 {
-  public class PoisonSmash : SkillBase
+  public class PoisonSmash : DamageSkillBase
   {
     public override Guid Id => new Guid("36904734-786D-48AD-A9C7-63EE38810F89");
 
     public override string Name => "Poison Smash";
 
-    public override int DamageLow => 12;
+    public override int DamageLow => 5;
 
-    public override int DamageHigh => 18;
+    public override int DamageHigh => 8;
 
     public override float Range => 1;
-
-    public override int Energy => 10;
 
     public override int Cooldown => 1;
 
@@ -33,7 +31,7 @@ namespace SharpFightingEngine.Skills.Melee
         return Enumerable.Empty<EngineTick>();
       }
 
-      var condition = new PoisonSkillCondition();
+      var condition = new PoisonSkillCondition(actor);
       target.States.Add(condition);
 
       return new FighterConditionAppliedTick()
