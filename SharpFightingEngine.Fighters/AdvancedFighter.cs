@@ -40,9 +40,9 @@ namespace SharpFightingEngine.Fighters
       var lastTargets = GetCurrentTargetChallenges(roundTicks)
         .Where(o => visibleEnemies.Any(e => e.Id == o.Id));
 
-      var healthPercent = Health / maxHealth;
+      var healthPercent = Health / (double)maxHealth;
 
-      if (healthPercent < 0.4)
+      if (healthPercent <= 0.5)
       {
         var healskill = SkillFinder.GetHealSkill(this, Skills, roundTicks, calculationValues);
         if (healskill != null)
@@ -54,25 +54,6 @@ namespace SharpFightingEngine.Fighters
             Skill = healskill,
           };
         }
-      }
-
-      if (!flight && (healthPercent < 0.33 && attackerCount > 1))
-      {
-        flight = true;
-        flightPosition = PathFinder.GetEscapePath(this, currentAttackers.Select(o => o.Fighter).ToList(), battlefield);
-      }
-
-      if (flight && attackerCount > 1 && !this.IsEqualPosition(flightPosition))
-      {
-        return new Move()
-        {
-          Actor = this,
-          NextPosition = flightPosition,
-        };
-      }
-      else
-      {
-        flight = false;
       }
 
       IFighterStats target = null;

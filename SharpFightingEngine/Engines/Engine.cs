@@ -163,7 +163,7 @@ namespace SharpFightingEngine.Engines
             continue;
           }
 
-          CurrentRoundTick.Ticks.AddRange(HandleFighterAction(action));
+          CurrentRoundTick.Ticks.AddRange(HandleFighterAction(action).Where(o => o != null));
         }
       }
     }

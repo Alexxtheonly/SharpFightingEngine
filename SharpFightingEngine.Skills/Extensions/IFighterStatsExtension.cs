@@ -20,7 +20,7 @@ namespace SharpFightingEngine.Skills.Extensions
 
     public static FighterMovedByAttackTick ApplyCharge(this IFighterStats target, IFighterStats actor, float distance)
     {
-      return target.ApplyMove(actor, actor.CalculateChargePosition(target, distance));
+      return actor.ApplyMove(actor, actor.CalculateChargePosition(target, distance));
     }
 
     public static FighterMovedByAttackTick ApplyMove(this IFighterStats target, IFighterStats actor, IPosition newPosition)
