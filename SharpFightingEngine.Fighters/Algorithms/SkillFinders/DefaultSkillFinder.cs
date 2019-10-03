@@ -50,10 +50,12 @@ namespace SharpFightingEngine.Fighters.Algorithms.SkillFinders
 
     private static bool IsOnCooldown(IFighterStats actor, IEnumerable<EngineRoundTick> roundTicks, ISkill o)
     {
-      return roundTicks
+      var isOnCooldown = roundTicks
         .GetLastRounds(o.Cooldown)
         .OfType<FighterSkillTick>()
         .Any(t => t.Fighter.Id == actor.Id && t.Skill.Id == o.Id);
+
+      return isOnCooldown;
     }
   }
 }

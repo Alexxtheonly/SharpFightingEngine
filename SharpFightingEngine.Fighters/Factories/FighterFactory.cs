@@ -121,8 +121,13 @@ namespace SharpFightingEngine.Fighters.Factories
     {
       var defaultSkill = Skills.Where(o => o.Cooldown == 0).GetRandom();
       var others = Skills.Shuffle().Take(3);
+      var heal = Skills.OfType<IHealSkill>().GetRandom();
 
-      fighter.Skills = defaultSkill.Yield().Union(others);
+      fighter.Skills = others.Union(new ISkill[]
+      {
+        defaultSkill,
+        heal,
+      });
     }
 
     private static void SetValues(ref AdvancedFighter fighter, IEnumerable<PropertyInfo> properties, int powerlevel)
