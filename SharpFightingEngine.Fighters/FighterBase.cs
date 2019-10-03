@@ -116,7 +116,9 @@ namespace SharpFightingEngine.Fighters
       var desiredSkill = 50F.Chance() ?
         SkillFinder.GetMaxDamageSkill(this, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues) :
         SkillFinder.GetMaxRangeSkill(this, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues);
-      var distance = desiredSkill?.Range ?? 1;
+
+      // reduce skill distance by 0.15F to compensate rounding differences
+      var distance = (desiredSkill?.Range ?? 1.5F) - 0.15F;
 
       return new Move()
       {
