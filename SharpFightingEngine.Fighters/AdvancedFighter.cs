@@ -40,9 +40,9 @@ namespace SharpFightingEngine.Fighters
       var lastTargets = GetCurrentTargetChallenges(roundTicks)
         .Where(o => visibleEnemies.Any(e => e.Id == o.Id));
 
-      var healthPercent = Health / (double)maxHealth;
+      var healthPercent = this.HealthRemaining(calculationValues) / (double)maxHealth;
 
-      if (healthPercent <= 0.5)
+      if (healthPercent <= 0.4)
       {
         var healskill = SkillFinder.GetHealSkill(this, Skills, roundTicks, calculationValues);
         if (healskill != null)
