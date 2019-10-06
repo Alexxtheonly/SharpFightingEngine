@@ -36,6 +36,29 @@ namespace SharpFightingEngine.Test.Engines
     }
 
     [Theory]
+    [InlineData(1, 0, 0, 0, 0)]
+    [InlineData(1, 5, 0, 0, 0)]
+    [InlineData(1, 7, 0, 5, 0)]
+    [InlineData(8, 0, 0, 0, 0)]
+    [InlineData(16, 0, 0, 0, 0)]
+    [InlineData(24, 0, 0, 0, 0)]
+    [InlineData(32, 7, 5, 5, 4)]
+    public void ShouldReturnDeathmatchMatchResults(int level, int weaponPlus, int weaponRarity, int armorPlus, int armorRarity)
+    {
+      var engine = Utility.GetDefaultDeathmatchEngine(3, stats =>
+      {
+        Utility.SetStats(stats, level, weaponPlus, armorPlus, weaponRarity, armorRarity);
+      });
+
+      var result = engine.StartMatch();
+
+      Assert.NotNull(result);
+      Assert.NotEmpty(result.Ticks);
+      Assert.NotEmpty(result.Scores);
+      VerifyMatchResult(result);
+    }
+
+    [Theory]
     [ClassData(typeof(AllRandomGenericFighterTheoryData))]
     [ClassData(typeof(AllRandomGenericFighterTheoryData))]
     [ClassData(typeof(AllRandomGenericFighterTheoryData))]

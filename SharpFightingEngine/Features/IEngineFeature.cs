@@ -10,6 +10,8 @@ namespace SharpFightingEngine.Features
   {
     Guid Id { get; }
 
-    IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues);
+    bool NeedsUpdatedDeadFighters { get; }
+
+    IEnumerable<EngineTick> Apply(Dictionary<Guid, IFighterStats> aliveFighters, Dictionary<Guid, IFighterStats> deadFighters, IEnumerable<EngineRoundTick> rounds, EngineConfiguration configuration);
   }
 }

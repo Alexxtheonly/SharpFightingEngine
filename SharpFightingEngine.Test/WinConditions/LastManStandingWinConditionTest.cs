@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Engines;
+using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
 using SharpFightingEngine.Fighters.Factories;
 using SharpFightingEngine.WinConditions;
@@ -30,13 +31,13 @@ namespace SharpFightingEngine.Test.WinConditions
         fighter.DamageTaken = fighter.HealthRemaining(values);
       }
 
-      Assert.True(winCondition.HasWinner(fightersNoTeam, values));
+      Assert.True(winCondition.HasWinner(fightersNoTeam, Enumerable.Empty<EngineRoundTick>(), values));
     }
 
     [Fact]
     public void ShouldNotHaveWinnerNoTeams()
     {
-      Assert.False(winCondition.HasWinner(fightersNoTeam, values));
+      Assert.False(winCondition.HasWinner(fightersNoTeam, Enumerable.Empty<EngineRoundTick>(), values));
     }
 
     [Fact]
@@ -50,13 +51,13 @@ namespace SharpFightingEngine.Test.WinConditions
         }
       }
 
-      Assert.True(winCondition.HasWinner(fightersTeam, values));
+      Assert.True(winCondition.HasWinner(fightersTeam, Enumerable.Empty<EngineRoundTick>(), values));
     }
 
     [Fact]
     public void ShouldNotHaveWinnerTeams()
     {
-      Assert.False(winCondition.HasWinner(fightersTeam, values));
+      Assert.False(winCondition.HasWinner(fightersTeam, Enumerable.Empty<EngineRoundTick>(), values));
     }
 
     private void CalculateFighterHealth(ref IEnumerable<IFighterStats> fighters)

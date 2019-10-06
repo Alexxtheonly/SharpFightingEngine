@@ -44,6 +44,11 @@ namespace SharpFightingEngine.Test.Utilities
       return GetDefaultEngine(FighterFactory.GetFighters(fighterCount, customStats));
     }
 
+    public static Engine GetDefaultDeathmatchEngine(int fighterCount, Action<IStats> customStats)
+    {
+      return GetDefaultDeathmatchEngine(FighterFactory.GetFighters(fighterCount, customStats));
+    }
+
     public static Engine GetDefaultEngine(int fighterCount, int powerlevel)
     {
       return GetDefaultEngine(FighterFactory.GetFighters(fighterCount, powerlevel));
@@ -64,6 +69,25 @@ namespace SharpFightingEngine.Test.Utilities
       var positionGenerator = new AllRandomPositionGenerator();
       var winCondition = new LastManStandingWinCondition();
       var staleCondition = new NoWinnerCanBeDeterminedStaleCondition();
+
+      return GetEngine(fighters, battlefield, bounds, features, moveOrder, positionGenerator, winCondition, staleCondition, 2);
+    }
+
+    public static Engine GetDefaultDeathmatchEngine(IEnumerable<IFighterStats> fighters)
+    {
+      var battlefield = new PlainBattlefield();
+      var bounds = new Tiny();
+
+      var features = new List<IEngineFeature>()
+      {
+        new FeatureApplyCondition(),
+        new FeatureReviveDeadFighters(),
+      };
+
+      var moveOrder = new AllRandomMoveOrder();
+      var positionGenerator = new AllRandomPositionGenerator();
+      var winCondition = new FiftyRoundsWinCondition();
+      var staleCondition = new NoneStaleCondition();
 
       return GetEngine(fighters, battlefield, bounds, features, moveOrder, positionGenerator, winCondition, staleCondition, 2);
     }

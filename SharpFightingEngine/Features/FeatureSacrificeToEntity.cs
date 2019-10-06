@@ -12,14 +12,21 @@ namespace SharpFightingEngine.Features
   {
     public Guid Id => FeatureConstants.SacrificeToEntity;
 
-    public IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues)
+    public bool NeedsUpdatedDeadFighters => false;
+
+    public IEnumerable<EngineTick> Apply(
+      Dictionary<Guid, IFighterStats> aliveFighters,
+      Dictionary<Guid, IFighterStats> deadFighters,
+      IEnumerable<EngineRoundTick> rounds,
+      EngineConfiguration configuration)
     {
-      var sacrifices = fighters
+      var sacrifices = aliveFighters
+        .Values
         .Where(o => (o.Stats.DefensivePowerLevel() / o.Stats.PowerLevel()) > 0.7);
 
       foreach (var sacrifice in sacrifices)
       {
-        sacrifice.DamageTaken += sacrifice.HealthRemaining(calculationValues);
+        sacrifice.DamageTaken += sacrifice.HealthRemaining(configuration.CalculationValues);
 
         yield return new FighterSacrificedTick()
         {
