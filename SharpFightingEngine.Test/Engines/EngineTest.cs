@@ -85,19 +85,18 @@ namespace SharpFightingEngine.Test.Engines
     private void VerifyMatchResult(IMatchResult result)
     {
       var allFighterTicks = result.Ticks
-              .SelectMany(o => o.Ticks)
-              .OfType<FighterTick>();
+              .SelectMany(o => o.Ticks);
 
       Assert.NotEmpty(allFighterTicks);
 
       foreach (var score in result.Scores)
       {
-        VerifyMatchScore(allFighterTicks, score, o => o.Fighter.Id == score.Id, o => o.Target.Id == score.Id);
+        VerifyMatchScore(allFighterTicks, score, o => o.Fighter.Id == score.Id, o => o.Target.Id == score.Id, o => o.Source.Id == score.Id);
       }
 
       foreach (var teamScore in result.TeamScores)
       {
-        VerifyMatchScore(allFighterTicks, teamScore, o => o.Fighter.Team == teamScore.Id, o => o.Target.Team == teamScore.Id);
+        VerifyMatchScore(allFighterTicks, teamScore, o => o.Fighter.Team == teamScore.Id, o => o.Target.Team == teamScore.Id, o => o.Source.Team == teamScore.Id);
       }
 
       foreach (var contribution in result.Contributions)
@@ -114,15 +113,19 @@ namespace SharpFightingEngine.Test.Engines
       Assert.NotEqual(0, result.Contributions.Sum(o => o.PercentageOfRoundsAlive));
     }
 
-    private void VerifyMatchScore(IEnumerable<FighterTick> allFighterTicks, IMatchScore score, Func<FighterTick, bool> actorQuery, Func<FighterAttackTick, bool> targetQuery)
+    private void VerifyMatchScore(IEnumerable<EngineTick> allTicks, IMatchScore score, Func<FighterTick, bool> actorQuery, Func<FighterAttackTick, bool> targetQuery, Func<FighterConditionDamageTick, bool> conditionSourceQuery)
     {
-      var fighterTicks = allFighterTicks
+      var fighterTicks = allTicks
+        .OfType<FighterTick>()
         .Where(actorQuery)
         .ToList();
 
+      var expectedDamage = fighterTicks.OfType<FighterAttackTick>().Where(o => o.Hit).Sum(o => o.Damage);
+      var expectedConditionDamage = allTicks.OfType<FighterConditionDamageTick>().Where(conditionSourceQuery).Sum(o => o.Damage);
+
       Assert.Equal(fighterTicks.OfType<FighterMoveTick>().Sum(o => o.Current.GetDistance(o.Next)), score.TotalDistanceTraveled, 2);
-      Assert.Equal(fighterTicks.OfType<FighterAttackTick>().Where(o => o.Hit).Sum(o => o.Damage), score.TotalDamageDone);
-      Assert.Equal(allFighterTicks.OfType<FighterAttackTick>().Where(targetQuery).Where(o => o.Hit).Sum(o => o.Damage), score.TotalDamageTaken);
+      Assert.Equal(expectedDamage + expectedConditionDamage, score.TotalDamageDone);
+      Assert.Equal(allTicks.OfType<FighterAttackTick>().Where(targetQuery).Where(o => o.Hit).Sum(o => o.Damage), score.TotalDamageTaken);
       Assert.Equal(fighterTicks.OfType<EngineFighterDiedTick>().Count(), score.TotalDeaths);
     }
   }
