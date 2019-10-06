@@ -13,9 +13,15 @@ namespace SharpFightingEngine.Features
   {
     public Guid Id => FeatureConstants.ApplyCondition;
 
-    public IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues)
+    public bool NeedsUpdatedDeadFighters => false;
+
+    public IEnumerable<EngineTick> Apply(
+      Dictionary<Guid, IFighterStats> aliveFighters,
+      Dictionary<Guid, IFighterStats> deadFighters,
+      IEnumerable<EngineRoundTick> rounds,
+      EngineConfiguration configuration)
     {
-      foreach (var fighter in fighters)
+      foreach (var fighter in aliveFighters.Values)
       {
         foreach (var condition in fighter.States
           .OfType<ISkillCondition>()
@@ -27,7 +33,7 @@ namespace SharpFightingEngine.Features
             fighter.States.Remove(condition);
           }
 
-          foreach (var tick in condition.Apply(fighter, condition.Source, calculationValues))
+          foreach (var tick in condition.Apply(fighter, condition.Source, configuration.CalculationValues))
           {
             yield return tick;
           }

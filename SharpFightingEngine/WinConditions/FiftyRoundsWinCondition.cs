@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SharpFightingEngine.Constants;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
@@ -8,9 +7,9 @@ using SharpFightingEngine.Fighters;
 
 namespace SharpFightingEngine.WinConditions
 {
-  public class LastManStandingWinCondition : IWinCondition
+  public class FiftyRoundsWinCondition : IWinCondition
   {
-    public Guid Id => WinConditionConstants.LastManStanding;
+    public Guid Id => WinConditionConstants.FiftyRounds;
 
     public IMatchResult GetMatchResult(IEnumerable<IFighter> fighters, ICollection<EngineRoundTick> engineRoundTicks)
     {
@@ -22,17 +21,7 @@ namespace SharpFightingEngine.WinConditions
 
     public bool HasWinner(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> roundTicks, EngineCalculationValues calculationValues)
     {
-      fighters = fighters.Where(o => o.IsAlive(calculationValues));
-
-      if (fighters.Any(o => o.Team != null))
-      {
-        return fighters
-          .GroupBy(o => o.Team)
-          .Count() <= 1;
-      }
-
-      return fighters
-        .Count() <= 1;
+      return roundTicks.GetLastRound()?.Round == 50;
     }
   }
 }

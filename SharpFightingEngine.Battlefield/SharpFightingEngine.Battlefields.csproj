@@ -13,7 +13,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Alexander Herold</Authors>
     <Copyright>Alexander Herold</Copyright>
-    <Version>0.13.3</Version>
+    <Version>0.14.0</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 

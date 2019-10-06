@@ -13,13 +13,19 @@ namespace SharpFightingEngine.Features
   {
     public Guid Id => FeatureConstants.ApplyBuff;
 
-    public IEnumerable<EngineTick> Apply(IEnumerable<IFighterStats> fighters, IEnumerable<EngineRoundTick> rounds, EngineCalculationValues calculationValues)
+    public bool NeedsUpdatedDeadFighters => false;
+
+    public IEnumerable<EngineTick> Apply(
+      Dictionary<Guid, IFighterStats> aliveFighters,
+      Dictionary<Guid, IFighterStats> deadFighters,
+      IEnumerable<EngineRoundTick> rounds,
+      EngineConfiguration configuration)
     {
-      foreach (var fighter in fighters)
+      foreach (var fighter in aliveFighters.Values)
       {
         foreach (var buff in fighter.States.OfType<ISkillBuff>())
         {
-          foreach (var tick in buff.Apply(fighter, buff.Source, calculationValues))
+          foreach (var tick in buff.Apply(fighter, buff.Source, configuration.CalculationValues))
           {
             yield return tick;
           }
