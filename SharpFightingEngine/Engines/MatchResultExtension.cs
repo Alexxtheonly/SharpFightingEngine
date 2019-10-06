@@ -34,7 +34,6 @@ namespace SharpFightingEngine.Engines
         var attacks = group.OfType<FighterAttackTick>().Where(o => o.Fighter.Id == group.Key);
 
         int kills = 0;
-        var totalDamageDone = 0;
         foreach (var mutualKill in deaths.Where(o => o.Fighter.Id != group.Key))
         {
           var lastSpawn = roundTicks
@@ -58,14 +57,28 @@ namespace SharpFightingEngine.Engines
           int totalSkillDamage = attacksOnDeadFighter.Sum(o => o.Damage);
           int totalDamage = totalSkillDamage + totalConditionDamage;
 
-          totalDamageDone += totalDamage;
-
           double totalHealth = lastSpawn.Fighter.Health;
           if (totalDamage / totalHealth >= PercentOfTotalHealthNeeded)
           {
             kills++;
           }
         }
+
+        // maybe you ask yourself in some time, why you did not just count the damage above => if a fighter doesn't die the inflicted damage is not evaluated
+        var totalSkillDamageDone = roundTicks
+          .SelectMany(o => o.Ticks)
+          .OfType<FighterAttackTick>()
+          .Where(o => o.Fighter.Id == group.Key)
+          .Where(o => o.Hit)
+          .Sum(o => o.Damage);
+
+        var totalConditionDamageDone = roundTicks
+          .SelectMany(o => o.Ticks)
+          .OfType<FighterConditionDamageTick>()
+          .Where(o => o.Source.Id == group.Key)
+          .Sum(o => o.Damage);
+
+        var totalDamageDone = totalSkillDamageDone + totalConditionDamageDone;
 
         var spawn = spawns.FirstOrDefault(o => o.Fighter.Id == group.Key);
         yield return new FighterMatchScore()
