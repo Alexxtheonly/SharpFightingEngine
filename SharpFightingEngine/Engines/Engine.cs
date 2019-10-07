@@ -177,6 +177,8 @@ namespace SharpFightingEngine.Engines
     {
       foreach (var fighter in Fighters.Values.Where(o => !o.IsAlive(configuration.CalculationValues)))
       {
+        fighter.States.Clear(); // remove all pending states
+
         DeadFighters.Add(fighter.Id, fighter);
         CurrentRoundTick.Ticks.Add(new EngineFighterDiedTick() { Fighter = fighter.AsStruct() });
       }
