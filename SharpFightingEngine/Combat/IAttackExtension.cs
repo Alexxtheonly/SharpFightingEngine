@@ -5,6 +5,7 @@ using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
+using SharpFightingEngine.Skills.Buffs;
 using SharpFightingEngine.Utilities;
 
 namespace SharpFightingEngine.Combat
@@ -39,6 +40,13 @@ namespace SharpFightingEngine.Combat
       {
         attackTick.Dodged = true;
         return ticks;
+      }
+
+      if (attack.Skill.CanBeReflected && (attack.Target.States.OfType<ISkillBuff>().Max(o => o.ReflectChance) ?? 0).Chance())
+      {
+        attackTick.Reflected = true;
+        attackTick.Target = attack.Actor.AsStruct();
+        attack.Target = attack.Actor;
       }
 
       attackTick.Damage = attack.GetDamage(calculationValues);

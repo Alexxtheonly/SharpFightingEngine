@@ -23,6 +23,8 @@ namespace SharpFightingEngine.Skills.Range
 
     public override int Cooldown => 2;
 
+    public override bool CanBeReflected => true;
+
     public override IEnumerable<EngineTick> Perform(IFighterStats actor, IFighterStats target, EngineCalculationValues calculationValues)
     {
       var movedBySkill = new FighterMovedByAttackTick()

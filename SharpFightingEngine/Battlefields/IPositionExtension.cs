@@ -5,6 +5,8 @@ namespace SharpFightingEngine.Battlefields
 {
   public static class IPositionExtension
   {
+    private static readonly Random Random = new Random();
+
     public static Vector2 GetVector2(this IPosition position)
     {
       return new Vector2(position.X, position.Y);
@@ -57,7 +59,23 @@ namespace SharpFightingEngine.Battlefields
 
     public static IPosition CalculateKnockBackPosition(this IPosition actor, IPosition target, float distance)
     {
-      var knockbackVector = actor.GetVector3().GetDirection(target.GetVector3());
+      IPosition targetPosition;
+      if (actor.IsEqualPosition(target))
+      {
+        // if target pos is equal we calculate a random position
+        targetPosition = new Position()
+        {
+          X = Random.Next((int)(actor.X - distance), (int)(actor.X + distance)),
+          Y = Random.Next((int)(actor.Y - distance), (int)(actor.Y + distance)),
+          Z = 0,
+        };
+      }
+      else
+      {
+        targetPosition = target;
+      }
+
+      var knockbackVector = actor.GetVector3().GetDirection(targetPosition.GetVector3());
 
       return (target.GetVector3() + (knockbackVector * distance)).GetPosition();
     }

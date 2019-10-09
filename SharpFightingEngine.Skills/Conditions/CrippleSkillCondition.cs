@@ -28,8 +28,6 @@ namespace SharpFightingEngine.Skills.Conditions
 
     public override int Remaining { get; set; } = Duration;
 
-    public override int Initial => Duration;
-
     public override void Apply(IStats stats)
     {
       stats.Speed /= 2;

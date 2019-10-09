@@ -1,6 +1,7 @@
 ﻿using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
+using SharpFightingEngine.Skills.Buffs;
 using SharpFightingEngine.Skills.Conditions;
 using SharpFightingEngine.Utilities;
 
@@ -67,6 +68,23 @@ namespace SharpFightingEngine.Skills.Extensions
     public static FighterConditionAppliedTick ApplyStun(this IFighterStats target, IFighterStats actor, float chance)
     {
       return target.ApplyCondition(actor, chance, new StunSkillCondition(actor));
+    }
+
+    public static FighterBuffAppliedTick ApplyBuff(this IFighterStats target, IFighterStats actor, float chance, ISkillBuff buff)
+    {
+      if (!chance.Chance())
+      {
+        return null;
+      }
+
+      target.States.Add(buff);
+
+      return new FighterBuffAppliedTick()
+      {
+        Buff = buff.AsStruct(),
+        Fighter = actor.AsStruct(),
+        Target = actor.AsStruct(),
+      };
     }
 
     public static FighterConditionAppliedTick ApplyCondition(this IFighterStats target, IFighterStats actor, float chance, SkillConditionBase condition)

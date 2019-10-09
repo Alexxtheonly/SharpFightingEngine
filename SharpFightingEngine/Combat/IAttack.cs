@@ -7,6 +7,6 @@ namespace SharpFightingEngine.Combat
   {
     IDamageSkill Skill { get; }
 
-    IFighterStats Target { get; }
+    IFighterStats Target { get; set; }
   }
 }

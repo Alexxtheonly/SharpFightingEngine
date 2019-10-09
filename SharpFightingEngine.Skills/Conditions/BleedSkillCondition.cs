@@ -22,8 +22,6 @@ namespace SharpFightingEngine.Skills.Conditions
 
     public override int Remaining { get; set; } = Duration;
 
-    public override int Initial => Duration;
-
     public override int Damage => 3;
   }
 }

@@ -2,5 +2,6 @@
 {
   public interface ISkillBuff : IExpiringState
   {
+    float? ReflectChance { get; }
   }
 }

@@ -10,5 +10,7 @@ namespace SharpFightingEngine.Skills.Range
     public override string Name => "Bleeding Arrow";
 
     public override float Range => 15;
+
+    public override bool CanBeReflected => true;
   }
 }

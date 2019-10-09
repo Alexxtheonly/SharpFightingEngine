@@ -28,8 +28,6 @@ namespace SharpFightingEngine.Skills.Conditions
 
     public override int Remaining { get; set; }
 
-    public override int Initial => Duration;
-
     public override IEnumerable<EngineTick> Apply(IFighterStats target, IFighterStats source, EngineCalculationValues calculationValues)
     {
       return Enumerable.Empty<EngineTick>();

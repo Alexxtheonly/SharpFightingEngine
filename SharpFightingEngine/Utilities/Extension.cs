@@ -9,12 +9,7 @@ namespace SharpFightingEngine.Utilities
 
     public static bool Chance(this float chance)
     {
-      return chance.Chance(1, 101);
-    }
-
-    public static bool Chance(this float chance, int min, int max)
-    {
-      return Random.Next(min, max) < chance;
+      return Random.NextDouble() < (chance / 100);
     }
 
     public static IEnumerable<T> Yield<T>(this T item)
