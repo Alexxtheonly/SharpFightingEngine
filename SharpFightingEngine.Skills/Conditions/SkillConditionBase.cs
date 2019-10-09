@@ -27,8 +27,6 @@ namespace SharpFightingEngine.Skills.Conditions
 
     public abstract int Remaining { get; set; }
 
-    public abstract int Initial { get; }
-
     public IFighterStats Source { get; }
 
     public virtual void Apply(IStats stats)

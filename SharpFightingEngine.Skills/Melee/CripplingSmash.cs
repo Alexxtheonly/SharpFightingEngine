@@ -24,6 +24,8 @@ namespace SharpFightingEngine.Skills.Melee
 
     public override int Cooldown => 1;
 
+    public override bool CanBeReflected => false;
+
     public override IEnumerable<EngineTick> Perform(IFighterStats actor, IFighterStats target, EngineCalculationValues calculationValues)
     {
       if (25F.Chance())

@@ -9,7 +9,6 @@
         Damage = condition.Damage,
         HealingReduced = condition.HealingReduced,
         Id = condition.Id,
-        Initial = condition.Initial,
         Name = condition.Name,
         PreventsPerformingActions = condition.PreventsPerformingActions,
         Remaining = condition.Remaining,

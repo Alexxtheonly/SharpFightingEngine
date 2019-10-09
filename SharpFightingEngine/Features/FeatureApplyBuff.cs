@@ -23,8 +23,16 @@ namespace SharpFightingEngine.Features
     {
       foreach (var fighter in aliveFighters.Values)
       {
-        foreach (var buff in fighter.States.OfType<ISkillBuff>())
+        foreach (var buff in fighter.States
+          .OfType<ISkillBuff>()
+          .ToList())
         {
+          buff.Remaining -= 1;
+          if (buff.Remaining <= 0)
+          {
+            fighter.States.Remove(buff);
+          }
+
           foreach (var tick in buff.Apply(fighter, buff.Source, configuration.CalculationValues))
           {
             yield return tick;

@@ -4,15 +4,11 @@ using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
 
-namespace SharpFightingEngine.Skills.Conditions
+namespace SharpFightingEngine.Skills.Buffs
 {
-  public struct SkillCondition : ISkillCondition
+  public struct SkillBuff : ISkillBuff
   {
-    public bool PreventsPerformingActions { get; set; }
-
-    public float? HealingReduced { get; set; }
-
-    public int Damage { get; set; }
+    public float? ReflectChance { get; set; }
 
     public Guid Id { get; set; }
 

@@ -14,8 +14,6 @@ namespace SharpFightingEngine.Skills
 
     int Remaining { get; set; }
 
-    int Initial { get; }
-
     IFighterStats Source { get; }
 
     void Apply(IStats stats);

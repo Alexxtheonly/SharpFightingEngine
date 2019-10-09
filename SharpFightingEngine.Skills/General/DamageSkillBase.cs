@@ -26,6 +26,8 @@ namespace SharpFightingEngine.Skills.General
 
     public abstract int Cooldown { get; }
 
+    public abstract bool CanBeReflected { get; }
+
     public virtual IEnumerable<EngineTick> Perform(IFighterStats actor, IFighterStats target, EngineCalculationValues calculationValues)
     {
       return Enumerable.Empty<EngineTick>();

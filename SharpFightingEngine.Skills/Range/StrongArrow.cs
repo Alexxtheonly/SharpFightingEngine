@@ -16,5 +16,7 @@ namespace SharpFightingEngine.Skills.Range
     public override float Range => 12;
 
     public override int Cooldown => 0;
+
+    public override bool CanBeReflected => true;
   }
 }

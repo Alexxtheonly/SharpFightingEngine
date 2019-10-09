@@ -1,35 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
 
-namespace SharpFightingEngine.Skills.Conditions
+namespace SharpFightingEngine.Skills.Buffs
 {
-  public struct SkillCondition : ISkillCondition
+  public class ReflectSkillBuff : ISkillBuff
   {
-    public bool PreventsPerformingActions { get; set; }
+    public float? ReflectChance => 66.6F;
 
-    public float? HealingReduced { get; set; }
+    public Guid Id => new Guid("1F13F311-3759-46D7-B6A2-7552AC18237B");
 
-    public int Damage { get; set; }
-
-    public Guid Id { get; set; }
-
-    public string Name { get; set; }
+    public string Name => "Reflect";
 
     public int Remaining { get; set; }
+
+    public int Initial => 2;
 
     public IFighterStats Source { get; set; }
 
     public void Apply(IStats stats)
     {
-      throw new NotImplementedException();
     }
 
     public IEnumerable<EngineTick> Apply(IFighterStats target, IFighterStats source, EngineCalculationValues calculationValues)
     {
-      throw new NotImplementedException();
+      return Enumerable.Empty<EngineTick>();
     }
   }
 }
