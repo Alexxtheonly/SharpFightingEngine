@@ -34,12 +34,6 @@ namespace SharpFightingEngine.Fighters
 
       SetMaxHealth(roundTicks);
 
-      var currentAttackers = GetCurrentAttackers(roundTicks, visibleEnemies);
-      var attackerCount = currentAttackers.Count();
-
-      var lastTargets = GetCurrentTargetChallenges(roundTicks)
-        .Where(o => visibleEnemies.Any(e => e.Id == o.Id));
-
       var healthPercent = this.HealthRemaining(calculationValues) / (double)maxHealth;
 
       if (healthPercent <= 0.4)
@@ -56,24 +50,7 @@ namespace SharpFightingEngine.Fighters
         }
       }
 
-      IFighterStats target = null;
-      if (currentAttackers.Any())
-      {
-        target = currentAttackers.First().Fighter;
-      }
-      else if (lastTargets.Any())
-      {
-        var targetChallenge = lastTargets
-          .OrderByDescending(o => o.Challenge)
-          .First();
-
-        target = visibleEnemies.FirstOrDefault(o => o.Id == targetChallenge.Id);
-      }
-
-      if (target == null)
-      {
-        target = TargetFinder.GetTarget(visibleEnemies, this);
-      }
+      IFighterStats target = TargetFinder.GetTarget(visibleEnemies, this);
 
       var skill = SkillFinder.GetSkill(this, target, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues);
       if (skill == null)

@@ -130,6 +130,7 @@ namespace SharpFightingEngine.Combat
         Attack = attack,
         Fighter = attack.Actor.AsStruct(),
         Target = attack.Target.AsStruct(),
+        OriginalTarget = attack.Target.AsStruct(),
       };
     }
   }
