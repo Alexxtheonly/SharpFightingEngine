@@ -8,6 +8,8 @@ namespace SharpFightingEngine.Engines.Ticks
   {
     public IFighter Target { get; set; }
 
+    public IFighter OriginalTarget { get; set; }
+
     public IAttack Attack { get; set; }
 
     public override ISkill Skill => Attack.Skill;
