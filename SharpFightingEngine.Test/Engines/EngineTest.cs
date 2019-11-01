@@ -108,7 +108,7 @@ namespace SharpFightingEngine.Test.Engines
       }
 
       var contributedKills = result.Contributions.Sum(o => o.KillsAndAssists);
-      Assert.True(contributedKills >= result.Scores.Count() - 1);
+      Assert.True(contributedKills >= result.Scores.Sum(o => o.TotalDeaths));
       Assert.NotEqual(0, result.Contributions.Sum(o => o.MatchParticipation));
       Assert.NotEqual(0, result.Contributions.Sum(o => o.PercentageOfRoundsAlive));
     }
@@ -117,8 +117,7 @@ namespace SharpFightingEngine.Test.Engines
     {
       var fighterTicks = allTicks
         .OfType<FighterTick>()
-        .Where(actorQuery)
-        .ToList();
+        .Where(actorQuery);
 
       var expectedDamage = fighterTicks.OfType<FighterAttackTick>().Where(o => o.Hit).Sum(o => o.Damage);
       var expectedConditionDamage = allTicks.OfType<FighterConditionDamageTick>().Where(conditionSourceQuery).Sum(o => o.Damage);
