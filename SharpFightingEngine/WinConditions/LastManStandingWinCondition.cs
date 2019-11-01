@@ -14,9 +14,13 @@ namespace SharpFightingEngine.WinConditions
 
     public IMatchResult GetMatchResult(IEnumerable<IFighter> fighters, ICollection<EngineRoundTick> engineRoundTicks)
     {
+      var scores = OrderScores(engineRoundTicks.CalculateFighterMatchScores());
+
       return new MatchResult()
       {
         Ticks = engineRoundTicks,
+        Scores = scores,
+        TeamScores = OrderScores(scores.CalculateTeamMatchScores()),
       };
     }
 
@@ -33,6 +37,16 @@ namespace SharpFightingEngine.WinConditions
 
       return fighters
         .Count() <= 1;
+    }
+
+    private IEnumerable<T> OrderScores<T>(IEnumerable<T> scores)
+      where T : IMatchScore
+    {
+      return scores
+        .OrderBy(o => o.TotalDeaths)
+        .ThenByDescending(o => o.TotalKills)
+        .ThenByDescending(o => o.RoundsAlive)
+        .ThenByDescending(o => o.TotalDamageDone);
     }
   }
 }
