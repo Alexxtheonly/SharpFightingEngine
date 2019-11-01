@@ -98,14 +98,23 @@ namespace SharpFightingEngine.Engines
       }
     }
 
-    public static IEnumerable<T> OrderScores<T>(this IEnumerable<T> scores)
-      where T : IMatchScore
+    public static IEnumerable<TeamMatchScore> CalculateTeamMatchScores(this IEnumerable<FighterMatchScore> fighterScores)
     {
-      return scores
-        .OrderBy(o => o.TotalDeaths)
-        .ThenByDescending(o => o.TotalKills)
-        .ThenByDescending(o => o.RoundsAlive)
-        .ThenByDescending(o => o.TotalDamageDone);
+      return fighterScores
+        .Where(o => o.TeamId != null)
+        .GroupBy(o => o.TeamId)
+        .Select(o => new TeamMatchScore()
+        {
+          Id = o.Key ?? default,
+          RoundsAlive = o.Max(x => x.RoundsAlive),
+          TotalDamageDone = o.Sum(x => x.TotalDamageDone),
+          TotalDamageTaken = o.Sum(x => x.TotalDamageTaken),
+          TotalDeaths = o.Sum(x => x.TotalDeaths),
+          TotalDistanceTraveled = o.Sum(x => x.TotalDistanceTraveled),
+          TotalKills = o.Sum(x => x.TotalKills),
+          TotalHealingDone = o.Sum(x => x.TotalHealingDone),
+          TotalHealingRecieved = o.Sum(x => x.TotalHealingRecieved),
+        });
     }
   }
 }

@@ -8,26 +8,9 @@ namespace SharpFightingEngine.Engines
   {
     public IEnumerable<EngineRoundTick> Ticks { get; set; }
 
-    public IEnumerable<FighterMatchScore> Scores => Ticks
-      .CalculateFighterMatchScores()
-      .OrderScores();
+    public IEnumerable<FighterMatchScore> Scores { get; set; }
 
-    public IEnumerable<TeamMatchScore> TeamScores => Scores
-      .Where(o => o.TeamId != null)
-      .GroupBy(o => o.TeamId)
-      .Select(o => new TeamMatchScore()
-      {
-        Id = o.Key ?? default,
-        RoundsAlive = o.Max(x => x.RoundsAlive),
-        TotalDamageDone = o.Sum(x => x.TotalDamageDone),
-        TotalDamageTaken = o.Sum(x => x.TotalDamageTaken),
-        TotalDeaths = o.Sum(x => x.TotalDeaths),
-        TotalDistanceTraveled = o.Sum(x => x.TotalDistanceTraveled),
-        TotalKills = o.Sum(x => x.TotalKills),
-        TotalHealingDone = o.Sum(x => x.TotalHealingDone),
-        TotalHealingRecieved = o.Sum(x => x.TotalHealingRecieved),
-      })
-      .OrderScores();
+    public IEnumerable<TeamMatchScore> TeamScores { get; set; }
 
     public IEnumerable<FighterContribution> Contributions
     {
