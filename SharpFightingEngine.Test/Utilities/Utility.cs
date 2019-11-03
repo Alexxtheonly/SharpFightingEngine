@@ -32,6 +32,7 @@ namespace SharpFightingEngine.Test.Utilities
       stats.Speed = 10;
       stats.Vision = 10;
       stats.Vitality = baseValue * level;
+      stats.ParryChance = 20;
     }
 
     public static Engine GetDefaultEngine(int fighterCount)

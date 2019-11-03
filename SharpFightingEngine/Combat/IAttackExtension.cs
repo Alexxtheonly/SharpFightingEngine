@@ -42,6 +42,12 @@ namespace SharpFightingEngine.Combat
         return ticks;
       }
 
+      if (attack.ParryChance().Chance())
+      {
+        attackTick.Parried = true;
+        return ticks;
+      }
+
       if (attack.Skill.CanBeReflected && (attack.Target.States.OfType<ISkillBuff>().Max(o => o.ReflectChance) ?? 0).Chance())
       {
         attackTick.Reflected = true;
@@ -107,6 +113,11 @@ namespace SharpFightingEngine.Combat
     public static float HitValue(this IAttack attack, EngineCalculationValues calculationValues)
     {
       return attack.HitChance(calculationValues) - attack.DodgeChance(calculationValues);
+    }
+
+    public static float ParryChance(this IAttack attack)
+    {
+      return attack.Target.GetAdjustedStats().ParryChance;
     }
 
     public static void Handle(this FighterTick tick, Dictionary<Guid, IFighterStats> fighters)

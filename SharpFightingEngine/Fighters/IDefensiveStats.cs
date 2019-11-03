@@ -9,5 +9,7 @@
     int Vitality { get; set; }
 
     int HealingPower { get; set; }
+
+    int ParryChance { get; set; }
   }
 }

@@ -20,6 +20,8 @@
 
     public int HealingPower { get; set; }
 
+    public int ParryChance { get; set; }
+
     public int Speed { get; set; }
 
     public int Vision { get; set; }
@@ -37,6 +39,7 @@
         Armor = Armor,
         Vision = Vision,
         Vitality = Vitality,
+        ParryChance = ParryChance,
         ConditionPower = ConditionPower,
         Ferocity = Ferocity,
         HealingPower = HealingPower,
