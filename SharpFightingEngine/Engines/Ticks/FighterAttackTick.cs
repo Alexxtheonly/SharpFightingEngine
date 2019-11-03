@@ -30,7 +30,9 @@ namespace SharpFightingEngine.Engines.Ticks
 
     public bool Reflected { get; set; }
 
-    public bool Hit => !(Dodged || OutOfRange || OnCooldown || Reflected);
+    public bool Parried { get; set; }
+
+    public bool Hit => !(Dodged || OutOfRange || OnCooldown || Reflected || Parried);
 
     public override string ToString()
     {
@@ -39,7 +41,8 @@ namespace SharpFightingEngine.Engines.Ticks
         $"{(Dodged ? "dodged" : string.Empty)} " +
         $"{(OutOfRange ? "out of range" : string.Empty)} " +
         $"{(OnCooldown ? "on cooldown" : string.Empty)}" +
-        $"{(Reflected ? "reflected" : string.Empty)}";
+        $"{(Reflected ? "reflected" : string.Empty)}" +
+        $"{(Parried ? "parried" : string.Empty)}";
     }
   }
 }
