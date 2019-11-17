@@ -25,5 +25,7 @@ namespace SharpFightingEngine.Fighters
     public int EnergyUsed { get; set; }
 
     public ICollection<IExpiringState> States { get; set; }
+
+    public IFighterAttunement Attunement { get; set; }
   }
 }

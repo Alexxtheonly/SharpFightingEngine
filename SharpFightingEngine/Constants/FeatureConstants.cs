@@ -11,5 +11,7 @@ namespace SharpFightingEngine.Constants
     public static readonly Guid ApplyBuff = new Guid("0B93E657-EBF3-42F4-A049-FC9F7B70ADD9");
 
     public static readonly Guid ReviveDeadFighters = new Guid("C34C17D6-550F-4BB1-BFC2-65D443DEEB53");
+
+    public static readonly Guid InvokeAttunementEffect = new Guid("273BE142-200F-4BF4-BF2C-8308CC49701A");
   }
 }
