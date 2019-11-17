@@ -62,6 +62,9 @@ namespace SharpFightingEngine.Combat
         attackTick.Critical = true;
       }
 
+      // calculate attuned damage
+      attackTick.Damage = attack.Actor.Attunement?.CalculateDamageDone(attack.Target.Attunement, attackTick.Damage) ?? attackTick.Damage;
+
       fighters[attack.Target.Id].DamageTaken += attackTick.Damage;
 
       var additionalTicks = attack.Skill.Perform(attack.Actor, attack.Target, calculationValues);
@@ -71,6 +74,10 @@ namespace SharpFightingEngine.Combat
       }
 
       ticks.AddRange(additionalTicks);
+      if (attack.Actor.Attunement != null)
+      {
+        ticks.AddRange(attack.Actor.Attunement.Attack(attack.Actor, attack.Target, calculationValues));
+      }
 
       return ticks;
     }

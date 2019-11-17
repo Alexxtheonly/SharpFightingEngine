@@ -16,5 +16,7 @@ namespace SharpFightingEngine.Fighters
     int Health { get; set; }
 
     ICollection<IExpiringState> States { get; set; }
+
+    IFighterAttunement Attunement { get; set; }
   }
 }

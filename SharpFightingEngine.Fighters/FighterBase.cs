@@ -62,6 +62,8 @@ namespace SharpFightingEngine.Fighters
 
     public IStats Stats { get; set; } = default(Stats);
 
+    public IFighterAttunement Attunement { get; set; }
+
     public IStats GetAdjustedStats()
     {
       var stats = Stats.Clone();
