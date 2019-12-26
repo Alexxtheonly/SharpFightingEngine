@@ -25,5 +25,11 @@ namespace SharpFightingEngine.Engines.Ticks
 
       return roundTicks.GetRounds(maxRound - rounds, maxRound);
     }
+
+    public static IEnumerable<EngineTick> GetAllRounds(this IEnumerable<EngineRoundTick> roundTicks)
+    {
+      return roundTicks
+        .SelectMany(o => o.Ticks);
+    }
   }
 }
