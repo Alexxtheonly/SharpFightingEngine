@@ -5,6 +5,7 @@ using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Combat;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
+using SharpFightingEngine.Fighters.Intelligence;
 
 namespace SharpFightingEngine.Fighters
 {
@@ -13,6 +14,8 @@ namespace SharpFightingEngine.Fighters
     private int? maxHealth;
     private bool flight;
     private IPosition flightPosition;
+
+    private IntelligenceProvider intelligenceProvider = new IntelligenceProvider();
 
     public override IFighterAction GetFighterAction(
       IEnumerable<IFighterStats> visibleFighters,
@@ -50,7 +53,29 @@ namespace SharpFightingEngine.Fighters
         }
       }
 
-      IFighterStats target = TargetFinder.GetTarget(visibleEnemies, this);
+      var intels = intelligenceProvider.GetIntels(this, roundTicks, calculationValues, visibleEnemies);
+
+      var attackers = visibleEnemies.Where(o => intels.Where(i => i.LastTarget == Id).Select(i => i.Id).Contains(o.Id));
+      if (attackers.Count() >= 2)
+      {
+        return new Move()
+        {
+          Actor = this,
+          NextPosition = PathFinder.GetEscapePath(this, attackers, battlefield),
+        };
+      }
+
+      var bestTarget = intels
+        .OrderByDescending(o => o.LastTarget == Id)
+        .ThenByDescending(o => o.IsInRange)
+        .ThenByDescending(o => o.IsStunned)
+        .ThenByDescending(o => o.IsHealingReduced)
+        .ThenBy(o => o.HealthPercent)
+        .ThenByDescending(o => o.LastRoundHealSkillUsed)
+        .ThenBy(o => o.OtherFightersNearby)
+        .FirstOrDefault();
+
+      IFighterStats target = visibleEnemies.First(o => o.Id == bestTarget.Id);
 
       var skill = SkillFinder.GetSkill(this, target, SkillFinder.ExcludeSkillsOnCooldown(this, Skills, roundTicks), calculationValues);
       if (skill == null)
