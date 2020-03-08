@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SharpFightingEngine.Engines
 {
@@ -21,5 +22,11 @@ namespace SharpFightingEngine.Engines
     public int TotalHealingDone { get; set; }
 
     public int TotalHealingRecieved { get; set; }
+
+    public int TotalAssists { get; set; }
+
+    public IEnumerable<Guid> Kills { get; set; }
+
+    public IEnumerable<Guid> Assists { get; set; }
   }
 }

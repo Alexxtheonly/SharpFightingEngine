@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharpFightingEngine.Battlefields;
 using SharpFightingEngine.Engines.Ticks;
@@ -7,11 +8,6 @@ namespace SharpFightingEngine.Engines
 {
   public static class MatchResultExtension
   {
-    /// <summary>
-    /// At least the specified percentage damage must be dealt to be counted as Kill or Assist.
-    /// </summary>
-    private const float PercentOfTotalHealthNeeded = 0.40F;
-
     public static IEnumerable<FighterMatchScore> CalculateFighterMatchScores(this IEnumerable<EngineRoundTick> roundTicks)
     {
       var groupedByFighter = roundTicks
@@ -33,7 +29,8 @@ namespace SharpFightingEngine.Engines
       {
         var attacks = group.OfType<FighterAttackTick>().Where(o => o.Fighter.Id == group.Key);
 
-        int kills = 0;
+        List<Guid> kills = new List<Guid>();
+        List<Guid> assists = new List<Guid>();
         foreach (var mutualKill in deaths.Where(o => o.Fighter.Id != group.Key))
         {
           var lastSpawn = roundTicks
@@ -44,7 +41,7 @@ namespace SharpFightingEngine.Engines
             .First();
 
           var attacksOnDeadFighter = attacks
-            .Where(o => o.Hit && o.Target.Id == mutualKill.Fighter.Id)
+            .Where(o => (o.Hit || o.Reflected) && o.Target.Id == mutualKill.Fighter.Id)
             .Where(o => o.DateTime <= mutualKill.DateTime && o.DateTime >= lastSpawn.DateTime);
 
           var conditionTicksOnDeadFigher = roundTicks
@@ -57,10 +54,31 @@ namespace SharpFightingEngine.Engines
           int totalSkillDamage = attacksOnDeadFighter.Sum(o => o.Damage);
           int totalDamage = totalSkillDamage + totalConditionDamage;
 
-          double totalHealth = lastSpawn.Fighter.Health;
-          if (totalDamage / totalHealth >= PercentOfTotalHealthNeeded)
+          var lastConditionTick = roundTicks
+            .SelectMany(o => o.Ticks)
+            .OfType<FighterConditionDamageTick>()
+            .Where(o => o.Fighter.Id == mutualKill.Fighter.Id)
+            .Where(o => o.DateTime <= mutualKill.DateTime && o.DateTime >= lastSpawn.DateTime)
+            .LastOrDefault();
+
+          var lastAttackTick = roundTicks
+            .SelectMany(o => o.Ticks)
+            .OfType<FighterAttackTick>()
+            .Where(o => o.Damage > 0 && o.Target.Id == mutualKill.Fighter.Id)
+            .Where(o => o.DateTime <= mutualKill.DateTime && o.DateTime >= lastSpawn.DateTime)
+            .LastOrDefault();
+
+          if (((lastAttackTick?.DateTime.Ticks ?? 0) > (lastConditionTick?.DateTime.Ticks ?? 0)) && (lastAttackTick?.Fighter.Id == group.Key))
           {
-            kills++;
+            kills.Add(mutualKill.Fighter.Id);
+          }
+          else if (((lastConditionTick?.DateTime.Ticks ?? 0) > (lastAttackTick?.DateTime.Ticks ?? 0)) && lastConditionTick?.Source.Id == group.Key)
+          {
+            kills.Add(mutualKill.Fighter.Id);
+          }
+          else
+          {
+            assists.Add(mutualKill.Fighter.Id);
           }
         }
 
@@ -89,9 +107,12 @@ namespace SharpFightingEngine.Engines
           RoundsAlive = roundTicks.Where(o => o.Ticks.OfType<FighterTick>().Any(t => t.Fighter.Id == group.Key)).GetLastRound().Round,
           TotalDamageDone = totalDamageDone,
           TotalDamageTaken = roundTicks.SelectMany(o => o.Ticks).OfType<FighterAttackTick>().Where(o => o.Target.Id == group.Key && o.Hit).Sum(o => o.Damage),
-          TotalDeaths = group.OfType<EngineFighterDiedTick>().Where(o => o.Fighter.Id == group.Key).Count(), // todo: o.Fighter.Id == group.Key necessary?
-          TotalDistanceTraveled = group.OfType<FighterMoveTick>().Where(o => o.Fighter.Id == group.Key).Sum(o => o.Current.GetDistance(o.Next)), // todo: o.Fighter.Id == group.Key necessary?
-          TotalKills = kills,
+          TotalDeaths = group.OfType<EngineFighterDiedTick>().Count(),
+          TotalDistanceTraveled = group.OfType<FighterMoveTick>().Sum(o => o.Current.GetDistance(o.Next)),
+          TotalKills = kills.Count,
+          TotalAssists = assists.Count,
+          Kills = kills,
+          Assists = assists,
           TotalHealingDone = group.OfType<FighterHealTick>().Sum(o => o.AppliedHealing),
           TotalHealingRecieved = 0, // todo
         };
@@ -112,8 +133,11 @@ namespace SharpFightingEngine.Engines
           TotalDeaths = o.Sum(x => x.TotalDeaths),
           TotalDistanceTraveled = o.Sum(x => x.TotalDistanceTraveled),
           TotalKills = o.Sum(x => x.TotalKills),
+          TotalAssists = o.Sum(x => x.TotalAssists),
           TotalHealingDone = o.Sum(x => x.TotalHealingDone),
           TotalHealingRecieved = o.Sum(x => x.TotalHealingRecieved),
+          Kills = o.SelectMany(x => x.Kills),
+          Assists = o.SelectMany(x => x.Assists),
         });
     }
   }

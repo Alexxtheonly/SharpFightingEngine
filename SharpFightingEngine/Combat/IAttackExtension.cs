@@ -20,7 +20,19 @@ namespace SharpFightingEngine.Combat
     {
       var ticks = new List<EngineTick>();
 
+      bool reflected = false;
+
+      if (attack.Skill.CanBeReflected && (attack.Target.States.OfType<ISkillBuff>().Max(o => o.ReflectChance) ?? 0).Chance())
+      {
+        reflected = true;
+
+        var actor = attack.Target;
+        attack.Target = attack.Actor;
+        attack.Actor = actor;
+      }
+
       var attackTick = attack.GetFighterTick<FighterAttackTick>();
+      attackTick.Reflected = reflected;
 
       ticks.Add(attackTick);
 
@@ -46,13 +58,6 @@ namespace SharpFightingEngine.Combat
       {
         attackTick.Parried = true;
         return ticks;
-      }
-
-      if (attack.Skill.CanBeReflected && (attack.Target.States.OfType<ISkillBuff>().Max(o => o.ReflectChance) ?? 0).Chance())
-      {
-        attackTick.Reflected = true;
-        attackTick.Target = attack.Actor.AsStruct();
-        attack.Target = attack.Actor;
       }
 
       attackTick.Damage = attack.GetDamage(calculationValues);

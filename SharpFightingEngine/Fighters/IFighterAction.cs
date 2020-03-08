@@ -2,6 +2,6 @@
 {
   public interface IFighterAction
   {
-    IFighterStats Actor { get; }
+    IFighterStats Actor { get; set; }
   }
 }

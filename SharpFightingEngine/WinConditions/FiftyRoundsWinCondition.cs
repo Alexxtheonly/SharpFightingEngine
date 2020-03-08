@@ -34,6 +34,7 @@ namespace SharpFightingEngine.WinConditions
     {
       return scores
         .OrderByDescending(o => o.TotalKills)
+        .OrderByDescending(o => o.TotalAssists)
         .ThenBy(o => o.TotalDeaths)
         .ThenByDescending(o => o.TotalDamageDone);
     }

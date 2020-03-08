@@ -67,11 +67,7 @@ namespace SharpFightingEngine.Engines
 
         CalculateFighterStats();
 
-        CollectDeadBodies();
-
         ProcessFeatures();
-
-        CollectDeadBodies();
 
         hasWinner = configuration.WinCondition.HasWinner(Fighters.Values, EngineRoundTicks, configuration.CalculationValues);
         isStale = configuration.StaleCondition.IsStale(Fighters.Values, EngineRoundTicks);
@@ -141,6 +137,11 @@ namespace SharpFightingEngine.Engines
         }
 
         CurrentRoundTick.Ticks.AddRange(feature.Apply(Fighters, DeadFighters, EngineRoundTicks, configuration));
+
+        if (feature.NeedsUpdatedDeadFighters)
+        {
+          CollectDeadBodies();
+        }
       }
     }
 
@@ -169,6 +170,7 @@ namespace SharpFightingEngine.Engines
           }
 
           CurrentRoundTick.Ticks.AddRange(HandleFighterAction(action).Where(o => o != null));
+          CollectDeadBodies();
         }
       }
     }
