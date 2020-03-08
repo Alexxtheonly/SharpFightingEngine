@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpFightingEngine.Engines
 {
@@ -22,9 +24,14 @@ namespace SharpFightingEngine.Engines
     public bool IsThird { get; set; }
 
     /// <summary>
-    /// The kills and assists in this match. At least 25% of the target's health must be dealt damage.
+    /// This collection contains the fighter ids that were killed by this fighter
     /// </summary>
-    public int KillsAndAssists { get; set; }
+    public IEnumerable<Guid> Kills { get; set; } = Enumerable.Empty<Guid>();
+
+    /// <summary>
+    /// This collection contains the fighter ids that this fighter assisted killing
+    /// </summary>
+    public IEnumerable<Guid> Assists { get; set; } = Enumerable.Empty<Guid>();
 
     /// <summary>
     /// The percentage of how many of the total rounds the fighter has been alive.

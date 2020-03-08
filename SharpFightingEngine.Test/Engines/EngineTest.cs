@@ -89,6 +89,13 @@ namespace SharpFightingEngine.Test.Engines
 
       Assert.NotEmpty(allFighterTicks);
 
+      var killed = result.Scores.SelectMany(o => o.Kills).ToList();
+      var deaths = result.Scores.Where(o => o.TotalDeaths > 0).Select(o => o.Id).ToList();
+
+      var differences = deaths.Except(killed).ToList();
+
+      Assert.Empty(differences);
+
       foreach (var score in result.Scores)
       {
         VerifyMatchScore(allFighterTicks, score, o => o.Fighter.Id == score.Id, o => o.Target.Id == score.Id, o => o.Source.Id == score.Id);
@@ -103,11 +110,11 @@ namespace SharpFightingEngine.Test.Engines
       {
         var score = result.Scores.First(o => o.Id == contribution.FighterId);
 
-        Assert.Equal(score.TotalKills, contribution.KillsAndAssists);
+        Assert.Equal(score.TotalKills, contribution.Kills.Count());
         Assert.Equal(result.Scores.First().Id == contribution.FighterId, contribution.HasWon);
       }
 
-      var contributedKills = result.Contributions.Sum(o => o.KillsAndAssists);
+      var contributedKills = result.Contributions.Sum(o => o.Kills.Count());
       Assert.True(contributedKills >= result.Scores.Sum(o => o.TotalDeaths));
       Assert.NotEqual(0, result.Contributions.Sum(o => o.MatchParticipation));
       Assert.NotEqual(0, result.Contributions.Sum(o => o.PercentageOfRoundsAlive));

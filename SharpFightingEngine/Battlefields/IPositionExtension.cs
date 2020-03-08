@@ -82,6 +82,11 @@ namespace SharpFightingEngine.Battlefields
 
     public static IPosition CalculatePullPosition(this IPosition actor, IPosition target, float distance)
     {
+      if (actor.IsEqualPosition(target))
+      {
+        return actor;
+      }
+
       const float desiredDistanceAfterPull = 1;
 
       var distanceBetween = actor.GetDistanceAbs(target);

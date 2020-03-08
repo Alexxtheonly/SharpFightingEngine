@@ -75,7 +75,7 @@ namespace SharpFightingEngine.Test.Genetic
         fitness += 200;
       }
 
-      fitness += contribution.KillsAndAssists * 50;
+      fitness += contribution.Kills.Count() * 50;
       fitness += 25 * contribution.PercentageOfRoundsAlive;
       fitness += 15 * contribution.MatchParticipation;
 

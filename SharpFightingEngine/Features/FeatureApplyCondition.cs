@@ -13,7 +13,7 @@ namespace SharpFightingEngine.Features
   {
     public Guid Id => FeatureConstants.ApplyCondition;
 
-    public bool NeedsUpdatedDeadFighters => false;
+    public bool NeedsUpdatedDeadFighters => true;
 
     public IEnumerable<EngineTick> Apply(
       Dictionary<Guid, IFighterStats> aliveFighters,

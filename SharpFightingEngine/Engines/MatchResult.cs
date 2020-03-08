@@ -34,7 +34,8 @@ namespace SharpFightingEngine.Engines
             HasWon = score.Id == firstPlace.Id,
             IsSecond = score.Id == secondPlace.Id,
             IsThird = score.Id == thirdPlace.Id,
-            KillsAndAssists = score.TotalKills,
+            Kills = score.Kills,
+            Assists = score.Assists,
             MatchParticipation = sum == 0 ? 0 : attackCount / sum,
             PercentageOfRoundsAlive = score.RoundsAlive / rounds,
           };

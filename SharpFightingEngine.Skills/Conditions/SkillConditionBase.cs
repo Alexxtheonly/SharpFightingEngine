@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharpFightingEngine.Engines;
 using SharpFightingEngine.Engines.Ticks;
 using SharpFightingEngine.Fighters;
@@ -14,8 +15,7 @@ namespace SharpFightingEngine.Skills.Conditions
       Source = source;
     }
 
-    public abstract Guid Id
-    { get; }
+    public abstract Guid Id { get; }
 
     public abstract string Name { get; }
 
@@ -35,6 +35,11 @@ namespace SharpFightingEngine.Skills.Conditions
 
     public virtual IEnumerable<EngineTick> Apply(IFighterStats target, IFighterStats source, EngineCalculationValues calculationValues)
     {
+      if (!target.IsAlive(calculationValues))
+      {
+        return Enumerable.Empty<EngineTick>();
+      }
+
       var damage = source.GetConditionDamage(calculationValues, this);
       target.DamageTaken += damage;
 
